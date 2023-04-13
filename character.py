@@ -8,9 +8,6 @@ class Character(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
         self.game = game
 
-        # self.groups = self.game.all_sprites, self.game.player_sprite
-        # pygame.sprite.Sprite.__init__(self, self.groups)
-
         self.x = x
         self.y = y
         self.width = CHARACTER_TILESIZE
@@ -66,6 +63,15 @@ class Character(pygame.sprite.Sprite):
 
         self.x_change = 0
         self.y_change = 0
+
+        current_pos_x = self.rect.x
+        current_pos_y = self.rect.y
+        if current_pos_x > WIN_WIDTH:
+            self.rect.x = BORDER_TILESIZE + 5
+            self.game.current_level_no += 1
+            self.game.current_level = self.game.level_list[self.game.current_level_no]
+            self.game.level = self.game.current_level
+
 
     def movement(self):
         keys = pygame.key.get_pressed()
@@ -143,38 +149,6 @@ class Character(pygame.sprite.Sprite):
                     if self.y_change < 0: # Moving Up
                         self.rect.bottom = object.collision_rect.bottom+10
                         self.collision_rect.y = object.collision_rect.bottom
-
-        # if direction == "x":
-        #     hits = pygame.sprite.collide_rect(self, self.game.background_sprites)
-        #     if hits:
-        #         if self.x_change > 0:
-        #             self.rect.x = self.game.background_sprites.rect[0]
-        #         if self.x_change < 0:
-        #             self.rect.x = self.game.background_sprites.rect[2]
-        #
-        # if direction == "y":
-        #     hits = pygame.sprite.collide_rect(self, self.game.background_sprites)
-        #     if hits:
-        #         if self.y_change > 0:
-        #             self.rect.y = self.game.background_sprites.rect[3]
-        #         if self.y_change < 0:
-        #             self.rect.y = self.game.background_sprites.rect[1]
-
-        # if direction == "x":
-        #     hits = pygame.sprite.spritecollide(self, self.game.background_sprites, False)
-        #     if hits:
-        #         if self.x_change > 0:
-        #             self.rect.x = hits[0].collision_rect.left - self.rect.width
-        #         if self.x_change < 0:
-        #             self.rect.x = hits[0].collision_rect.right
-        #
-        # if direction == "y":
-        #     hits = pygame.sprite.spritecollide(self, self.game.background_sprites, False)
-        #     if hits:
-        #         if self.y_change > 0:
-        #             self.rect.y = hits[0].collision_rect[3] - self.rect.height
-        #         if self.y_change < 0:
-        #             self.rect.y = hits[0].collision_rect[1]
 
     def collide_enemy(self):
         pass
