@@ -20,9 +20,26 @@ class Game:
     def createTilemap(self):
         tree_image = pygame.image.load('assets/tree.png')
         rock_img = pygame.image.load('assets/large_rock.png')
-        for _ in range(10):
-            Tree(self, random.randint(0, WIN_WIDTH), random.randint(0, WIN_HEIGHT), tree_image)
-        Rock(self, 400, 400, rock_img)
+        for _ in range(int(WIN_WIDTH/BORDER_TILESIZE)):
+            Tree(self, random.randint(BORDER_TILESIZE * 2, WIN_WIDTH - BORDER_TILESIZE * 2), random.randint(BORDER_TILESIZE * 2, WIN_HEIGHT - (BORDER_TILESIZE * 2)-tree_image.get_height()/2), tree_image)
+            Rock(self, random.randint(BORDER_TILESIZE * 2, WIN_WIDTH - BORDER_TILESIZE * 2), random.randint(BORDER_TILESIZE * 2, WIN_HEIGHT - BORDER_TILESIZE * 2), rock_img)
+
+        tempwidthcount = 0
+        tempheightcount = 0
+        xpos = 0
+        while tempwidthcount < WIN_WIDTH / BORDER_TILESIZE:
+            Rock(self, xpos, 0, rock_img)
+            Rock(self, xpos, WIN_HEIGHT-BORDER_TILESIZE, rock_img)
+            xpos += BORDER_TILESIZE
+            tempwidthcount += 1
+
+        ypos = 0
+        while tempheightcount < WIN_HEIGHT / BORDER_TILESIZE:
+            Rock(self, 0, ypos, rock_img)
+            Rock(self, WIN_HEIGHT-BORDER_TILESIZE, ypos, rock_img)
+            ypos += BORDER_TILESIZE
+            tempheightcount += 1
+
 
     def new(self):
 
