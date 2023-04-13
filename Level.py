@@ -19,23 +19,52 @@ class Level(object):
         self.north_exit = False
         self.south_exit = False
         self.west_exit = False
+        self.east_exit = False
         self.in_town = False
 
         # Background Image
         self.background = None
 
         # Other Images
-        tree_image = pygame.image.load('assets/tree.png')
-        rock_img = pygame.image.load('assets/large_rock.png')
+        self.tree_image = pygame.image.load('assets/tree.png')
+        self.rock_img = pygame.image.load('assets/large_rock.png')
 
         # Adding Trees and Rocks while not in town
         if not self.in_town:
-            for _ in range(10):
-                Tree(self, random.randint(0+BORDER_TILESIZE, WIN_WIDTH-BORDER_TILESIZE), random.randint(0+BORDER_TILESIZE, WIN_HEIGHT-BORDER_TILESIZE), tree_image)
             tempwidthcount = 0
-            tempheightcount = WIN_HEIGHT/BORDER_TILESIZE
-            while tempwidthcount < WIN_WIDTH/BORDER_TILESIZE:
-                Tree(self, random.randint(0, WIN_WIDTH), random.randint(0, WIN_HEIGHT), tree_image)
+            tempheightcount = 0
+            xpos = 0
+            while tempwidthcount < (WIN_WIDTH / BORDER_TILESIZE) / 2 - 1:
+                Rock(self, xpos, 0, self.rock_img)
+                Rock(self, xpos, WIN_HEIGHT - BORDER_TILESIZE, self.rock_img)
+                xpos += BORDER_TILESIZE
+                tempwidthcount += 1
+            ypos = 0
+            while tempheightcount < (WIN_HEIGHT / BORDER_TILESIZE) / 2 - 1:
+                Rock(self, 0, ypos, self.rock_img)
+                Rock(self, WIN_HEIGHT - BORDER_TILESIZE, ypos, self.rock_img)
+                ypos += BORDER_TILESIZE
+                tempheightcount += 1
+
+            tempwidthcount = 0
+            tempheightcount = 0
+            xpos = xpos + BORDER_TILESIZE * 2
+            while tempwidthcount < (WIN_WIDTH / BORDER_TILESIZE) / 2 - 1:
+                Rock(self, xpos, 0, self.rock_img)
+                Rock(self, xpos, WIN_HEIGHT - BORDER_TILESIZE, self.rock_img)
+                xpos += BORDER_TILESIZE
+                tempwidthcount += 1
+            ypos = ypos + BORDER_TILESIZE * 2
+            while tempheightcount < (WIN_HEIGHT / BORDER_TILESIZE) / 2 - 1:
+                Rock(self, 0, ypos, self.rock_img)
+                Rock(self, WIN_HEIGHT - BORDER_TILESIZE, ypos, self.rock_img)
+                ypos += BORDER_TILESIZE
+                tempheightcount += 1
+            if not self.east_exit:
+                Rock(self, WIN_WIDTH-BORDER_TILESIZE, WIN_HEIGHT/2-1, self.rock_img)
+                Rock(self, WIN_WIDTH - BORDER_TILESIZE, WIN_HEIGHT / 2 + 1, self.rock_img)
+
+
 
 
 
@@ -58,4 +87,8 @@ class Level(object):
 class Level_01(Level):
 
     def __init__(self, game, player):
+
+        self.east_exit = True
         Level.__init__(self, game, player)
+
+

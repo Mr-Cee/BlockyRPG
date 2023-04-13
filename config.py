@@ -1,6 +1,6 @@
 # Window Settings
-WIN_WIDTH = 800
-WIN_HEIGHT = 800
+WIN_WIDTH = 800 # Must be Multiple of 32 to look nice
+WIN_HEIGHT = 800 # Must be Multiple of 32 to look nice
 WIN_BG = (17, 102, 24)
 
 # Colors

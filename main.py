@@ -24,21 +24,56 @@ class Game:
             Tree(self, random.randint(BORDER_TILESIZE * 2, WIN_WIDTH - BORDER_TILESIZE * 2), random.randint(BORDER_TILESIZE * 2, WIN_HEIGHT - (BORDER_TILESIZE * 2)-tree_image.get_height()/2), tree_image)
             Rock(self, random.randint(BORDER_TILESIZE * 2, WIN_WIDTH - BORDER_TILESIZE * 2), random.randint(BORDER_TILESIZE * 2, WIN_HEIGHT - BORDER_TILESIZE * 2), rock_img)
 
+
+        # Horizontal Rock Walls
         tempwidthcount = 0
         tempheightcount = 0
         xpos = 0
-        while tempwidthcount < WIN_WIDTH / BORDER_TILESIZE:
+        while tempwidthcount < (WIN_WIDTH / BORDER_TILESIZE)/2-1:
             Rock(self, xpos, 0, rock_img)
             Rock(self, xpos, WIN_HEIGHT-BORDER_TILESIZE, rock_img)
             xpos += BORDER_TILESIZE
             tempwidthcount += 1
+        # Gap in the Middle
+        xpos_exit = xpos
+        xpos = xpos + BORDER_TILESIZE * 2
+        tempwidthcount = 0
+        while tempwidthcount < (WIN_WIDTH / BORDER_TILESIZE) / 2 - 1:
+            Rock(self, xpos, 0, rock_img)
+            Rock(self, xpos, WIN_HEIGHT - BORDER_TILESIZE, rock_img)
+            xpos += BORDER_TILESIZE
+            tempwidthcount += 1
 
+        # Vertical Rock Wall
         ypos = 0
-        while tempheightcount < WIN_HEIGHT / BORDER_TILESIZE:
+        while tempheightcount < (WIN_HEIGHT / BORDER_TILESIZE)/2-1:
             Rock(self, 0, ypos, rock_img)
             Rock(self, WIN_HEIGHT-BORDER_TILESIZE, ypos, rock_img)
             ypos += BORDER_TILESIZE
             tempheightcount += 1
+        tempheightcount = 0
+        ypos_exit = ypos
+        # Gap in the Middle
+        ypos = ypos + BORDER_TILESIZE * 2
+        while tempheightcount < (WIN_HEIGHT / BORDER_TILESIZE) / 2 - 1:
+            Rock(self, 0, ypos, rock_img)
+            Rock(self, WIN_HEIGHT - BORDER_TILESIZE, ypos, rock_img)
+            ypos += BORDER_TILESIZE
+            tempheightcount += 1
+
+        if True: # Adds Rocks if East Exit is False
+            Rock(self, WIN_WIDTH - BORDER_TILESIZE, ypos_exit, rock_img)
+            Rock(self, WIN_WIDTH - BORDER_TILESIZE, ypos_exit+BORDER_TILESIZE, rock_img)
+        if True: # Adds Rocks if West Exit is False
+            Rock(self, 0, ypos_exit, rock_img)
+            Rock(self, 0, ypos_exit+BORDER_TILESIZE, rock_img)
+        if True: # Adds Rocks if North Exit is False
+            Rock(self, xpos_exit , 0, rock_img)
+            Rock(self, xpos_exit+BORDER_TILESIZE, 0, rock_img)
+        if True: # Adds Rocks if South Exit is False
+            Rock(self, xpos_exit, WIN_HEIGHT-BORDER_TILESIZE, rock_img)
+            Rock(self, xpos_exit+BORDER_TILESIZE, WIN_HEIGHT-BORDER_TILESIZE, rock_img)
+
 
 
     def new(self):
