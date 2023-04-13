@@ -61,7 +61,7 @@ class Character(pygame.sprite.Sprite):
         self.collision_rect.x += self.x_change
         self.collide_terrain('x')
         self.rect.y += self.y_change
-        self.collision_rect.y = self.rect.bottom
+        self.collision_rect.y = self.rect.bottom-10
         self.collide_terrain('y')
 
         self.x_change = 0
@@ -137,11 +137,11 @@ class Character(pygame.sprite.Sprite):
             for object in self.game.background_sprites:
                 collide = pygame.Rect.colliderect(self.collision_rect, object.collision_rect)
                 if collide:
-                    if self.y_change > 0:
-                        self.rect.bottom = object.collision_rect.y - self.collision_rect.height
-                        self.collision_rect.y = object.collision_rect.y - self.collision_rect.height
-                    if self.y_change < 0:
-                        self.rect.bottom = object.collision_rect.bottom
+                    if self.y_change > 0: # Moving Down
+                        self.rect.bottom = object.collision_rect.y
+                        self.collision_rect.y = self.rect.bottom-10
+                    if self.y_change < 0: # Moving Up
+                        self.rect.bottom = object.collision_rect.bottom+10
                         self.collision_rect.y = object.collision_rect.bottom
 
         # if direction == "x":

@@ -1,6 +1,6 @@
 # Window Settings
-WIN_WIDTH = 600
-WIN_HEIGHT = 600
+WIN_WIDTH = 640
+WIN_HEIGHT = 640
 WIN_BG = (17, 102, 24)
 
 # Colors
@@ -17,6 +17,7 @@ PLAYER_LAYER = TERRAIN_LAYER + 1
 
 # Sprite Settings
 CHARACTER_TILESIZE = 32
+BORDER_TILESIZE = 32
 
 
 # Player Settings
