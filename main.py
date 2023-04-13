@@ -1,3 +1,4 @@
+import random
 import sys
 import pygame
 from config import *
@@ -17,7 +18,8 @@ class Game:
 
     def createTilemap(self):
         tree_image = pygame.image.load('assets/tree.png')
-        self.testTree = Tree(self, 400, 300, tree_image)
+        for _ in range(10):
+            Tree(self, random.randint(0, WIN_WIDTH), random.randint(0, WIN_HEIGHT), tree_image)
 
     def new(self):
 
@@ -32,7 +34,7 @@ class Game:
         # self.enemy_sprites = pygame.sprite.LayeredUpdates()
         # self.attack_sprites = pygame.sprite.LayeredUpdates()
 
-        self.player = Character(self, 400, 400)
+        self.player = Character(self, WIN_WIDTH / 2, WIN_HEIGHT / 2)
 
         self.createTilemap()
 
@@ -49,8 +51,9 @@ class Game:
         self.screen.fill(WIN_BG)
         self.all_sprites.draw(self.screen)
 
-        # pygame.draw.rect(self.screen, BLACK, self.testTree.collision_rect)
-        # pygame.draw.rect(self.screen, WHITE, self.player.collision_rect)
+        for treeobject in self.background_sprites:
+            pygame.draw.rect(self.screen, BLACK, treeobject.collision_rect)
+        pygame.draw.rect(self.screen, WHITE, self.player.collision_rect)
 
         self.clock.tick(FPS)
         pygame.display.update()

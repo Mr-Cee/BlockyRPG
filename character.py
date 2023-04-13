@@ -28,7 +28,7 @@ class Character(pygame.sprite.Sprite):
         self.rect.x = self.x
         self.rect.y = self.y
 
-        self.collision_rect = pygame.Rect(self.x + 5, self.y, self.width - 10, self.height / 4)
+        self.collision_rect = pygame.Rect(self.x+5, self.y, self.width - 10, self.height / 4)
 
         self._layer = self.collision_rect.bottom
 
@@ -124,10 +124,11 @@ class Character(pygame.sprite.Sprite):
             for object in self.game.background_sprites:
                 collide = pygame.Rect.colliderect(self.collision_rect, object.collision_rect)
                 if collide:
-                    if self.x_change > 0:
+                    if self.x_change > 0: # Moving Right
                         self.rect.x = object.collision_rect.x - self.collision_rect.width
                         self.collision_rect.x = object.collision_rect.x - self.collision_rect.width
-                    if self.x_change < 0:
+                        #self.collision_rect.x = object.collision_rect.x - self.collision_rect.width
+                    if self.x_change < 0: # Moving Left
                         self.rect.x = object.collision_rect.right
                         self.collision_rect.x = object.collision_rect.right
 
