@@ -125,11 +125,12 @@ class Character(pygame.sprite.Sprite):
                 collide = pygame.Rect.colliderect(self.collision_rect, object.collision_rect)
                 if collide:
                     if self.x_change > 0: # Moving Right
-                        self.rect.x = object.collision_rect.x - self.collision_rect.width
-                        self.collision_rect.x = object.collision_rect.x - self.collision_rect.width
+                        self.rect.right = object.collision_rect.x+5
+                        #self.rect.x = object.collision_rect.x - self.collision_rect.width
+                        self.collision_rect.right = object.collision_rect.x
                         #self.collision_rect.x = object.collision_rect.x - self.collision_rect.width
                     if self.x_change < 0: # Moving Left
-                        self.rect.x = object.collision_rect.right
+                        self.rect.x = object.collision_rect.right-5
                         self.collision_rect.x = object.collision_rect.right
 
         if direction == 'y':
