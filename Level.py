@@ -43,15 +43,17 @@ class Level:
                 Rock(self, xpos, WIN_HEIGHT - BORDER_TILESIZE, self.rock_img)
                 xpos += BORDER_TILESIZE
                 tempwidthcount += 1
+                print(xpos)
             # Gap in the Middle
             xpos_exit = xpos
-            xpos = xpos + BORDER_TILESIZE * 2
+            xpos = xpos_exit + BORDER_TILESIZE * 2
             tempwidthcount = 0
             while tempwidthcount < (WIN_WIDTH / BORDER_TILESIZE) / 2 - 1:
                 Rock(self, xpos, 0, self.rock_img)
                 Rock(self, xpos, WIN_HEIGHT - BORDER_TILESIZE, self.rock_img)
                 xpos += BORDER_TILESIZE
                 tempwidthcount += 1
+                print(xpos)
 
             # Vertical Rock Wall
             ypos = 0
@@ -63,7 +65,7 @@ class Level:
             tempheightcount = 0
             ypos_exit = ypos
             # Gap in the Middle
-            ypos = ypos + BORDER_TILESIZE * 2
+            ypos = ypos_exit + BORDER_TILESIZE * 2
             while tempheightcount < (WIN_HEIGHT / BORDER_TILESIZE) / 2 - 1:
                 Rock(self, 0, ypos, self.rock_img)
                 Rock(self, WIN_HEIGHT - BORDER_TILESIZE, ypos, self.rock_img)
@@ -98,6 +100,7 @@ class Level:
         self.enemy_sprites.update()
         self.background_sprites.update()
 
+
     def draw(self, screen):
         # Draw everyone on this level
         self.screen = screen
@@ -123,11 +126,7 @@ class Level_01(Level):
         self.east_exit = True
         self.in_town = False
 
-        self.terrainGen()
-
-
-
-
+        Level.terrainGen(self)
 
 class Level_02(Level):
 
@@ -140,4 +139,8 @@ class Level_02(Level):
         self.east_exit = False
         self.in_town = False
 
-        self.terrainGen()
+        if game.current_level_no == 1:
+            self.terrainGen()
+
+
+

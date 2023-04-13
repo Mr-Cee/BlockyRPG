@@ -71,6 +71,7 @@ class Character(pygame.sprite.Sprite):
             self.game.current_level_no += 1
             self.game.current_level = self.game.level_list[self.game.current_level_no]
             self.game.level = self.game.current_level
+            print("Moved East\nLevel:", self.game.current_level_no)
 
 
     def movement(self):

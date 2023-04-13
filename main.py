@@ -15,6 +15,8 @@ class Game:
         self.running = True
         self.characterList = []
 
+        self.current_level_no = 0
+
         self.character_spritesheet = SpriteSheet('assets/CharacterSpritesheet.png')
 
         self.all_sprites = pygame.sprite.LayeredUpdates()
@@ -29,13 +31,10 @@ class Game:
         self.level_list = []
         self.level_list.append(Level_01(self, self.player))
         self.level_list.append(Level_02(self, self.player))
+        self.background_sprites.empty()
 
-        self.current_level_no = 0
         self.current_level = self.level_list[self.current_level_no]
         self.level = self.current_level
-
-
-
 
     def createTilemap(self):
         tree_image = pygame.image.load('assets/tree.png')
@@ -99,7 +98,7 @@ class Game:
     def new(self):
 
         self.playing = True
-        #self.createTilemap()
+        # self.createTilemap()
 
     def events(self):
         for event in pygame.event.get():
@@ -113,7 +112,7 @@ class Game:
 
     def draw(self):
         # self.screen.fill(WIN_BG)
-        # self.all_sprites.draw(self.screen)
+        self.all_sprites.draw(self.screen)
         self.current_level.draw(self.screen)
 
         # # Drawing Squares around objects for collisions
