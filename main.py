@@ -15,6 +15,8 @@ class Game:
         self.running = True
         self.characterList = []
 
+        self.font = pygame.font.Font('assets/BKANT.TTF', 10)
+
         self.character_spritesheet = SpriteSheet('assets/CharacterSpritesheet.png')
 
         self.all_sprites = pygame.sprite.LayeredUpdates()
@@ -25,6 +27,14 @@ class Game:
         self.attack_sprites = pygame.sprite.Group()
 
         self.player = Character(self, WIN_WIDTH / 2, WIN_HEIGHT / 2)
+        self.font = pygame.font.Font('assets/BKANT.TTF', 9)
+        self.HPtempText = str(round(self.player.hp/self.player.max_hp*100)) + '%'
+        self.HPText = self.font.render(self.HPtempText, True, BLACK, None)
+        self.HPTextRect = self.HPText.get_rect()
+        self.HPTextRect.center = self.player.hp_rect.center
+
+
+
         self.current_level_no = 0
         self.level_list = []
         # self.level_list.append()
@@ -45,8 +55,6 @@ class Game:
 
     def LevelChange(self, direction):
         self.leveldirection = direction
-
-
 
         if self.leveldirection == 'right':
             self.player.rect.x = BORDER_TILESIZE + 5
@@ -72,6 +80,25 @@ class Game:
             self.current_level_no -= 1
             self.current_level = self.level_list[self.current_level_no]
             self.level = self.current_level
+
+        for sprite in self.background_sprites:
+            sprite.kill()
+        if len(self.enemy_sprites) > 0:
+            for sprite in self.enemy_sprites:
+                sprite.kill()
+
+        self.current_level.GenerateEnemies()
+        self.current_level.terrainGen()
+
+    def DeathReset(self):
+        self.player.hp = self.player.max_hp
+        self.player.rect.x = WIN_WIDTH / 2
+        self.player.rect.y = WIN_HEIGHT / 2
+        self.player.collision_rect.x = self.player.rect.x + 5
+        self.player.collision_rect.y = self.player.rect.bottom - 10
+        self.current_level_no = 0
+        self.current_level = self.level_list[self.current_level_no]
+        self.level = self.current_level
 
         for sprite in self.background_sprites:
             sprite.kill()
@@ -155,12 +182,20 @@ class Game:
     def update(self):
         self.all_sprites.update()
         self.current_level.update()
+        self.HPText = self.font.render(self.HPtempText, True, BLACK, None)
+        self.HPTextRect.center = self.player.hp_rect.center
 
     def draw(self):
         # self.screen.fill(WIN_BG)
         # self.all_sprites.draw(self.screen)
         self.current_level.draw(self.screen)
 
+        pygame.draw.rect(self.screen, RED, self.player.hp_rect)
+        pygame.draw.rect(self.screen, GREEN,
+                         (self.player.hp_rect.x, self.player.hp_rect.y,
+                          ((self.player.hp / self.player.max_hp) * self.player.width), self.player.hp_rect.height))
+        self.screen.blit(self.HPText, self.HPTextRect)
+        self.screen.blit(self.player.XPText, self.player.XPTextRect)
         # # Drawing Squares around objects for collisions
         # for object in self.background_sprites:
         #     pygame.draw.rect(self.screen, BLACK, object.collision_rect)

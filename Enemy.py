@@ -67,7 +67,7 @@ class Wolf(pygame.sprite.Sprite):
         if self.rect.x > WIN_WIDTH or self.rect.x < 0 or self.rect.y < 0 or self.rect.y > WIN_HEIGHT:
             self.kill()
 
-        #self.game.all_sprites.change_layer(self, self.rect.bottom)
+
 
     def movement(self):
         if self.facing == 'left':
@@ -99,7 +99,7 @@ class Wolf(pygame.sprite.Sprite):
                 self.movement_loop = 0
                 self.max_travel = random.randint(10, 30)
 
-
+        # self.game.all_sprites.change_layer(self, self.rect.bottom)
 
 
 

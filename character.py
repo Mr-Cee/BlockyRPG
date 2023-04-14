@@ -1,3 +1,4 @@
+import pyautogui as pyautogui
 import pygame
 import math
 from config import *
@@ -7,6 +8,14 @@ from SpriteUtilities import *
 class Character(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
         self.game = game
+        self.max_hp = 100
+        self.hp = self.max_hp
+
+        self.playerLevel = 1
+        self.xp = 0
+        self.xp_to_level = 10
+        self.font = pygame.font.Font('assets/BKANT.TTF', 15)
+        self.XPText = self.font.render(str(self.playerLevel), True, BLACK, None)
 
         self.x = x
         self.y = y
@@ -24,6 +33,11 @@ class Character(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
+
+        self.hp_rect = pygame.Rect(self.x, self.y - 10, self.width, 10)
+
+        self.XPTextRect = self.XPText.get_rect()
+        self.XPTextRect.right = self.hp_rect.x - 5
 
         self.collision_rect = pygame.Rect(self.x + 5, self.y, self.width - 10, self.height / 4)
 
@@ -55,9 +69,15 @@ class Character(pygame.sprite.Sprite):
         self.rect.x += self.x_change
         self.collision_rect.x += self.x_change
         self.collide_terrain('x')
+
         self.rect.y += self.y_change
         self.collision_rect.y = self.rect.bottom - 10
         self.collide_terrain('y')
+
+        self.hp_rect.x = self.rect.x
+        self.hp_rect.y = self.rect.y - 10
+        self.XPTextRect.x = self.rect.x - 15
+        self.XPTextRect.y = self.rect.y - 15
 
         self.x_change = 0
         self.y_change = 0
@@ -72,6 +92,22 @@ class Character(pygame.sprite.Sprite):
             self.game.LevelChange('down')
         if current_pos_y < 0:
             self.game.LevelChange('up')
+
+        if self.xp >= self.xp_to_level:
+            tempxp = self.xp - self.xp_to_level
+            self.playerLevel += 1
+            self.xp = tempxp
+            self.xp_to_level *= 1.25
+            self.max_hp += 20
+            self.hp = self.max_hp
+            self.XPText = self.font.render(str(self.playerLevel), True, BLACK, None)
+            self.game.HPtempText = str(round(self.hp / self.max_hp * 100, 2)) + '%'
+            print('Level Up!:', self.playerLevel)
+
+        # Check for Death
+        if self.hp <= 0:
+            pyautogui.alert("You Have Died")
+            self.game.DeathReset()
 
     def movement(self):
         keys = pygame.key.get_pressed()
@@ -156,8 +192,11 @@ class Character(pygame.sprite.Sprite):
             collide = pygame.Rect.colliderect(self.collision_rect, object.rect)
             if collide:
                 print("ATTACK ENEMY")
-                # templist.append(object)
-        # if len(templist) > 0:
-        #     for item in templist:
-        #         item.kill()
-
+                self.hp -= 10
+                self.game.HPtempText = str(round(self.hp / self.max_hp * 100,2)) + '%'
+                self.xp += 5
+                print(str(round(self.hp / self.max_hp * 100, 2)) + '%')
+                templist.append(object)
+        if len(templist) > 0:
+            for item in templist:
+                item.kill()
