@@ -67,10 +67,14 @@ class Character(pygame.sprite.Sprite):
         current_pos_x = self.rect.x
         current_pos_y = self.rect.y
         if current_pos_x > WIN_WIDTH:
-            self.rect.x = BORDER_TILESIZE + 5
-            self.game.current_level_no += 1
-            self.game.current_level = self.game.level_list[self.game.current_level_no]
-            self.game.level = self.game.current_level
+            self.game.LevelChange('right')
+        if current_pos_x < 0:
+            self.game.LevelChange('left')
+        if current_pos_y > WIN_HEIGHT:
+            self.game.LevelChange('down')
+        if current_pos_y < 0:
+            self.game.LevelChange('up')
+
 
 
     def movement(self):

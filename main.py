@@ -25,15 +25,61 @@ class Game:
         self.attack_sprites = pygame.sprite.Group()
 
         self.player = Character(self, WIN_WIDTH / 2, WIN_HEIGHT / 2)
-
-        self.level_list = []
-        self.level_list.append(Level_01(self, self.player))
-        self.level_list.append(Level_02(self, self.player))
-
         self.current_level_no = 0
+        self.level_list = []
+        #self.level_list.append()
+        self.level_list.append(StartLevel(self, self.player))
+        self.level_list.append(Level_02(self, self.player))
+        self.level_list.append(Level_03(self, self.player))
+        self.level_list.append(Level_04(self, self.player))
         self.current_level = self.level_list[self.current_level_no]
+        self.current_level.terrainGen()
         self.level = self.current_level
 
+    def LevelChange(self, direction):
+        self.leveldirection = direction
+
+        if self.leveldirection == 'right':
+            self.player.rect.x = BORDER_TILESIZE + 5
+            self.player.collision_rect.x = self.player.rect.x + 5
+            self.current_level_no += 3
+            self.current_level = self.level_list[self.current_level_no]
+            self.level = self.current_level
+            for sprite in self.background_sprites:
+                sprite.kill()
+            self.current_level.terrainGen()
+        if self.leveldirection == 'left':
+            self.player.rect.x = WIN_WIDTH - BORDER_TILESIZE -5
+            self.player.collision_rect.x = self.player.rect.x + 5
+            self.current_level_no -= 3
+            self.current_level = self.level_list[self.current_level_no]
+            self.level = self.current_level
+            for sprite in self.background_sprites:
+                sprite.kill()
+            self.current_level.terrainGen()
+        if self.leveldirection == 'down':
+            self.player.rect.y = 0 + BORDER_TILESIZE + 5
+            self.player.collision_rect.y = self.player.rect.bottom-10
+            self.current_level_no += 1
+            self.current_level = self.level_list[self.current_level_no]
+            self.level = self.current_level
+            for sprite in self.background_sprites:
+                sprite.kill()
+            self.current_level.terrainGen()
+        if self.leveldirection == 'up':
+            self.player.rect.y = WIN_HEIGHT - BORDER_TILESIZE - 5
+            self.player.collision_rect.y = self.player.rect.bottom-10
+            self.current_level_no -= 1
+            self.current_level = self.level_list[self.current_level_no]
+            self.level = self.current_level
+            for sprite in self.background_sprites:
+                sprite.kill()
+            self.current_level.terrainGen()
+
+        print(self.current_level)
+
+    def AddLevel(self, direction):
+        self.direction = direction
 
 
 
@@ -99,7 +145,7 @@ class Game:
     def new(self):
 
         self.playing = True
-        #self.createTilemap()
+        # self.createTilemap()
 
     def events(self):
         for event in pygame.event.get():
@@ -110,6 +156,10 @@ class Game:
     def update(self):
         self.all_sprites.update()
         self.current_level.update()
+
+
+
+
 
     def draw(self):
         # self.screen.fill(WIN_BG)
