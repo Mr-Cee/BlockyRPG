@@ -44,3 +44,23 @@ class Rock(pygame.sprite.Sprite):
         self._layer = self.y + self.height
 
         pygame.sprite.Sprite.__init__(self, self.game.all_sprites, self.game.background_sprites)
+
+class Building(pygame.sprite.Sprite):
+    def __init__(self, game, x, y, image):
+        self.game = game
+
+        self.image = image
+        self.image.set_colorkey(WHITE)
+
+        self.x = x
+        self.y = y
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
+
+        # self.rect = self.image.get_rect()
+        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
+        self.collision_rect = self.rect
+
+        self._layer = self.y + self.height
+
+        pygame.sprite.Sprite.__init__(self, self.game.all_sprites, self.game.background_sprites)

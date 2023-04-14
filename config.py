@@ -6,9 +6,10 @@ WIN_BG = (17, 102, 24)
 # Colors
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
+RED = (255, 0, 0)
 
 # Clock/Tick Settings
-FPS = 60
+FPS = 30
 
 # Layer Settings
 TERRAIN_LAYER = 1
@@ -21,4 +22,8 @@ BORDER_TILESIZE = 32
 
 
 # Player Settings
-PLAYER_SPEED = 3
+PLAYER_SPEED = 10
+
+
+# Enemy Setttings
+ENEMY_SPEED = 1

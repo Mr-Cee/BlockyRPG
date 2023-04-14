@@ -25,13 +25,11 @@ class Character(pygame.sprite.Sprite):
         self.rect.x = self.x
         self.rect.y = self.y
 
-        self.collision_rect = pygame.Rect(self.x+5, self.y, self.width - 10, self.height / 4)
+        self.collision_rect = pygame.Rect(self.x + 5, self.y, self.width - 10, self.height / 4)
 
         self._layer = self.collision_rect.bottom
 
         pygame.sprite.Sprite.__init__(self, self.game.all_sprites, self.game.player_sprite)
-
-        self.mask = pygame.mask.from_surface(self.image)
 
         self.down_animations = [self.game.character_spritesheet.get_sprite(0, 0, self.width, self.height),
                                 self.game.character_spritesheet.get_sprite(32, 0, self.width, self.height),
@@ -58,7 +56,7 @@ class Character(pygame.sprite.Sprite):
         self.collision_rect.x += self.x_change
         self.collide_terrain('x')
         self.rect.y += self.y_change
-        self.collision_rect.y = self.rect.bottom-10
+        self.collision_rect.y = self.rect.bottom - 10
         self.collide_terrain('y')
 
         self.x_change = 0
@@ -74,8 +72,6 @@ class Character(pygame.sprite.Sprite):
             self.game.LevelChange('down')
         if current_pos_y < 0:
             self.game.LevelChange('up')
-
-
 
     def movement(self):
         keys = pygame.key.get_pressed()
@@ -134,25 +130,34 @@ class Character(pygame.sprite.Sprite):
             for object in self.game.background_sprites:
                 collide = pygame.Rect.colliderect(self.collision_rect, object.collision_rect)
                 if collide:
-                    if self.x_change > 0: # Moving Right
-                        self.rect.right = object.collision_rect.x+5
-                        #self.rect.x = object.collision_rect.x - self.collision_rect.width
+                    if self.x_change > 0:  # Moving Right
+                        self.rect.right = object.collision_rect.x + 5
+                        # self.rect.x = object.collision_rect.x - self.collision_rect.width
                         self.collision_rect.right = object.collision_rect.x
-                        #self.collision_rect.x = object.collision_rect.x - self.collision_rect.width
-                    if self.x_change < 0: # Moving Left
-                        self.rect.x = object.collision_rect.right-5
+                        # self.collision_rect.x = object.collision_rect.x - self.collision_rect.width
+                    if self.x_change < 0:  # Moving Left
+                        self.rect.x = object.collision_rect.right - 5
                         self.collision_rect.x = object.collision_rect.right
 
         if direction == 'y':
             for object in self.game.background_sprites:
                 collide = pygame.Rect.colliderect(self.collision_rect, object.collision_rect)
                 if collide:
-                    if self.y_change > 0: # Moving Down
+                    if self.y_change > 0:  # Moving Down
                         self.rect.bottom = object.collision_rect.y
-                        self.collision_rect.y = self.rect.bottom-10
-                    if self.y_change < 0: # Moving Up
-                        self.rect.bottom = object.collision_rect.bottom+10
+                        self.collision_rect.y = self.rect.bottom - 10
+                    if self.y_change < 0:  # Moving Up
+                        self.rect.bottom = object.collision_rect.bottom + 10
                         self.collision_rect.y = object.collision_rect.bottom
 
     def collide_enemy(self):
-        pass
+        templist = []
+        for object in self.game.enemy_sprites:
+            collide = pygame.Rect.colliderect(self.collision_rect, object.rect)
+            if collide:
+                print("ATTACK ENEMY")
+                # templist.append(object)
+        # if len(templist) > 0:
+        #     for item in templist:
+        #         item.kill()
+
