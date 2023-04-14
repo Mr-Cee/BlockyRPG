@@ -28,6 +28,7 @@ class Game:
 
         self.player = Character(self, WIN_WIDTH / 2, WIN_HEIGHT / 2)
         self.font = pygame.font.Font('assets/BKANT.TTF', 9)
+        # HP Health Bar and Text
         self.HPtempText = str(round(self.player.hp/self.player.max_hp*100)) + '%'
         self.HPText = self.font.render(self.HPtempText, True, BLACK, None)
         self.HPTextRect = self.HPText.get_rect()

@@ -36,6 +36,7 @@ class Character(pygame.sprite.Sprite):
 
         self.hp_rect = pygame.Rect(self.x, self.y - 10, self.width, 10)
 
+        # Character Level Text
         self.XPTextRect = self.XPText.get_rect()
         self.XPTextRect.right = self.hp_rect.x - 5
 

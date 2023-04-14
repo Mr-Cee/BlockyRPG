@@ -158,7 +158,6 @@ class Wolf(pygame.sprite.Sprite):
                         self.facing = 'right'
                         self.movement_loop = 0
                         self.max_travel = random.randint(10, 30)
-                    print('New Direction:', self.facing)
 
         if direction == 'y':
             for object in self.game.background_sprites:

@@ -15,6 +15,7 @@ class SpriteSheet:
 class SpriteSheet_Black:
     def __init__(self, file):
         self.sheet = pygame.image.load(file).convert()
+        #
 
     def get_sprite(self, x, y, width, height):
         sprite = pygame.Surface([width, height])

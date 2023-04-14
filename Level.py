@@ -238,7 +238,6 @@ class NewLevel:
 #  [LEVEL 3]        [LEVEL 6]       [LEVEL 9]
 #
 #
-#
 
 class StartLevel(Level):
 
