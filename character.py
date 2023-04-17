@@ -12,10 +12,15 @@ class Character(pygame.sprite.Sprite):
         self.hp = self.max_hp
 
         self.playerLevel = 1
-        self.xp = 0
-        self.xp_to_level = 10
-        self.font = pygame.font.Font('assets/BKANT.TTF', 15)
+        self.exp = 5
+        self.exp_to_level = 10
+        self.font = pygame.font.Font('assets/BKANT.TTF', 40)
         self.XPText = self.font.render(str(self.playerLevel), True, BLACK, None)
+        self.font = pygame.font.Font('assets/BKANT.TTF', 20)
+        self.HPBarText = str(self.hp) + "/" + str(self.max_hp)
+        self.HPText = self.font.render(str(self.HPBarText), True, BLACK, None)
+        self.HPBarTextRect = self.HPText.get_rect()
+        self.HPBarTextRect.center = (273, WIN_HEIGHT+36)
 
         self.x = x
         self.y = y
@@ -38,7 +43,7 @@ class Character(pygame.sprite.Sprite):
 
         # Character Level Text
         self.XPTextRect = self.XPText.get_rect()
-        self.XPTextRect.right = self.hp_rect.x - 5
+        self.XPTextRect.center = (78, WIN_HEIGHT + 79)
 
         self.collision_rect = pygame.Rect(self.x + 5, self.y, self.width - 10, self.height / 4)
 
@@ -77,8 +82,6 @@ class Character(pygame.sprite.Sprite):
 
         self.hp_rect.x = self.rect.x
         self.hp_rect.y = self.rect.y - 10
-        self.XPTextRect.x = self.rect.x - 15
-        self.XPTextRect.y = self.rect.y - 15
 
         self.x_change = 0
         self.y_change = 0
@@ -94,21 +97,24 @@ class Character(pygame.sprite.Sprite):
         if current_pos_y < 0:
             self.game.LevelChange('up')
 
-        if self.xp >= self.xp_to_level:
-            tempxp = self.xp - self.xp_to_level
+        self.font = pygame.font.Font('assets/BKANT.TTF', 20)
+        self.HPBarText = str(self.hp), "/", str(self.max_hp)
+
+        if self.exp >= self.exp_to_level:
+            tempxp = self.exp - self.exp_to_level
             self.playerLevel += 1
-            self.xp = tempxp
-            self.xp_to_level *= 1.25
+            self.exp = tempxp
+            self.exp_to_level *= 2
             self.max_hp += 20
             self.hp = self.max_hp
+            self.font = pygame.font.Font('assets/BKANT.TTF', 40)
             self.XPText = self.font.render(str(self.playerLevel), True, BLACK, None)
-            self.game.HPtempText = str(round(self.hp / self.max_hp * 100, 2)) + '%'
-            print('Level Up!:', self.playerLevel)
 
         # Check for Death
         if self.hp <= 0:
             pyautogui.alert("You Have Died")
             self.game.DeathReset()
+            # pass
 
     def movement(self):
         keys = pygame.key.get_pressed()
@@ -192,11 +198,9 @@ class Character(pygame.sprite.Sprite):
         for object in self.game.enemy_sprites:
             collide = pygame.Rect.colliderect(self.collision_rect, object.rect)
             if collide:
-                print("ATTACK ENEMY")
                 self.hp -= 10
-                self.game.HPtempText = str(round(self.hp / self.max_hp * 100,2)) + '%'
-                self.xp += 5
-                print(str(round(self.hp / self.max_hp * 100, 2)) + '%')
+                self.game.HPtempText = str(round(self.hp / self.max_hp * 100, 2)) + '%'
+                self.exp += 5
                 templist.append(object)
         if len(templist) > 0:
             for item in templist:

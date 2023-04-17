@@ -20,6 +20,8 @@ class Game:
 
         self.character_spritesheet = SpriteSheet('assets/CharacterSpritesheet.png')
         self.BottomPanel_IMG = pygame.image.load('assets/BottomUI.png')
+        self.hpbar_empty_img = pygame.image.load('assets/EmptyHPBar.png')
+        self.hpbar_inside_img = pygame.image.load('assets/HPBarInside.png')
 
         self.all_sprites = pygame.sprite.LayeredUpdates()
         self.player_sprite = pygame.sprite.Group()
@@ -31,15 +33,6 @@ class Game:
 
         self.player = Character(self, WIN_WIDTH / 2, WIN_HEIGHT / 2)
         self.font = pygame.font.Font('assets/BKANT.TTF', 9)
-        # HP Health Bar and Text
-        self.HPtempText = str(round(self.player.hp/self.player.max_hp*100)) + '%'
-        self.HPText = self.font.render(self.HPtempText, True, BLACK, None)
-        self.HPTextRect = self.HPText.get_rect()
-        self.HPTextRect.center = self.player.hp_rect.center
-
-
-
-
 
         self.current_level_no = 0
         self.level_list = []
@@ -57,8 +50,9 @@ class Game:
         self.current_level.terrainGen()
         self.current_level.GenerateEnemies()
 
-
         self.level = self.current_level
+
+
 
     def LevelChange(self, direction):
         self.leveldirection = direction
@@ -117,7 +111,22 @@ class Game:
         self.current_level.terrainGen()
 
     def UIBuild(self):
-        UIPanel(self, 0, WIN_HEIGHT, self.BottomPanel_IMG)
+        UIPanel(self, 0, WIN_HEIGHT, self.BottomPanel_IMG)  # Background Panel
+        HUDMAIN(self, 10, WIN_HEIGHT + 10)  # HP/MP/XP HUD BARS
+        self.RedHPBar = HPBarInterior(self, 193, WIN_HEIGHT + 22)  # HP RED BAR
+        self.EXPYellowBar = pygame.image.load('assets/XPBarInside.png')
+
+    # def scale_bar(self, pic, width):  ## Not Used Anymore
+    #     size = pic.get_size()
+    #     print(width)
+    #     margin = 4
+    #     middel_parat = pic.subsurface(pygame.Rect(margin, 0, size[0] - margin * 2, size[1]))
+    #     scaled_image = pygame.Surface((width, size[1]))
+    #     scaled_image.blit(pic, (0, 0), (0, 0, margin, size[1]))
+    #     scaled_image.blit(pygame.transform.smoothscale(middel_parat, (width - margin * 2, size[1])), (margin, 0))
+    #     scaled_image.blit(pic, (width - margin, 0), (size[0] - margin, 0, margin, size[1]))
+    #
+    #     return scaled_image
 
     def new(self):
 
@@ -129,24 +138,21 @@ class Game:
             if event.type == pygame.QUIT:
                 self.playing = False
                 self.running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    self.player.exp += 1
+                if event.key == pygame.K_b:
+                    self.player.exp -= 1
 
     def update(self):
         self.all_sprites.update()
         self.current_level.update()
-        self.HPText = self.font.render(self.HPtempText, True, BLACK, None)
-        self.HPTextRect.center = self.player.hp_rect.center
 
     def draw(self):
-        # self.screen.fill(WIN_BG)
-        # self.all_sprites.draw(self.screen)
         self.current_level.draw(self.screen)
-
-        pygame.draw.rect(self.screen, RED, self.player.hp_rect)
-        pygame.draw.rect(self.screen, GREEN,
-                         (self.player.hp_rect.x, self.player.hp_rect.y,
-                          ((self.player.hp / self.player.max_hp) * self.player.width), self.player.hp_rect.height))
-        self.screen.blit(self.HPText, self.HPTextRect)
         self.screen.blit(self.player.XPText, self.player.XPTextRect)
+        self.screen.blit(pygame.transform.scale(self.EXPYellowBar, (((self.player.exp / self.player.exp_to_level) * 164), 28)), (193, WIN_HEIGHT+109))
+        self.screen.blit(self.player.HPText, self.player.HPBarTextRect)
 
         # # Drawing Squares around objects for collisions
         # for object in self.background_sprites:
