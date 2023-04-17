@@ -40,7 +40,7 @@ class Level:
 
     def terrainGen(self):
         # Adding Trees and Rocks while not in town
-
+        print('Start Terrain Gen')
         # Horizontal Rock Walls
         tempwidthcount = 0
         tempheightcount = 0
@@ -64,7 +64,7 @@ class Level:
         ypos = 0
         while tempheightcount < (WIN_HEIGHT / BORDER_TILESIZE) / 2 - 1:
             Rock(self, 0, ypos, self.rock_img)
-            Rock(self, WIN_HEIGHT - BORDER_TILESIZE, ypos, self.rock_img)
+            Rock(self, WIN_WIDTH - BORDER_TILESIZE, ypos, self.rock_img)
             ypos += BORDER_TILESIZE
             tempheightcount += 1
         tempheightcount = 0
@@ -73,9 +73,10 @@ class Level:
         ypos = ypos + BORDER_TILESIZE * 2
         while tempheightcount < (WIN_HEIGHT / BORDER_TILESIZE) / 2 - 1:
             Rock(self, 0, ypos, self.rock_img)
-            Rock(self, WIN_HEIGHT - BORDER_TILESIZE, ypos, self.rock_img)
+            Rock(self, WIN_WIDTH - BORDER_TILESIZE, ypos, self.rock_img)
             ypos += BORDER_TILESIZE
             tempheightcount += 1
+
 
         if not self.east_exit:  # Adds Rocks if East Exit is False
             Rock(self, WIN_WIDTH - BORDER_TILESIZE, ypos_exit, self.rock_img)
@@ -93,7 +94,7 @@ class Level:
         if self.in_town:
             Building(self, 25, 25, self.building1)
         else:
-            for _ in range(int(WIN_WIDTH / BORDER_TILESIZE)):
+            for _ in range(random.randint(10, int(WIN_WIDTH / (BORDER_TILESIZE*2)))):
                 Tree(self, random.randint(BORDER_TILESIZE * 2, WIN_WIDTH - BORDER_TILESIZE * 2),
                      random.randint(BORDER_TILESIZE * 2,
                                     WIN_HEIGHT - (BORDER_TILESIZE * 2) - self.tree_image.get_height() / 2),
@@ -152,58 +153,62 @@ class NewLevel:
 
     def terrainGen(self):
         # Adding Trees and Rocks while not in town
+
+        # Horizontal Rock Walls
+        tempwidthcount = 0
+        tempheightcount = 0
+        xpos = 0
+        while tempwidthcount < (WIN_HEIGHT / BORDER_TILESIZE) / 2 - 1:
+            Rock(self, xpos, 0, self.rock_img)
+            Rock(self, xpos, WIN_HEIGHT - BORDER_TILESIZE, self.rock_img)
+            xpos += BORDER_TILESIZE
+            tempwidthcount += 1
+        # Gap in the Middle
+        xpos_exit = xpos
+        xpos = xpos + BORDER_TILESIZE * 2
+        tempwidthcount = 0
+        while tempwidthcount < (WIN_HEIGHT / BORDER_TILESIZE) / 2 - 1:
+            Rock(self, xpos, 0, self.rock_img)
+            Rock(self, xpos, WIN_HEIGHT - BORDER_TILESIZE, self.rock_img)
+            xpos += BORDER_TILESIZE
+            tempwidthcount += 1
+
+        # Vertical Rock Wall
+        ypos = 0
+        while tempheightcount < (WIN_WIDTH / BORDER_TILESIZE) / 2 - 1:
+            Rock(self, 0, ypos, self.rock_img)
+            Rock(self, WIN_WIDTH - BORDER_TILESIZE, ypos, self.rock_img)
+            ypos += BORDER_TILESIZE
+            tempheightcount += 1
+            print(ypos)
+        tempheightcount = 0
+        ypos_exit = ypos
+        # Gap in the Middle
+        ypos = ypos + BORDER_TILESIZE * 2
+        while tempheightcount < (WIN_WIDTH / BORDER_TILESIZE) / 2 - 1:
+            Rock(self, 0, ypos, self.rock_img)
+            Rock(self, WIN_WIDTH - BORDER_TILESIZE, ypos, self.rock_img)
+            ypos += BORDER_TILESIZE
+            tempheightcount += 1
+
+
+
+        if not self.east_exit:  # Adds Rocks if East Exit is False
+            Rock(self, WIN_WIDTH - BORDER_TILESIZE, ypos_exit, self.rock_img)
+            Rock(self, WIN_WIDTH - BORDER_TILESIZE, ypos_exit + BORDER_TILESIZE, self.rock_img)
+            print('place rocks in east')
+            print(self.east_exit)
+        if not self.west_exit:  # Adds Rocks if West Exit is False
+            Rock(self, 0, ypos_exit, self.rock_img)
+            Rock(self, 0, ypos_exit + BORDER_TILESIZE, self.rock_img)
+        if not self.north_exit:  # Adds Rocks if North Exit is False
+            Rock(self, xpos_exit, 0, self.rock_img)
+            Rock(self, xpos_exit + BORDER_TILESIZE, 0, self.rock_img)
+        if not self.south_exit:  # Adds Rocks if South Exit is False
+            Rock(self, xpos_exit, WIN_HEIGHT - BORDER_TILESIZE, self.rock_img)
+            Rock(self, xpos_exit + BORDER_TILESIZE, WIN_HEIGHT - BORDER_TILESIZE, self.rock_img)
+
         if not self.in_town:
-            # Horizontal Rock Walls
-            tempwidthcount = 0
-            tempheightcount = 0
-            xpos = 0
-            while tempwidthcount < (WIN_WIDTH / BORDER_TILESIZE) / 2 - 1:
-                Rock(self, xpos, 0, self.rock_img)
-                Rock(self, xpos, WIN_HEIGHT - BORDER_TILESIZE, self.rock_img)
-                xpos += BORDER_TILESIZE
-                tempwidthcount += 1
-            # Gap in the Middle
-            xpos_exit = xpos
-            xpos = xpos + BORDER_TILESIZE * 2
-            tempwidthcount = 0
-            while tempwidthcount < (WIN_WIDTH / BORDER_TILESIZE) / 2 - 1:
-                Rock(self, xpos, 0, self.rock_img)
-                Rock(self, xpos, WIN_HEIGHT - BORDER_TILESIZE, self.rock_img)
-                xpos += BORDER_TILESIZE
-                tempwidthcount += 1
-
-            # Vertical Rock Wall
-            ypos = 0
-            while tempheightcount < (WIN_HEIGHT / BORDER_TILESIZE) / 2 - 1:
-                Rock(self, 0, ypos, self.rock_img)
-                Rock(self, WIN_HEIGHT - BORDER_TILESIZE, ypos, self.rock_img)
-                ypos += BORDER_TILESIZE
-                tempheightcount += 1
-            tempheightcount = 0
-            ypos_exit = ypos
-            # Gap in the Middle
-            ypos = ypos + BORDER_TILESIZE * 2
-            while tempheightcount < (WIN_HEIGHT / BORDER_TILESIZE) / 2 - 1:
-                Rock(self, 0, ypos, self.rock_img)
-                Rock(self, WIN_HEIGHT - BORDER_TILESIZE, ypos, self.rock_img)
-                ypos += BORDER_TILESIZE
-                tempheightcount += 1
-
-            if not self.east_exit:  # Adds Rocks if East Exit is False
-                Rock(self, WIN_WIDTH - BORDER_TILESIZE, ypos_exit, self.rock_img)
-                Rock(self, WIN_WIDTH - BORDER_TILESIZE, ypos_exit + BORDER_TILESIZE, self.rock_img)
-                print('place rocks in east')
-                print(self.east_exit)
-            if not self.west_exit:  # Adds Rocks if West Exit is False
-                Rock(self, 0, ypos_exit, self.rock_img)
-                Rock(self, 0, ypos_exit + BORDER_TILESIZE, self.rock_img)
-            if not self.north_exit:  # Adds Rocks if North Exit is False
-                Rock(self, xpos_exit, 0, self.rock_img)
-                Rock(self, xpos_exit + BORDER_TILESIZE, 0, self.rock_img)
-            if not self.south_exit:  # Adds Rocks if South Exit is False
-                Rock(self, xpos_exit, WIN_HEIGHT - BORDER_TILESIZE, self.rock_img)
-                Rock(self, xpos_exit + BORDER_TILESIZE, WIN_HEIGHT - BORDER_TILESIZE, self.rock_img)
-
             for _ in range(int(WIN_WIDTH / BORDER_TILESIZE)):
                 Tree(self, random.randint(BORDER_TILESIZE * 2, WIN_WIDTH - BORDER_TILESIZE * 2),
                      random.randint(BORDER_TILESIZE * 2,

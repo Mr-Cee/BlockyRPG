@@ -5,12 +5,13 @@ from config import *
 from character import *
 from terrain import *
 from Level import *
+from UI import *
 
 
 class Game:
     def __init__(self):
         pygame.init()
-        self.screen = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
+        self.screen = pygame.display.set_mode((WIN_WIDTH, GAME_HEIGHT))
         self.clock = pygame.time.Clock()
         self.running = True
         self.characterList = []
@@ -18,6 +19,7 @@ class Game:
         self.font = pygame.font.Font('assets/BKANT.TTF', 10)
 
         self.character_spritesheet = SpriteSheet('assets/CharacterSpritesheet.png')
+        self.BottomPanel_IMG = pygame.image.load('assets/BottomUI.png')
 
         self.all_sprites = pygame.sprite.LayeredUpdates()
         self.player_sprite = pygame.sprite.Group()
@@ -25,6 +27,7 @@ class Game:
         self.background_sprites = pygame.sprite.Group()
         self.enemy_sprites = pygame.sprite.Group()
         self.attack_sprites = pygame.sprite.Group()
+        self.UI_Sprites = pygame.sprite.Group()
 
         self.player = Character(self, WIN_WIDTH / 2, WIN_HEIGHT / 2)
         self.font = pygame.font.Font('assets/BKANT.TTF', 9)
@@ -33,6 +36,8 @@ class Game:
         self.HPText = self.font.render(self.HPtempText, True, BLACK, None)
         self.HPTextRect = self.HPText.get_rect()
         self.HPTextRect.center = self.player.hp_rect.center
+
+
 
 
 
@@ -51,6 +56,7 @@ class Game:
         self.current_level = self.level_list[self.current_level_no]
         self.current_level.terrainGen()
         self.current_level.GenerateEnemies()
+
 
         self.level = self.current_level
 
@@ -110,69 +116,13 @@ class Game:
         self.current_level.GenerateEnemies()
         self.current_level.terrainGen()
 
-    def createTilemap(self):
-        tree_image = pygame.image.load('assets/tree.png')
-        rock_img = pygame.image.load('assets/large_rock.png')
-        for _ in range(int(WIN_WIDTH / BORDER_TILESIZE)):
-            Tree(self, random.randint(BORDER_TILESIZE * 2, WIN_WIDTH - BORDER_TILESIZE * 2),
-                 random.randint(BORDER_TILESIZE * 2, WIN_HEIGHT - (BORDER_TILESIZE * 2) - tree_image.get_height() / 2),
-                 tree_image)
-            Rock(self, random.randint(BORDER_TILESIZE * 2, WIN_WIDTH - BORDER_TILESIZE * 2),
-                 random.randint(BORDER_TILESIZE * 2, WIN_HEIGHT - BORDER_TILESIZE * 2), rock_img)
-
-        # Horizontal Rock Walls
-        tempwidthcount = 0
-        tempheightcount = 0
-        xpos = 0
-        while tempwidthcount < (WIN_WIDTH / BORDER_TILESIZE) / 2 - 1:
-            Rock(self, xpos, 0, rock_img)
-            Rock(self, xpos, WIN_HEIGHT - BORDER_TILESIZE, rock_img)
-            xpos += BORDER_TILESIZE
-            tempwidthcount += 1
-        # Gap in the Middle
-        xpos_exit = xpos
-        xpos = xpos + BORDER_TILESIZE * 2
-        tempwidthcount = 0
-        while tempwidthcount < (WIN_WIDTH / BORDER_TILESIZE) / 2 - 1:
-            Rock(self, xpos, 0, rock_img)
-            Rock(self, xpos, WIN_HEIGHT - BORDER_TILESIZE, rock_img)
-            xpos += BORDER_TILESIZE
-            tempwidthcount += 1
-
-        # Vertical Rock Wall
-        ypos = 0
-        while tempheightcount < (WIN_HEIGHT / BORDER_TILESIZE) / 2 - 1:
-            Rock(self, 0, ypos, rock_img)
-            Rock(self, WIN_HEIGHT - BORDER_TILESIZE, ypos, rock_img)
-            ypos += BORDER_TILESIZE
-            tempheightcount += 1
-        tempheightcount = 0
-        ypos_exit = ypos
-        # Gap in the Middle
-        ypos = ypos + BORDER_TILESIZE * 2
-        while tempheightcount < (WIN_HEIGHT / BORDER_TILESIZE) / 2 - 1:
-            Rock(self, 0, ypos, rock_img)
-            Rock(self, WIN_HEIGHT - BORDER_TILESIZE, ypos, rock_img)
-            ypos += BORDER_TILESIZE
-            tempheightcount += 1
-
-        if True:  # Adds Rocks if East Exit is False
-            Rock(self, WIN_WIDTH - BORDER_TILESIZE, ypos_exit, rock_img)
-            Rock(self, WIN_WIDTH - BORDER_TILESIZE, ypos_exit + BORDER_TILESIZE, rock_img)
-        if True:  # Adds Rocks if West Exit is False
-            Rock(self, 0, ypos_exit, rock_img)
-            Rock(self, 0, ypos_exit + BORDER_TILESIZE, rock_img)
-        if True:  # Adds Rocks if North Exit is False
-            Rock(self, xpos_exit, 0, rock_img)
-            Rock(self, xpos_exit + BORDER_TILESIZE, 0, rock_img)
-        if True:  # Adds Rocks if South Exit is False
-            Rock(self, xpos_exit, WIN_HEIGHT - BORDER_TILESIZE, rock_img)
-            Rock(self, xpos_exit + BORDER_TILESIZE, WIN_HEIGHT - BORDER_TILESIZE, rock_img)
+    def UIBuild(self):
+        UIPanel(self, 0, WIN_HEIGHT, self.BottomPanel_IMG)
 
     def new(self):
 
         self.playing = True
-        # self.createTilemap()
+        self.UIBuild()
 
     def events(self):
         for event in pygame.event.get():
@@ -197,6 +147,7 @@ class Game:
                           ((self.player.hp / self.player.max_hp) * self.player.width), self.player.hp_rect.height))
         self.screen.blit(self.HPText, self.HPTextRect)
         self.screen.blit(self.player.XPText, self.player.XPTextRect)
+
         # # Drawing Squares around objects for collisions
         # for object in self.background_sprites:
         #     pygame.draw.rect(self.screen, BLACK, object.collision_rect)

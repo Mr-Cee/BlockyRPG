@@ -109,7 +109,7 @@ class Wolf(pygame.sprite.Sprite):
                 self.image = self.game.wolf_spritesheet.get_sprite(0, 0, self.width, self.height)
             else:
                 self.image = self.down_animations[math.floor(self.animation_loop)]
-                self.animation_loop += 0.1
+                self.animation_loop += 0.05
                 if self.animation_loop >= 3:
                     self.animation_loop = 0
         if self.facing == 'up':
