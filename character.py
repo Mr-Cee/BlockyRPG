@@ -20,7 +20,7 @@ class Character(pygame.sprite.Sprite):
         self.HPBarText = str(self.hp) + "/" + str(self.max_hp)
         self.HPText = self.font.render(str(self.HPBarText), True, BLACK, None)
         self.HPBarTextRect = self.HPText.get_rect()
-        self.HPBarTextRect.center = (273, WIN_HEIGHT+36)
+        self.HPBarTextRect.center = (273, WIN_HEIGHT + 36)
 
         self.x = x
         self.y = y
@@ -97,19 +97,22 @@ class Character(pygame.sprite.Sprite):
         if current_pos_y < 0:
             self.game.LevelChange('up')
 
-        self.font = pygame.font.Font('assets/BKANT.TTF', 20)
-        self.HPBarText = str(self.hp), "/", str(self.max_hp)
-
+    def checkForLevelUp(self):
         if self.exp >= self.exp_to_level:
             tempxp = self.exp - self.exp_to_level
             self.playerLevel += 1
             self.exp = tempxp
             self.exp_to_level *= 2
-            self.max_hp += 20
-            self.hp = self.max_hp
             self.font = pygame.font.Font('assets/BKANT.TTF', 40)
             self.XPText = self.font.render(str(self.playerLevel), True, BLACK, None)
 
+            self.max_hp += 20
+            self.hp = self.max_hp
+            self.font = pygame.font.Font('assets/BKANT.TTF', 20)
+            self.HPBarText = str(self.hp) + "/" + str(self.max_hp)
+            self.HPText = self.font.render(str(self.HPBarText), True, BLACK, None)
+
+    def checkForDeath(self):
         # Check for Death
         if self.hp <= 0:
             pyautogui.alert("You Have Died")
@@ -198,10 +201,20 @@ class Character(pygame.sprite.Sprite):
         for object in self.game.enemy_sprites:
             collide = pygame.Rect.colliderect(self.collision_rect, object.rect)
             if collide:
-                self.hp -= 10
-                self.game.HPtempText = str(round(self.hp / self.max_hp * 100, 2)) + '%'
-                self.exp += 5
+                self.changeHealth(-10)
+                self.changeEXP(3)
                 templist.append(object)
         if len(templist) > 0:
             for item in templist:
                 item.kill()
+
+    def changeHealth(self, hpAmount):
+        self.hp += hpAmount
+        self.font = pygame.font.Font('assets/BKANT.TTF', 20)
+        self.HPBarText = str(self.hp) + "/" + str(self.max_hp)
+        self.HPText = self.font.render(str(self.HPBarText), True, BLACK, None)
+        self.checkForDeath()
+
+    def changeEXP(self, expAmount):
+        self.exp += expAmount
+        self.checkForLevelUp()
