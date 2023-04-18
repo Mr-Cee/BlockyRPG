@@ -8,6 +8,7 @@ from SpriteUtilities import *
 class Character(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
         self.game = game
+        self.screen = self.game.screen
         self.max_hp = 100
         self.hp = self.max_hp
 
@@ -112,12 +113,16 @@ class Character(pygame.sprite.Sprite):
 
         if self.tempAttackPause > 0:
             self.tempAttackPause -= 1
+            self.AttackChoice = True
             if self.tempAttackPause == 0:
                 self.Loot()
+
+
 
     def Loot(self):
         self.game.RemoveAttackLevel()
         self.isAttackable = True
+        self.AttackChoice = False
         self.rect.x, self.rect.y = self.pos
         self.collision_rect.x = self.rect.x + 5
         self.collision_rect.y = self.rect.bottom - 10

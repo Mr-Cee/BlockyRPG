@@ -151,6 +151,8 @@ class Level:
             self.screen.blit(self.attackBackground, (0, 0))
             self.combat_enemy_sprites.draw(self.screen)
             self.combat_background_sprites.draw(self.screen)
+            if self.game.player.AttackChoice:
+                pygame.draw.rect(self.screen, TEMPCOLOR, ((WIN_WIDTH / 10 * 4), (WIN_HEIGHT / 10 * 4), WIN_WIDTH/10*2, WIN_HEIGHT/10*3))
         else:
             # Draw the Background
             self.screen.blit(self.background, (0, 0))

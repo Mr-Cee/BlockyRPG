@@ -166,6 +166,7 @@ class Game:
         if not self.player.isAttackable:
             self.screen.blit(WIN_Attack_BG, (0,0))
 
+
         self.current_level.draw(self.screen)
 
         self.screen.blit(self.player.LevelText, self.player.LevelTextRect)
