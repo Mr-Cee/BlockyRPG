@@ -80,6 +80,29 @@ class Character(pygame.sprite.Sprite):
         #                          self.game.character_spritesheet.get_sprite(35, 66, self.width, self.height),
         #                          self.game.character_spritesheet.get_sprite(68, 66, self.width, self.height)]
 
+    def text_objects(self, text, font):
+        textSurface = font.render(text, True, BLACK)
+        return textSurface, textSurface.get_rect()
+
+    def button(self, msg, x, y, width, height, inactiveColor, activeColor, action=None):
+        self.screen = self.game.screen
+        mouse = pygame.mouse.get_pos()
+        click = pygame.mouse.get_pressed()
+        print(click)
+
+        if x + width > mouse[0] > x and y + height > mouse[1] > y:
+            pygame.draw.rect(self.screen, activeColor, (x, y, width, height))
+
+            if click[0] == 1 and action != None:
+                action()
+        else:
+            pygame.draw.rect(self.screen, inactiveColor, (x, y, width, height))
+
+        smallText = pygame.font.SysFont("comicsansms", 20)
+        textSurf, textRect = self.text_objects(msg, smallText)
+        textRect.center = ((x + (width / 2)), (y + (height / 2)))
+        self.screen.blit(textSurf, textRect)
+
 
     def update(self):
         self.movement()
@@ -111,12 +134,23 @@ class Character(pygame.sprite.Sprite):
         if current_pos_y < 0:
             self.game.LevelChange('up')
 
+        while self.AttackChoice:
+            print(self.AttackChoice)
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.AttackMenu_Rect.colliderect(event.pos):
+                        print("clicked")
+                        self.AttackChoice = False
+
         if self.tempAttackPause > 0:
             self.tempAttackPause -= 1
             self.AttackChoice = True
             if self.tempAttackPause == 0:
                 self.Loot()
 
+
+    def TempAttackButton(self):
+        self.AttackChoice = False
 
 
     def Loot(self):
@@ -233,7 +267,7 @@ class Character(pygame.sprite.Sprite):
 
     def tempAttack(self, EnemyObject, EnemyName):
         EnemyObject = EnemyObject
-        self.tempAttackPause = 5*FPS
+        self.tempAttackPause = 1*FPS
         self.pos = (self.rect.x, self.rect.y)
 
         self.rect.x = BORDER_TILESIZE + 5
@@ -242,6 +276,10 @@ class Character(pygame.sprite.Sprite):
         self.collision_rect.y = self.rect.bottom - 10
 
         self.game.AttackLevelChange(EnemyName)
+        self.button("Test", WIN_WIDTH/2, WIN_HEIGHT/2, 100, 200, TEMPCOLOR, WHITE, self.TempAttackButton())
+        self.AttackMenu_Rect = pygame.Rect(WIN_WIDTH/2, WIN_HEIGHT/2, 100, 200)
+
+
 
     def collide_enemy(self):
         if self.isAttackable:

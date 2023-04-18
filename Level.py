@@ -1,5 +1,8 @@
 import math
 import random
+
+import pygame
+
 from config import *
 from terrain import *
 from character import *
@@ -15,6 +18,7 @@ class Level:
     def __init__(self, game, player):
         self.game = game
         self.player = player
+        self.screen = self.game.screen
 
         self.enemy_sprites = self.game.enemy_sprites
         self.combat_enemy_sprites = self.game.combat_enemy_sprites
@@ -44,6 +48,7 @@ class Level:
         self.building1 = pygame.image.load('assets/Building_1.png')
         self.wolf_spritesheet = SpriteSheet_Black('assets/Wolfsheet1.png')
         self.character_spritesheet = SpriteSheet('assets/CharacterSpritesheet.png')
+
 
 
 
@@ -117,6 +122,7 @@ class Level:
                 randomYBottom = random.randint(WIN_HEIGHT / 2 + 75, WIN_HEIGHT - BORDER_TILESIZE * 2)
                 Rock(self, random.randint(BORDER_TILESIZE, WIN_WIDTH - BORDER_TILESIZE * 3), random.randint(randomYTop, randomYBottom), self.rock_img)
 
+
     def GenerateEnemies(self, EnemyName):
         EnemyName = EnemyName
         EnemyList = self.game.EnemyList
@@ -130,6 +136,28 @@ class Level:
             if EnemyName == 'Wolf':
                 Wolf(self, WIN_WIDTH - BORDER_TILESIZE * 4, WIN_HEIGHT / 2)
 
+    def text_objects(self, text, font):
+        textSurface = font.render(text, True, BLACK)
+        return textSurface, textSurface.get_rect()
+
+    def button(self, msg, x, y, width, height, inactiveColor, activeColor, action=None):
+        self.screen = self.game.screen
+        mouse = pygame.mouse.get_pos()
+        click = pygame.mouse.get_pressed()
+        print(click)
+
+        if x + width > mouse[0] > x and y + height > mouse[1] > y:
+            pygame.draw.rect(self.screen, activeColor, (x, y, width, height))
+
+            if click[0] == 1 and action != None:
+                action()
+        else:
+            pygame.draw.rect(self.screen, inactiveColor, (x, y, width, height))
+
+        smallText = pygame.font.SysFont("comicsansms", 20)
+        textSurf, textRect = self.text_objects(msg, smallText)
+        textRect.center = ((x + (width / 2)), (y + (height / 2)))
+        self.screen.blit(textSurf, textRect)
     # Update everything on this level
     def update(self):
         self.enemy_sprites.update()
@@ -144,13 +172,16 @@ class Level:
     def draw(self, screen):
         # Draw everyone on this level
         self.screen = screen
+        self.player = self.game.player
 
         if not self.player.isAttackable:
             self.screen.blit(self.attackBackground, (0, 0))
             self.combat_enemy_sprites.draw(self.screen)
             self.combat_background_sprites.draw(self.screen)
             if self.game.player.AttackChoice:
-                pygame.draw.rect(self.screen, TEMPCOLOR, ((WIN_WIDTH / 10 * 4), (WIN_HEIGHT / 10 * 4), WIN_WIDTH/10*2, WIN_HEIGHT/10*3))
+                # self.testVar = pygame.Rect(self.screen, TEMPCOLOR, self.testVar_rect)
+               self.button("Click Test", WIN_WIDTH/2, WIN_HEIGHT/2, 100, 250, WHITE, TEMPCOLOR, self.player.TempAttackButton())
+
         else:
             # Draw the Background
             self.screen.blit(self.background, (0, 0))
@@ -187,6 +218,7 @@ class AttackScreen(Level):
 
     def __init__(self, game, player, ):
         Level.__init__(self, game, player)
+
 
 
 class Level_02(Level):
