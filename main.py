@@ -28,15 +28,19 @@ class Game:
         self.gear_sprites = pygame.sprite.Group()
         self.background_sprites = pygame.sprite.Group()
         self.enemy_sprites = pygame.sprite.Group()
+        self.combat_enemy_sprites = pygame.sprite.Group()
+        self.combat_background_sprites = pygame.sprite.Group()
         self.attack_sprites = pygame.sprite.Group()
         self.UI_Sprites = pygame.sprite.Group()
 
         self.player = Character(self, WIN_WIDTH / 2, WIN_HEIGHT / 2)
         self.font = pygame.font.Font('assets/BKANT.TTF', 9)
 
+        self.EnemyList = ['Wolf']
+
         self.current_level_no = 0
         self.level_list = []
-        # self.level_list.append()
+        # self.level_list.append(AttackScreen(self, self.player))
         self.level_list.append(StartLevel(self, self.player))
         self.level_list.append(Level_02(self, self.player))
         self.level_list.append(Level_03(self, self.player))
@@ -48,11 +52,29 @@ class Game:
         self.level_list.append(Level_09(self, self.player))
         self.current_level = self.level_list[self.current_level_no]
         self.current_level.terrainGen()
-        self.current_level.GenerateEnemies()
+        self.current_level.GenerateEnemies(None)
+        self.previousLevel = None
 
+
+
+    def AttackLevelChange(self, EnemyName):
+        tempNum = len(self.level_list)
+        self.previousLevel = self.current_level_no
+        self.level_list.insert(tempNum, (AttackScreen(self, self.player)))
+        self.current_level_no = tempNum
+        self.current_level = self.level_list[tempNum]
         self.level = self.current_level
+        self.current_level.terrainGen()
+        self.current_level.GenerateEnemies(EnemyName)
 
-
+    def RemoveAttackLevel(self):
+        tempNum = len(self.level_list)-1
+        self.combat_enemy_sprites.empty()
+        self.combat_background_sprites.empty()
+        self.current_level_no = self.previousLevel
+        self.current_level = self.level_list[self.current_level_no]
+        self.previousLevel = None
+        self.level_list.pop(tempNum)
 
     def LevelChange(self, direction):
         self.leveldirection = direction
@@ -88,7 +110,7 @@ class Game:
             for sprite in self.enemy_sprites:
                 sprite.kill()
 
-        self.current_level.GenerateEnemies()
+        self.current_level.GenerateEnemies(None)
         self.current_level.terrainGen()
 
     def DeathReset(self):
@@ -116,18 +138,6 @@ class Game:
         self.RedHPBar = HPBarInterior(self, 193, WIN_HEIGHT + 22)  # HP RED BAR
         self.EXPYellowBar = pygame.image.load('assets/XPBarInside.png')
 
-    # def scale_bar(self, pic, width):  ## Not Used Anymore
-    #     size = pic.get_size()
-    #     print(width)
-    #     margin = 4
-    #     middel_parat = pic.subsurface(pygame.Rect(margin, 0, size[0] - margin * 2, size[1]))
-    #     scaled_image = pygame.Surface((width, size[1]))
-    #     scaled_image.blit(pic, (0, 0), (0, 0, margin, size[1]))
-    #     scaled_image.blit(pygame.transform.smoothscale(middel_parat, (width - margin * 2, size[1])), (margin, 0))
-    #     scaled_image.blit(pic, (width - margin, 0), (size[0] - margin, 0, margin, size[1]))
-    #
-    #     return scaled_image
-
     def new(self):
 
         self.playing = True
@@ -153,11 +163,21 @@ class Game:
         self.current_level.update()
 
     def draw(self):
+        if not self.player.isAttackable:
+            self.screen.blit(WIN_Attack_BG, (0,0))
+
         self.current_level.draw(self.screen)
+
         self.screen.blit(self.player.LevelText, self.player.LevelTextRect)
-        self.screen.blit(pygame.transform.scale(self.EXPYellowBar, (((self.player.exp / self.player.exp_to_level) * 164), 28)), (193, WIN_HEIGHT+109))
+        self.screen.blit(
+            pygame.transform.scale(self.EXPYellowBar, (((self.player.exp / self.player.exp_to_level) * 164), 28)),
+            (193, WIN_HEIGHT + 109))
         self.screen.blit(self.player.HPText, self.player.HPBarTextRect)
         self.screen.blit(self.player.EXPText, self.player.EXPBarTextRect)
+
+
+
+
 
         # # Drawing Squares around objects for collisions
         # for object in self.background_sprites:

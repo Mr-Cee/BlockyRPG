@@ -18,7 +18,6 @@ class Character(pygame.sprite.Sprite):
         self.font = pygame.font.Font('assets/BKANT.TTF', 40)
         self.LevelText = self.font.render(str(self.playerLevel), True, BLACK, None)
 
-
         self.font = pygame.font.Font('assets/BKANT.TTF', 20)
         self.HPBarText = str(self.hp) + "/" + str(self.max_hp)
         self.HPText = self.font.render(str(self.HPBarText), True, BLACK, None)
@@ -30,10 +29,14 @@ class Character(pygame.sprite.Sprite):
         self.EXPBarTextRect = self.HPText.get_rect()
         self.EXPBarTextRect.center = (290, WIN_HEIGHT + 123)
 
+        self.isAttackable = True  # Allows the character to attack or be attacked
+        self.tempAttackPause = 0
+
         self.x = x
         self.y = y
         self.width = CHARACTER_TILESIZE
         self.height = CHARACTER_TILESIZE
+        self.pos = (self.x, self.y)
 
         self.x_change = 0
         self.y_change = 0
@@ -75,6 +78,7 @@ class Character(pygame.sprite.Sprite):
         #                          self.game.character_spritesheet.get_sprite(35, 66, self.width, self.height),
         #                          self.game.character_spritesheet.get_sprite(68, 66, self.width, self.height)]
 
+
     def update(self):
         self.movement()
         self.animate()
@@ -105,7 +109,17 @@ class Character(pygame.sprite.Sprite):
         if current_pos_y < 0:
             self.game.LevelChange('up')
 
+        if self.tempAttackPause > 0:
+            self.tempAttackPause -= 1
+            if self.tempAttackPause == 0:
+                self.Loot()
 
+    def Loot(self):
+        self.game.RemoveAttackLevel()
+        self.isAttackable = True
+        self.rect.x, self.rect.y = self.pos
+        self.collision_rect.x = self.rect.x + 5
+        self.collision_rect.y = self.rect.bottom - 10
 
     def checkForLevelUp(self):
         if self.exp >= self.exp_to_level:
@@ -134,21 +148,22 @@ class Character(pygame.sprite.Sprite):
             # pass
 
     def movement(self):
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]:
-            self.x_change -= PLAYER_SPEED
-            self.facing = 'left'
-        if keys[pygame.K_RIGHT]:
-            self.x_change += PLAYER_SPEED
-            self.facing = 'right'
-        if keys[pygame.K_UP]:
-            self.y_change -= PLAYER_SPEED
-            self.facing = 'up'
-        if keys[pygame.K_DOWN]:
-            self.y_change += PLAYER_SPEED
-            self.facing = 'down'
-        if any((keys[pygame.K_UP], keys[pygame.K_DOWN])):
-            self.game.all_sprites.change_layer(self, self.collision_rect.bottom)
+        if self.isAttackable:
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_LEFT]:
+                self.x_change -= PLAYER_SPEED
+                self.facing = 'left'
+            if keys[pygame.K_RIGHT]:
+                self.x_change += PLAYER_SPEED
+                self.facing = 'right'
+            if keys[pygame.K_UP]:
+                self.y_change -= PLAYER_SPEED
+                self.facing = 'up'
+            if keys[pygame.K_DOWN]:
+                self.y_change += PLAYER_SPEED
+                self.facing = 'down'
+            if any((keys[pygame.K_UP], keys[pygame.K_DOWN])):
+                self.game.all_sprites.change_layer(self, self.collision_rect.bottom)
 
     def animate(self):
         if self.facing == 'down':
@@ -210,20 +225,36 @@ class Character(pygame.sprite.Sprite):
                         self.rect.bottom = object.collision_rect.bottom + 10
                         self.collision_rect.y = object.collision_rect.bottom
 
+    def tempAttack(self, EnemyObject, EnemyName):
+        EnemyObject = EnemyObject
+        self.tempAttackPause = 5*FPS
+        self.pos = (self.rect.x, self.rect.y)
+
+        self.rect.x = BORDER_TILESIZE + 5
+        self.collision_rect.x = self.rect.x + 5
+        self.rect.y = WIN_HEIGHT/2
+        self.collision_rect.y = self.rect.bottom - 10
+
+        self.game.AttackLevelChange(EnemyName)
+
     def collide_enemy(self):
-        templist = []
-        for object in self.game.enemy_sprites:
-            collide = pygame.Rect.colliderect(self.collision_rect, object.rect)
-            if collide:
-                self.changeHealth(-10)
-                self.changeEXP(3)
-                templist.append(object)
-        if len(templist) > 0:
-            for item in templist:
-                item.kill()
+        if self.isAttackable:
+            templist = []
+            for object in self.game.enemy_sprites:
+                collide = pygame.Rect.colliderect(self.collision_rect, object.rect)
+                if collide:
+                    self.changeHealth(-10)
+                    self.changeEXP(3)
+                    self.isAttackable = False
+                    self.tempAttack(object, object.EnemyName)
+                    templist.append(object)
+
+            if len(templist) > 0:
+                for item in templist:
+                    item.kill()
 
     def changeHealth(self, hpAmount):
-        if self.hp+hpAmount < self.max_hp:
+        if self.hp + hpAmount < self.max_hp:
             self.hp += hpAmount
         else:
             self.hp = self.max_hp

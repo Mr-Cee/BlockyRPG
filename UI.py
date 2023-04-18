@@ -120,3 +120,5 @@ class HUDMAIN(pygame.sprite.Sprite):
         self._layer = GAME_HEIGHT + 100
 
         pygame.sprite.Sprite.__init__(self, self.game.all_sprites, self.game.UI_Sprites)
+
+

@@ -1,11 +1,14 @@
 from terrain import *
 import math
 import random
+from character import *
 
 
 class Wolf(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
         self.game = game
+
+        self.EnemyName = 'Wolf'
 
         self.x = x
         self.y = y
@@ -15,11 +18,16 @@ class Wolf(pygame.sprite.Sprite):
         self.x_change = 0
         self.y_change = 0
 
-        self.facing = 'down'
+        self.facing = 'left'
         self.facing_list = ['down', 'up', 'right', 'left']
         self.animation_loop = 1
         self.movement_loop = 0
         self.max_travel = random.randint(10, 30)
+
+        if self.game.player.isAttackable:
+            self.inCombat = False
+        else:
+            self.inCombat = True
 
         self.image = self.game.wolf_spritesheet.get_sprite(0, 0, self.width, self.height)
 
@@ -29,7 +37,10 @@ class Wolf(pygame.sprite.Sprite):
 
         self._layer = self.rect.bottom
 
-        pygame.sprite.Sprite.__init__(self, self.game.all_sprites, self.game.enemy_sprites)
+        if not self.inCombat:
+            pygame.sprite.Sprite.__init__(self, self.game.all_sprites, self.game.enemy_sprites)
+        else:
+            pygame.sprite.Sprite.__init__(self, self.game.all_sprites, self.game.combat_enemy_sprites)
 
         self.down_animations = [self.game.wolf_spritesheet.get_sprite(0, 128, self.width, self.height),
                                 self.game.wolf_spritesheet.get_sprite(32, 128, self.width, self.height),
@@ -49,7 +60,7 @@ class Wolf(pygame.sprite.Sprite):
         self.right_animations = [self.game.wolf_spritesheet.get_sprite(320, 96, 64, 32),
                                  self.game.wolf_spritesheet.get_sprite(384, 96, 64, 32),
                                  self.game.wolf_spritesheet.get_sprite(448, 96, 64, 32),
-                                 self.game.wolf_spritesheet.get_sprite(512, 96, 64, 32),]
+                                 self.game.wolf_spritesheet.get_sprite(512, 96, 64, 32), ]
 
     def update(self):
         self.movement()
@@ -67,41 +78,38 @@ class Wolf(pygame.sprite.Sprite):
         if self.rect.x > WIN_WIDTH or self.rect.x < 0 or self.rect.y < 0 or self.rect.y > WIN_HEIGHT:
             self.kill()
 
-
-
     def movement(self):
-        if self.facing == 'left':
-            self.x_change -= ENEMY_SPEED
-            self.movement_loop -= 1
-            if self.movement_loop <= -self.max_travel:
-                self.facing = random.choice(self.facing_list)
-                self.movement_loop = 0
-                self.max_travel = random.randint(10, 30)
-        if self.facing == 'right':
-            self.x_change += ENEMY_SPEED
-            self.movement_loop += 1
-            if self.movement_loop >= self.max_travel:
-                self.facing = random.choice(self.facing_list)
-                self.movement_loop = 0
-                self.max_travel = random.randint(10, 30)
-        if self.facing == 'up':
-            self.y_change -= ENEMY_SPEED
-            self.movement_loop -= 1
-            if self.movement_loop <= -self.max_travel:
-                self.facing = random.choice(self.facing_list)
-                self.movement_loop = 0
-                self.max_travel = random.randint(10, 30)
-        if self.facing == 'down':
-            self.y_change += ENEMY_SPEED
-            self.movement_loop += 1
-            if self.movement_loop >= self.max_travel:
-                self.facing = random.choice(self.facing_list)
-                self.movement_loop = 0
-                self.max_travel = random.randint(10, 30)
+        if not self.inCombat:
+            if self.facing == 'left':
+                self.x_change -= ENEMY_SPEED
+                self.movement_loop -= 1
+                if self.movement_loop <= -self.max_travel:
+                    self.facing = random.choice(self.facing_list)
+                    self.movement_loop = 0
+                    self.max_travel = random.randint(10, 30)
+            if self.facing == 'right':
+                self.x_change += ENEMY_SPEED
+                self.movement_loop += 1
+                if self.movement_loop >= self.max_travel:
+                    self.facing = random.choice(self.facing_list)
+                    self.movement_loop = 0
+                    self.max_travel = random.randint(10, 30)
+            if self.facing == 'up':
+                self.y_change -= ENEMY_SPEED
+                self.movement_loop -= 1
+                if self.movement_loop <= -self.max_travel:
+                    self.facing = random.choice(self.facing_list)
+                    self.movement_loop = 0
+                    self.max_travel = random.randint(10, 30)
+            if self.facing == 'down':
+                self.y_change += ENEMY_SPEED
+                self.movement_loop += 1
+                if self.movement_loop >= self.max_travel:
+                    self.facing = random.choice(self.facing_list)
+                    self.movement_loop = 0
+                    self.max_travel = random.randint(10, 30)
 
         # self.game.all_sprites.change_layer(self, self.rect.bottom)
-
-
 
     def animate(self):
         if self.facing == 'down':
@@ -122,7 +130,7 @@ class Wolf(pygame.sprite.Sprite):
                     self.animation_loop = 0
         if self.facing == 'left':
             if self.x_change == 0:
-                self.image = self.game.wolf_spritesheet.get_sprite(0, 0, self.width, self.height)
+                self.image = self.game.wolf_spritesheet.get_sprite(320, 288, 64, 32)
             else:
                 self.image = self.left_animations[math.floor(self.animation_loop)]
                 self.animation_loop += 0.1
@@ -178,7 +186,6 @@ class Wolf(pygame.sprite.Sprite):
                         self.movement_loop = 0
                         self.max_travel = random.randint(10, 30)
                     print('New Direction:', self.facing)
-
 
     def collide_enemy(self):
         pass
