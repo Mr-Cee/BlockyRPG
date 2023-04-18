@@ -50,7 +50,6 @@ class Level:
     def terrainGen(self):
         # Horizontal Rock Walls
         if self.player.isAttackable:
-            print("Draw")
             tempwidthcount = 0
             tempheightcount = 0
             xpos = 0
@@ -113,7 +112,6 @@ class Level:
             for _ in range(5):
                 randomYTop = random.randint(BORDER_TILESIZE, WIN_HEIGHT/2 - 75)
                 randomYBottom = random.randint(WIN_HEIGHT / 2 + 75, WIN_HEIGHT - BORDER_TILESIZE * 2)
-                print(randomYTop,randomYBottom)
                 Tree(self, random.randint(BORDER_TILESIZE, WIN_WIDTH - BORDER_TILESIZE * 3), random.randint(randomYTop, randomYBottom), self.tree_image)
                 randomYTop = random.randint(BORDER_TILESIZE, WIN_HEIGHT / 2 - 75)
                 randomYBottom = random.randint(WIN_HEIGHT / 2 + 75, WIN_HEIGHT - BORDER_TILESIZE * 2)
