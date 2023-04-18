@@ -150,7 +150,7 @@ class Game:
 
     def draw(self):
         self.current_level.draw(self.screen)
-        self.screen.blit(self.player.XPText, self.player.XPTextRect)
+        self.screen.blit(self.player.LevelText, self.player.LevelTextRect)
         self.screen.blit(pygame.transform.scale(self.EXPYellowBar, (((self.player.exp / self.player.exp_to_level) * 164), 28)), (193, WIN_HEIGHT+109))
         self.screen.blit(self.player.HPText, self.player.HPBarTextRect)
 

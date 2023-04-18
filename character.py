@@ -15,7 +15,7 @@ class Character(pygame.sprite.Sprite):
         self.exp = 5
         self.exp_to_level = 10
         self.font = pygame.font.Font('assets/BKANT.TTF', 40)
-        self.XPText = self.font.render(str(self.playerLevel), True, BLACK, None)
+        self.LevelText = self.font.render(str(self.playerLevel), True, BLACK, None)
         self.font = pygame.font.Font('assets/BKANT.TTF', 20)
         self.HPBarText = str(self.hp) + "/" + str(self.max_hp)
         self.HPText = self.font.render(str(self.HPBarText), True, BLACK, None)
@@ -42,8 +42,8 @@ class Character(pygame.sprite.Sprite):
         self.hp_rect = pygame.Rect(self.x, self.y - 10, self.width, 10)
 
         # Character Level Text
-        self.XPTextRect = self.XPText.get_rect()
-        self.XPTextRect.center = (78, WIN_HEIGHT + 79)
+        self.LevelTextRect = self.LevelText.get_rect()
+        self.LevelTextRect.center = (78, WIN_HEIGHT + 79)
 
         self.collision_rect = pygame.Rect(self.x + 5, self.y, self.width - 10, self.height / 4)
 
@@ -104,7 +104,7 @@ class Character(pygame.sprite.Sprite):
             self.exp = tempxp
             self.exp_to_level *= 2
             self.font = pygame.font.Font('assets/BKANT.TTF', 40)
-            self.XPText = self.font.render(str(self.playerLevel), True, BLACK, None)
+            self.LevelText = self.font.render(str(self.playerLevel), True, BLACK, None)
 
             self.max_hp += 20
             self.hp = self.max_hp
