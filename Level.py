@@ -114,6 +114,7 @@ class Level:
         self.background_sprites.update()
         self.UI_Sprites.update()
 
+        # Heal while in Town
         if self.in_town:
             if self.player.hp < self.player.max_hp:
                 self.player.changeHealth(.025)

@@ -143,6 +143,10 @@ class Game:
                     self.player.exp += 1
                 if event.key == pygame.K_b:
                     self.player.exp -= 1
+                if event.key == pygame.K_KP_PLUS:
+                    self.player.changeHealth(10)
+                if event.key == pygame.K_KP_MINUS:
+                    self.player.changeHealth(-10)
 
     def update(self):
         self.all_sprites.update()

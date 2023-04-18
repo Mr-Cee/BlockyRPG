@@ -223,7 +223,10 @@ class Character(pygame.sprite.Sprite):
                 item.kill()
 
     def changeHealth(self, hpAmount):
-        self.hp += hpAmount
+        if self.hp+hpAmount < self.max_hp:
+            self.hp += hpAmount
+        else:
+            self.hp = self.max_hp
         self.font = pygame.font.Font('assets/BKANT.TTF', 20)
         self.HPBarText = str(round(self.hp)) + "/" + str(round(self.max_hp))
         self.HPText = self.font.render(str(self.HPBarText), True, BLACK, None)
