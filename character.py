@@ -31,6 +31,7 @@ class Character(pygame.sprite.Sprite):
 
         self.isAttackable = True  # Allows the character to attack or be attacked
         self.tempAttackPause = 0
+        self.AttackChoice = False
 
         self.x = x
         self.y = y
