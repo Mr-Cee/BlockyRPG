@@ -2,6 +2,7 @@ import math
 import random
 from config import *
 from terrain import *
+from character import *
 from SpriteUtilities import *
 from Enemy import *
 
@@ -112,6 +113,11 @@ class Level:
         self.enemy_sprites.update()
         self.background_sprites.update()
         self.UI_Sprites.update()
+
+        if self.in_town:
+            if self.player.hp < self.player.max_hp:
+                self.player.changeHealth(.025)
+
 
     def draw(self, screen):
         # Draw everyone on this level

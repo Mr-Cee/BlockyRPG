@@ -12,15 +12,23 @@ class Character(pygame.sprite.Sprite):
         self.hp = self.max_hp
 
         self.playerLevel = 1
-        self.exp = 5
+        self.exp = 0
         self.exp_to_level = 10
+
         self.font = pygame.font.Font('assets/BKANT.TTF', 40)
         self.LevelText = self.font.render(str(self.playerLevel), True, BLACK, None)
+
+
         self.font = pygame.font.Font('assets/BKANT.TTF', 20)
         self.HPBarText = str(self.hp) + "/" + str(self.max_hp)
         self.HPText = self.font.render(str(self.HPBarText), True, BLACK, None)
         self.HPBarTextRect = self.HPText.get_rect()
-        self.HPBarTextRect.center = (273, WIN_HEIGHT + 36)
+        self.HPBarTextRect.center = (275, WIN_HEIGHT + 36)
+
+        self.EXPBarText = str(self.exp) + "/" + str(self.exp_to_level)
+        self.EXPText = self.font.render(str(self.EXPBarText), True, BLACK, None)
+        self.EXPBarTextRect = self.HPText.get_rect()
+        self.EXPBarTextRect.center = (290, WIN_HEIGHT + 123)
 
         self.x = x
         self.y = y
@@ -97,6 +105,8 @@ class Character(pygame.sprite.Sprite):
         if current_pos_y < 0:
             self.game.LevelChange('up')
 
+
+
     def checkForLevelUp(self):
         if self.exp >= self.exp_to_level:
             tempxp = self.exp - self.exp_to_level
@@ -105,6 +115,10 @@ class Character(pygame.sprite.Sprite):
             self.exp_to_level *= 2
             self.font = pygame.font.Font('assets/BKANT.TTF', 40)
             self.LevelText = self.font.render(str(self.playerLevel), True, BLACK, None)
+
+            self.font = pygame.font.Font('assets/BKANT.TTF', 20)
+            self.EXPBarText = str(self.exp) + "/" + str(self.exp_to_level)
+            self.EXPText = self.font.render(str(self.EXPBarText), True, BLACK, None)
 
             self.max_hp += 20
             self.hp = self.max_hp
@@ -211,10 +225,13 @@ class Character(pygame.sprite.Sprite):
     def changeHealth(self, hpAmount):
         self.hp += hpAmount
         self.font = pygame.font.Font('assets/BKANT.TTF', 20)
-        self.HPBarText = str(self.hp) + "/" + str(self.max_hp)
+        self.HPBarText = str(round(self.hp)) + "/" + str(round(self.max_hp))
         self.HPText = self.font.render(str(self.HPBarText), True, BLACK, None)
         self.checkForDeath()
 
     def changeEXP(self, expAmount):
         self.exp += expAmount
+        self.font = pygame.font.Font('assets/BKANT.TTF', 20)
+        self.EXPBarText = str(self.exp) + "/" + str(self.exp_to_level)
+        self.EXPText = self.font.render(str(self.EXPBarText), True, BLACK, None)
         self.checkForLevelUp()
