@@ -132,15 +132,13 @@ class Character(pygame.sprite.Sprite):
         self.x_change = 0
         self.y_change = 0
 
-        current_pos_x = self.rect.x
-        current_pos_y = self.rect.y
-        if current_pos_x > WIN_WIDTH:
+        if self.collision_rect.right > WIN_WIDTH:
             self.game.LevelChange('right')
-        if current_pos_x < 0:
+        if self.collision_rect.left < 0:
             self.game.LevelChange('left')
-        if current_pos_y > WIN_HEIGHT:
+        if self.collision_rect.bottom > WIN_HEIGHT:
             self.game.LevelChange('down')
-        if current_pos_y < 0:
+        if self.collision_rect.top < 0:
             self.game.LevelChange('up')
 
         # print('Player', self._layer)
@@ -265,23 +263,27 @@ class Character(pygame.sprite.Sprite):
                 collide = pygame.Rect.colliderect(self.collision_rect, object.collision_rect)
                 if collide:
                     if self.y_change > 0:  # Moving Down
-                        self.rect.bottom = object.collision_rect.y
-                        self.collision_rect.y = self.rect.bottom - 5
+                        self.rect.bottom = object.collision_rect.top
+                        self.collision_rect.bottom = object.collision_rect.top
                     if self.y_change < 0:  # Moving Up
-                        self.rect.bottom = object.collision_rect.bottom + 5
-                        self.collision_rect.y = object.collision_rect.bottom
+                        self.rect.y = object.collision_rect.bottom - self.height + 5
+                        self.collision_rect.top = object.collision_rect.bottom
+
+
                     # print('Object Layer:', object._layer)
                     # print('Player Layer:', self._layer)
                     # print('Player Collision', self.collision_rect.bottom)
                     # print('---------------')
                     # print(self.game.all_sprites.get_layer_of_sprite(self))
-                    logging.info('------------------------------------')
-                    logging.info(str(self.game.current_level))
-                    for i in range(len(self.game.all_sprites)):
-                        logging.info(
-                            ('Layer:', self.game.all_sprites.get_layer_of_sprite(self.game.all_sprites.get_sprite(i)), 'Sprite:',
-                             self.game.all_sprites.get_sprite(i), self.game.all_sprites.get_sprite(i).collision_rect))
-                    logging.info('------------------------------------')
+
+
+                    # logging.info('------------------------------------')
+                    # logging.info(str(self.game.current_level))
+                    # for i in range(len(self.game.all_sprites)):
+                    #     logging.info(
+                    #         ('Layer:', self.game.all_sprites.get_layer_of_sprite(self.game.all_sprites.get_sprite(i)), 'Sprite:',
+                    #          self.game.all_sprites.get_sprite(i), self.game.all_sprites.get_sprite(i).collision_rect))
+                    # logging.info('------------------------------------')
 
 
     def tempAttack(self, EnemyObject, EnemyName):

@@ -28,6 +28,7 @@ class Level:
         self.all_sprites = self.game.all_sprites
         self.player_sprite = self.game.player_sprite
         self.UI_Sprites = self.game.UI_Sprites
+        self.combat_UI_Sprites = self.game.combat_UI_Sprites
 
         # Exits Booleans
         self.north_exit = False

@@ -3,7 +3,7 @@ from character import *
 
 
 # button class
-class Button(pygame.sprite.Sprite):
+class Button:
     def __init__(self, game, surface, x, y, image, size_x, size_y):
         self.image = pygame.transform.scale(image, (size_x, size_y))
         self.rect = self.image.get_rect()
@@ -11,13 +11,9 @@ class Button(pygame.sprite.Sprite):
         self.clicked = False
         self.surface = surface
         self.game = game
+        self.Combat_UI_Sprites = self.game.combat_UI_Sprites
 
         self._layer = 900
-
-        if self.game.player.isAttackable:
-            pygame.sprite.Sprite.__init__(self, self.game.all_sprites, self.game.background_sprites)
-        else:
-            pygame.sprite.Sprite.__init__(self, self.game.all_sprites, self.game.combat_background_sprites)
 
     def draw(self):
         action = False

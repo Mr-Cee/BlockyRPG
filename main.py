@@ -32,6 +32,7 @@ class Game:
         self.enemy_sprites = pygame.sprite.Group()
         self.combat_enemy_sprites = pygame.sprite.Group()
         self.combat_background_sprites = pygame.sprite.Group()
+        self.combat_UI_Sprites = pygame.sprite.Group()
         self.attack_sprites = pygame.sprite.Group()
         self.UI_Sprites = pygame.sprite.Group()
 
@@ -66,9 +67,9 @@ class Game:
         #     print(self.all_sprites.get_layer_of_sprite(i))
         # logging.info(self.all_sprites.get_layer_of_sprite(_))
         # print(self.all_sprites.layers())
-        print(len(self.all_sprites.layers()))
-        print('Layer:', self.all_sprites.get_layer_of_sprite(self.all_sprites.get_sprite(1)), 'Sprite:', self.all_sprites.get_sprite(1))
-        print(self.all_sprites.get_sprite(1).collision_rect)
+        # print(len(self.all_sprites.layers()))
+        # print('Layer:', self.all_sprites.get_layer_of_sprite(self.all_sprites.get_sprite(1)), 'Sprite:', self.all_sprites.get_sprite(1))
+        # print(self.all_sprites.get_sprite(1).collision_rect)
         # print(self.all_sprites.get_sprite(1))
         # print(self.all_sprites.get_sprite(2))
         # print(self.all_sprites.get_sprite(3))
@@ -87,11 +88,11 @@ class Game:
 
         # for i in range(len(self.all_sprites.layers())):
         #     logging.info(str(self.all_sprites.get_sprite(i)) + 'in layer' + str(self.all_sprites.get_layer_of_sprite(self.all_sprites.get_sprite(i))))
-        logging.info('------------------------------------')
-        logging.info(str(self.current_level))
-        for i in range(len(self.all_sprites)):
-            logging.info(('Layer:', self.all_sprites.get_layer_of_sprite(self.all_sprites.get_sprite(i)), 'Sprite:', self.all_sprites.get_sprite(i), self.all_sprites.get_sprite(i).collision_rect))
-        logging.info('------------------------------------')
+        # logging.info('------------------------------------')
+        # logging.info(str(self.current_level))
+        # for i in range(len(self.all_sprites)):
+        #     logging.info(('Layer:', self.all_sprites.get_layer_of_sprite(self.all_sprites.get_sprite(i)), 'Sprite:', self.all_sprites.get_sprite(i), self.all_sprites.get_sprite(i).collision_rect))
+        # logging.info('------------------------------------')
 
     def AttackLevelChange(self, EnemyName):
         tempNum = len(self.level_list)
@@ -121,25 +122,27 @@ class Game:
         self.leveldirection = direction
 
         if self.leveldirection == 'right':
-            self.player.rect.x = BORDER_TILESIZE + 5
+            self.player.rect.x = 1
             self.player.collision_rect.x = self.player.rect.x + 22
+            print('rect.x:', self.player.rect.x)
+            print('collision x:', self.player.collision_rect.x)
             self.current_level_no += 3
             self.current_level = self.level_list[self.current_level_no]
             self.level = self.current_level
         if self.leveldirection == 'left':
-            self.player.rect.x = WIN_WIDTH - BORDER_TILESIZE - 5
+            self.player.rect.x = WIN_WIDTH - BORDER_TILESIZE - 10
             self.player.collision_rect.x = self.player.rect.x + 22
             self.current_level_no -= 3
             self.current_level = self.level_list[self.current_level_no]
             self.level = self.current_level
         if self.leveldirection == 'down':
-            self.player.rect.y = 0 + BORDER_TILESIZE + 5
+            self.player.rect.y = 5
             self.player.collision_rect.y = self.player.rect.bottom - 5
             self.current_level_no += 1
             self.current_level = self.level_list[self.current_level_no]
             self.level = self.current_level
         if self.leveldirection == 'up':
-            self.player.rect.y = WIN_HEIGHT - BORDER_TILESIZE - 5
+            self.player.rect.bottom = WIN_HEIGHT - 10
             self.player.collision_rect.y = self.player.rect.bottom - 5
             self.current_level_no -= 1
             self.current_level = self.level_list[self.current_level_no]
@@ -154,12 +157,12 @@ class Game:
         self.current_level.GenerateEnemies(None)
         self.current_level.terrainGen()
 
-        logging.info('------------------------------------')
-        logging.info(str(self.current_level))
-        for i in range(len(self.all_sprites)):
-            logging.info(('Layer:', self.all_sprites.get_layer_of_sprite(self.all_sprites.get_sprite(i)), 'Sprite:',
-                          self.all_sprites.get_sprite(i), self.all_sprites.get_sprite(i).collision_rect))
-        logging.info('------------------------------------')
+        # logging.info('------------------------------------')
+        # logging.info(str(self.current_level))
+        # for i in range(len(self.all_sprites)):
+        #     logging.info(('Layer:', self.all_sprites.get_layer_of_sprite(self.all_sprites.get_sprite(i)), 'Sprite:',
+        #                   self.all_sprites.get_sprite(i), self.all_sprites.get_sprite(i).collision_rect))
+        # logging.info('------------------------------------')
 
     def DeathReset(self):
         self.player.hp = self.player.max_hp
@@ -227,11 +230,12 @@ class Game:
         self.screen.blit(self.player.EXPText, self.player.EXPBarTextRect)
 ################### Drawing Squares around objects for collisions ##################################
 
-        # for object in self.background_sprites:
-        #     pygame.draw.rect(self.screen, BLACK, object.collision_rect)
-        # for object in self.enemy_sprites:
-        #     pygame.draw.rect(self.screen, RED, object.rect)
-        # pygame.draw.rect(self.screen, WHITE, self.player.collision_rect)
+        for object in self.background_sprites:
+            pygame.draw.rect(self.screen, BLACK, object.collision_rect)
+        for object in self.enemy_sprites:
+            pygame.draw.rect(self.screen, RED, object.rect)
+        pygame.draw.rect(self.screen, WHITE, self.player.collision_rect)
+
 ###################################################################################################
         self.clock.tick(FPS)
         pygame.display.update()
