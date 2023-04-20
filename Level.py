@@ -136,28 +136,6 @@ class Level:
             if EnemyName == 'Wolf':
                 Wolf(self, WIN_WIDTH - BORDER_TILESIZE * 4, WIN_HEIGHT / 2)
 
-    def text_objects(self, text, font):
-        textSurface = font.render(text, True, BLACK)
-        return textSurface, textSurface.get_rect()
-
-    def button(self, msg, x, y, width, height, inactiveColor, activeColor, action=None):
-        self.screen = self.game.screen
-        mouse = pygame.mouse.get_pos()
-        click = pygame.mouse.get_pressed()
-        print(click)
-
-        if x + width > mouse[0] > x and y + height > mouse[1] > y:
-            pygame.draw.rect(self.screen, activeColor, (x, y, width, height))
-
-            if click[0] == 1 and action != None:
-                action()
-        else:
-            pygame.draw.rect(self.screen, inactiveColor, (x, y, width, height))
-
-        smallText = pygame.font.SysFont("comicsansms", 20)
-        textSurf, textRect = self.text_objects(msg, smallText)
-        textRect.center = ((x + (width / 2)), (y + (height / 2)))
-        self.screen.blit(textSurf, textRect)
     # Update everything on this level
     def update(self):
         self.enemy_sprites.update()
@@ -178,10 +156,6 @@ class Level:
             self.screen.blit(self.attackBackground, (0, 0))
             self.combat_enemy_sprites.draw(self.screen)
             self.combat_background_sprites.draw(self.screen)
-            if self.game.player.AttackChoice:
-                # self.testVar = pygame.Rect(self.screen, TEMPCOLOR, self.testVar_rect)
-               self.button("Click Test", WIN_WIDTH/2, WIN_HEIGHT/2, 100, 250, WHITE, TEMPCOLOR, self.player.TempAttackButton())
-
         else:
             # Draw the Background
             self.screen.blit(self.background, (0, 0))

@@ -67,6 +67,7 @@ class Game:
         self.current_level.terrainGen()
         self.current_level.GenerateEnemies(EnemyName)
 
+
     def RemoveAttackLevel(self):
         tempNum = len(self.level_list)-1
         self.combat_enemy_sprites.empty()
@@ -157,6 +158,9 @@ class Game:
                     self.player.changeHealth(10)
                 if event.key == pygame.K_KP_MINUS:
                     self.player.changeHealth(-10)
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if self.player.AttackChoice:
+                    self.player.Loot()
 
     def update(self):
         self.all_sprites.update()
