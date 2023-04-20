@@ -106,6 +106,8 @@ class Level:
 
             if self.in_town:
                 Building(self, 25, 25, self.building1)
+                Tree(self, WIN_WIDTH/2, WIN_HEIGHT/2 + 50, self.tree_image)
+                Tree(self, WIN_WIDTH / 2, WIN_HEIGHT / 2 - 150, self.tree_image)
             else:
                 for _ in range(random.randint(10, int(WIN_WIDTH / (BORDER_TILESIZE * 2)))):
                     Tree(self, random.randint(BORDER_TILESIZE * 2, WIN_WIDTH - BORDER_TILESIZE * 2),
@@ -143,6 +145,7 @@ class Level:
         self.background_sprites.update()
         self.UI_Sprites.update()
 
+
         # Heal while in Town
         if self.in_town:
             if self.player.hp < self.player.max_hp:
@@ -155,20 +158,36 @@ class Level:
 
         if not self.player.isAttackable:
             self.screen.blit(self.attackBackground, (0, 0))
+            # self.combat_enemy_sprites.draw(self.screen)
+            # self.combat_background_sprites.draw(self.screen)
             self.combat_enemy_sprites.draw(self.screen)
             self.combat_background_sprites.draw(self.screen)
-            if button.Button(self.screen, WIN_WIDTH/2-97, WIN_HEIGHT/2, pygame.image.load('assets/button_attack.png'), 195, 50).draw():
+            if button.Button(self.game, self.screen, WIN_WIDTH/2-97, WIN_HEIGHT/2, pygame.image.load('assets/button_attack.png'), 195, 50).draw():
                 self.player.Loot()
-            if button.Button(self.screen, WIN_WIDTH / 2 - 97, WIN_HEIGHT / 2 + 60, pygame.image.load('assets/button_flee.png'), 195, 50).draw():
+            if button.Button(self.game, self.screen, WIN_WIDTH / 2 - 97, WIN_HEIGHT / 2 + 60, pygame.image.load('assets/button_flee.png'), 195, 50).draw():
                 self.player.Flee()
+            self.player_sprite.draw(screen)
         else:
             # Draw the Background
             self.screen.blit(self.background, (0, 0))
             self.enemy_sprites.draw(self.screen)
+            self.player_sprite.draw(screen)
             self.background_sprites.draw(self.screen)
+            self.all_sprites.draw(screen)
+            # self.enemy_sprites.draw(self.screen)
+            # self.background_sprites.draw(self.screen)
         # Draw all the sprite lists we have
-        self.player_sprite.draw(self.screen)
+        # self.player_sprite.draw(self.screen)
         self.UI_Sprites.draw(self.screen)
+
+
+
+
+
+
+        # print('--------------------------------------')
+        # print('Player Layer:', self.game.player._layer)
+        # print('--------------------------------------')
 
 
 ## LEVEL MAP ##

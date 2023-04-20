@@ -21,7 +21,7 @@ class Tree(pygame.sprite.Sprite):
         self.rect = (self.x, self.y, self.width, self.height)
         self.collision_rect = pygame.Rect(self.x + 5, self.y + self.height - 5, self.width - 10, self.height / 4)
 
-        self._layer = self.y + self.height
+        self._layer = self.collision_rect.bottom
 
         if self.game.player.isAttackable:
             pygame.sprite.Sprite.__init__(self, self.game.all_sprites, self.game.background_sprites)

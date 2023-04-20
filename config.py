@@ -26,11 +26,11 @@ TERRAIN_LAYER = 1  # Not used anymore because of dynamic layering based on y pos
 PLAYER_LAYER = TERRAIN_LAYER + 1  # Not used anymore because of dynamic layering based on y pos
 
 # Sprite Settings
-CHARACTER_TILESIZE = 32
+CHARACTER_TILESIZE = 64
 BORDER_TILESIZE = 32
 
 # Player Settings
-PLAYER_SPEED = 10
+PLAYER_SPEED = 5
 
 # Enemy Settings
 ENEMY_SPEED = 1

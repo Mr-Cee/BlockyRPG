@@ -19,6 +19,7 @@ class UIPanel(pygame.sprite.Sprite):
 
         # self.rect = self.image.get_rect()
         self.rect = (self.x, self.y, self.width, self.height)
+        self.collision_rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
         self._layer = GAME_HEIGHT + 100
 
@@ -51,9 +52,13 @@ class HPBarInterior(pygame.sprite.Sprite):
 
         self.image = pygame.image.load('assets/HPBarInside.png')
 
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
+
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
+        self.collision_rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
         self.HPText = str(self.player.hp)
 
@@ -73,14 +78,19 @@ class EXPBarInterior(pygame.sprite.Sprite):
         self.UI_Sprites = self.game.UI_Sprites
         self.all_sprites = self.game.all_sprites
 
+        self.image = pygame.image.load('assets/XPBarInside.png')
+
         self.x = x
         self.y = y
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
 
-        self.image = pygame.image.load('assets/XPBarInside.png')
+
 
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
+        self.collision_rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
         self.HPText = str(self.player.hp)
 
@@ -116,6 +126,8 @@ class HUDMAIN(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
+
+        self.collision_rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
         self._layer = GAME_HEIGHT + 100
 

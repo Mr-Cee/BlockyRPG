@@ -1,3 +1,4 @@
+import logging
 import random
 import sys
 import pygame
@@ -18,7 +19,8 @@ class Game:
 
         self.font = pygame.font.Font('assets/BKANT.TTF', 10)
 
-        self.character_spritesheet = SpriteSheet('assets/CharacterSpritesheet.png')
+        self.character_spritesheet = SpriteSheet('assets/CharacterWalkingSpritesheet.png')
+
         self.BottomPanel_IMG = pygame.image.load('assets/BottomUI.png')
         self.hpbar_empty_img = pygame.image.load('assets/EmptyHPBar.png')
         self.hpbar_inside_img = pygame.image.load('assets/HPBarInside.png')
@@ -55,7 +57,41 @@ class Game:
         self.current_level.GenerateEnemies(None)
         self.previousLevel = None
 
+        # Set up logging
+        log = "bot.log"
+        logging.basicConfig(filename=log, level=logging.DEBUG, format='%(asctime)s %(message)s', filemode='a',
+                            datefmt='%d/%m/%Y %H:%M:%S')
 
+        # for i in range(len(self.all_sprites.layers())):
+        #     print(self.all_sprites.get_layer_of_sprite(i))
+        # logging.info(self.all_sprites.get_layer_of_sprite(_))
+        # print(self.all_sprites.layers())
+        print(len(self.all_sprites.layers()))
+        print('Layer:', self.all_sprites.get_layer_of_sprite(self.all_sprites.get_sprite(1)), 'Sprite:', self.all_sprites.get_sprite(1))
+        print(self.all_sprites.get_sprite(1).collision_rect)
+        # print(self.all_sprites.get_sprite(1))
+        # print(self.all_sprites.get_sprite(2))
+        # print(self.all_sprites.get_sprite(3))
+        # print(self.all_sprites.get_sprites_from_layer(32))
+
+        # print(self.all_sprites.get_layer_of_sprite(self.player))
+        #
+        # print('length:', len(self.all_sprites))
+        #
+        # print('Layer:', self.all_sprites.get_layer_of_sprite(self.all_sprites.get_sprite(29)))
+        #
+        # print('Sprite:', self.all_sprites.get_sprite(29))
+
+        # for i in range(len(self.all_sprites)):
+        #     print('Layer:', self.all_sprites.get_layer_of_sprite(self.all_sprites.get_sprite(i)), "   ", 'Sprite:', self.all_sprites.get_sprite(i))
+
+        # for i in range(len(self.all_sprites.layers())):
+        #     logging.info(str(self.all_sprites.get_sprite(i)) + 'in layer' + str(self.all_sprites.get_layer_of_sprite(self.all_sprites.get_sprite(i))))
+        logging.info('------------------------------------')
+        logging.info(str(self.current_level))
+        for i in range(len(self.all_sprites)):
+            logging.info(('Layer:', self.all_sprites.get_layer_of_sprite(self.all_sprites.get_sprite(i)), 'Sprite:', self.all_sprites.get_sprite(i), self.all_sprites.get_sprite(i).collision_rect))
+        logging.info('------------------------------------')
 
     def AttackLevelChange(self, EnemyName):
         tempNum = len(self.level_list)
@@ -67,40 +103,44 @@ class Game:
         self.current_level.terrainGen()
         self.current_level.GenerateEnemies(EnemyName)
 
-
     def RemoveAttackLevel(self):
-        tempNum = len(self.level_list)-1
-        self.combat_enemy_sprites.empty()
-        self.combat_background_sprites.empty()
+        tempNum = len(self.level_list) - 1
+        for sprite in self.combat_background_sprites:
+            sprite.kill()
+        if len(self.combat_enemy_sprites) > 0:
+            for sprite in self.combat_enemy_sprites:
+                sprite.kill()
         self.current_level_no = self.previousLevel
         self.current_level = self.level_list[self.current_level_no]
         self.previousLevel = None
         self.level_list.pop(tempNum)
+        self.player.collision_rect.x = self.player.rect.x + 22
+        self.player.collision_rect.y = self.player.rect.bottom - 5
 
     def LevelChange(self, direction):
         self.leveldirection = direction
 
         if self.leveldirection == 'right':
             self.player.rect.x = BORDER_TILESIZE + 5
-            self.player.collision_rect.x = self.player.rect.x + 5
+            self.player.collision_rect.x = self.player.rect.x + 22
             self.current_level_no += 3
             self.current_level = self.level_list[self.current_level_no]
             self.level = self.current_level
         if self.leveldirection == 'left':
             self.player.rect.x = WIN_WIDTH - BORDER_TILESIZE - 5
-            self.player.collision_rect.x = self.player.rect.x + 5
+            self.player.collision_rect.x = self.player.rect.x + 22
             self.current_level_no -= 3
             self.current_level = self.level_list[self.current_level_no]
             self.level = self.current_level
         if self.leveldirection == 'down':
             self.player.rect.y = 0 + BORDER_TILESIZE + 5
-            self.player.collision_rect.y = self.player.rect.bottom - 10
+            self.player.collision_rect.y = self.player.rect.bottom - 5
             self.current_level_no += 1
             self.current_level = self.level_list[self.current_level_no]
             self.level = self.current_level
         if self.leveldirection == 'up':
             self.player.rect.y = WIN_HEIGHT - BORDER_TILESIZE - 5
-            self.player.collision_rect.y = self.player.rect.bottom - 10
+            self.player.collision_rect.y = self.player.rect.bottom - 5
             self.current_level_no -= 1
             self.current_level = self.level_list[self.current_level_no]
             self.level = self.current_level
@@ -114,12 +154,19 @@ class Game:
         self.current_level.GenerateEnemies(None)
         self.current_level.terrainGen()
 
+        logging.info('------------------------------------')
+        logging.info(str(self.current_level))
+        for i in range(len(self.all_sprites)):
+            logging.info(('Layer:', self.all_sprites.get_layer_of_sprite(self.all_sprites.get_sprite(i)), 'Sprite:',
+                          self.all_sprites.get_sprite(i), self.all_sprites.get_sprite(i).collision_rect))
+        logging.info('------------------------------------')
+
     def DeathReset(self):
         self.player.hp = self.player.max_hp
         self.player.rect.x = WIN_WIDTH / 2
         self.player.rect.y = WIN_HEIGHT / 2
-        self.player.collision_rect.x = self.player.rect.x + 5
-        self.player.collision_rect.y = self.player.rect.bottom - 10
+        self.player.collision_rect.x = self.player.rect.x + 22
+        self.player.collision_rect.y = self.player.rect.bottom - 5
         self.current_level_no = 0
         self.current_level = self.level_list[self.current_level_no]
         self.level = self.current_level
@@ -168,8 +215,7 @@ class Game:
 
     def draw(self):
         if not self.player.isAttackable:
-            self.screen.blit(WIN_Attack_BG, (0,0))
-
+            self.screen.blit(WIN_Attack_BG, (0, 0))
 
         self.current_level.draw(self.screen)
 
@@ -179,18 +225,14 @@ class Game:
             (193, WIN_HEIGHT + 109))
         self.screen.blit(self.player.HPText, self.player.HPBarTextRect)
         self.screen.blit(self.player.EXPText, self.player.EXPBarTextRect)
+################### Drawing Squares around objects for collisions ##################################
 
-
-
-
-
-        # # Drawing Squares around objects for collisions
         # for object in self.background_sprites:
         #     pygame.draw.rect(self.screen, BLACK, object.collision_rect)
         # for object in self.enemy_sprites:
         #     pygame.draw.rect(self.screen, RED, object.rect)
         # pygame.draw.rect(self.screen, WHITE, self.player.collision_rect)
-
+###################################################################################################
         self.clock.tick(FPS)
         pygame.display.update()
 

@@ -1,3 +1,5 @@
+import logging
+
 import pyautogui as pyautogui
 import pygame
 import math
@@ -7,6 +9,10 @@ from SpriteUtilities import *
 
 class Character(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
+        log = "bot.log"
+        logging.basicConfig(filename=log, level=logging.DEBUG, format='%(asctime)s %(message)s', filemode='a',
+                            datefmt='%d/%m/%Y %H:%M:%S')
+
         self.game = game
         self.screen = self.game.screen
         self.max_hp = 100
@@ -45,40 +51,68 @@ class Character(pygame.sprite.Sprite):
 
         self.facing = 'down'
         self.animation_loop = 1
+        self.animation_loop_speed = 0.5
 
-        self.image = self.game.character_spritesheet.get_sprite(0, 0, self.width, self.height)
+        self.image = self.game.character_spritesheet.get_sprite(0, 192, self.width, self.height)
 
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
 
-        self.hp_rect = pygame.Rect(self.x, self.y - 10, self.width, 10)
 
         # Character Level Text
         self.LevelTextRect = self.LevelText.get_rect()
         self.LevelTextRect.center = (78, WIN_HEIGHT + 79)
 
-        self.collision_rect = pygame.Rect(self.x + 5, self.y, self.width - 10, self.height / 4)
+        self.collision_rect = pygame.Rect(self.x + 22, self.y-5, 20, 10)
 
         self._layer = self.collision_rect.bottom
 
         pygame.sprite.Sprite.__init__(self, self.game.all_sprites, self.game.player_sprite)
 
-        self.down_animations = [self.game.character_spritesheet.get_sprite(0, 0, self.width, self.height),
-                                self.game.character_spritesheet.get_sprite(32, 0, self.width, self.height),
-                                self.game.character_spritesheet.get_sprite(64, 0, self.width, self.height)]
+        self.down_animations = [self.game.character_spritesheet.get_sprite(0, 128, self.width, self.height),
+                                self.game.character_spritesheet.get_sprite(64, 128, self.width, self.height),
+                                self.game.character_spritesheet.get_sprite(128, 128, self.width, self.height),
+                                self.game.character_spritesheet.get_sprite(192, 128, self.width, self.height),
+                                self.game.character_spritesheet.get_sprite(256, 128, self.width, self.height),
+                                self.game.character_spritesheet.get_sprite(320, 128, self.width, self.height),
+                                self.game.character_spritesheet.get_sprite(384, 128, self.width, self.height),
+                                self.game.character_spritesheet.get_sprite(448, 128, self.width, self.height),
+                                self.game.character_spritesheet.get_sprite(512, 128, self.width, self.height)
+                                ]
 
-        # self.up_animations = [self.game.character_spritesheet.get_sprite(3, 34, self.width, self.height),
-        #                       self.game.character_spritesheet.get_sprite(35, 34, self.width, self.height),
-        #                       self.game.character_spritesheet.get_sprite(68, 34, self.width, self.height)]
-        #
-        # self.left_animations = [self.game.character_spritesheet.get_sprite(3, 98, self.width, self.height),
-        #                         self.game.character_spritesheet.get_sprite(35, 98, self.width, self.height),
-        #                         self.game.character_spritesheet.get_sprite(68, 98, self.width, self.height)]
-        #
-        # self.right_animations = [self.game.character_spritesheet.get_sprite(3, 66, self.width, self.height),
-        #                          self.game.character_spritesheet.get_sprite(35, 66, self.width, self.height),
-        #                          self.game.character_spritesheet.get_sprite(68, 66, self.width, self.height)]
+        self.up_animations = [self.game.character_spritesheet.get_sprite(0, 0, self.width, self.height),
+                              self.game.character_spritesheet.get_sprite(64, 0, self.width, self.height),
+                              self.game.character_spritesheet.get_sprite(128, 0, self.width, self.height),
+                              self.game.character_spritesheet.get_sprite(192, 0, self.width, self.height),
+                              self.game.character_spritesheet.get_sprite(256, 0, self.width, self.height),
+                              self.game.character_spritesheet.get_sprite(320, 0, self.width, self.height),
+                              self.game.character_spritesheet.get_sprite(384, 0, self.width, self.height),
+                              self.game.character_spritesheet.get_sprite(448, 0, self.width, self.height),
+                              self.game.character_spritesheet.get_sprite(512, 0, self.width, self.height)
+                              ]
+
+        self.left_animations = [self.game.character_spritesheet.get_sprite(0, 64, self.width, self.height),
+                                self.game.character_spritesheet.get_sprite(64, 64, self.width, self.height),
+                                self.game.character_spritesheet.get_sprite(128, 64, self.width, self.height),
+                                self.game.character_spritesheet.get_sprite(192, 64, self.width, self.height),
+                                self.game.character_spritesheet.get_sprite(256, 64, self.width, self.height),
+                                self.game.character_spritesheet.get_sprite(320, 64, self.width, self.height),
+                                self.game.character_spritesheet.get_sprite(384, 64, self.width, self.height),
+                                self.game.character_spritesheet.get_sprite(448, 64, self.width, self.height),
+                                self.game.character_spritesheet.get_sprite(512, 64, self.width, self.height)
+                                ]
+
+        self.right_animations = [self.game.character_spritesheet.get_sprite(0, 192, self.width, self.height),
+                                 self.game.character_spritesheet.get_sprite(64, 192, self.width, self.height),
+                                 self.game.character_spritesheet.get_sprite(128, 192, self.width, self.height),
+                                 self.game.character_spritesheet.get_sprite(192, 192, self.width, self.height),
+                                 self.game.character_spritesheet.get_sprite(256, 192, self.width, self.height),
+                                 self.game.character_spritesheet.get_sprite(320, 192, self.width, self.height),
+                                 self.game.character_spritesheet.get_sprite(384, 192, self.width, self.height),
+                                 self.game.character_spritesheet.get_sprite(448, 192, self.width, self.height),
+                                 self.game.character_spritesheet.get_sprite(512, 192, self.width, self.height)
+                                 ]
 
     def update(self):
         self.movement()
@@ -90,11 +124,10 @@ class Character(pygame.sprite.Sprite):
         self.collide_terrain('x')
 
         self.rect.y += self.y_change
-        self.collision_rect.y = self.rect.bottom - 10
+        self.collision_rect.y = self.rect.bottom - 5
         self.collide_terrain('y')
 
-        self.hp_rect.x = self.rect.x
-        self.hp_rect.y = self.rect.y - 10
+        self.game.all_sprites.change_layer(self, self.collision_rect.bottom)
 
         self.x_change = 0
         self.y_change = 0
@@ -110,6 +143,9 @@ class Character(pygame.sprite.Sprite):
         if current_pos_y < 0:
             self.game.LevelChange('up')
 
+        # print('Player', self._layer)
+
+
     def Loot(self):
         self.changeHealth(-10)
         self.changeEXP(3)
@@ -117,8 +153,9 @@ class Character(pygame.sprite.Sprite):
         self.AttackChoice = False
         self.game.RemoveAttackLevel()
         self.rect.x, self.rect.y = self.pos
-        self.collision_rect.x = self.rect.x + 5
-        self.collision_rect.y = self.rect.bottom - 10
+        # self.collision_rect = pygame.Rect(self.x + 22, self.y - 5, 35, 10)
+        self.collision_rect.x = self.rect.x + 22
+        self.collision_rect.y = self.rect.bottom - 5
 
     def Flee(self):
         self.changeHealth(-15)
@@ -126,8 +163,9 @@ class Character(pygame.sprite.Sprite):
         self.AttackChoice = False
         self.game.RemoveAttackLevel()
         self.rect.x, self.rect.y = self.pos
-        self.collision_rect.x = self.rect.x + 5
-        self.collision_rect.y = self.rect.bottom - 10
+        # self.collision_rect = pygame.Rect(self.x + 22, self.y - 5, 35, 10)
+        self.collision_rect.x = self.rect.x + 22
+        self.collision_rect.y = self.rect.bottom - 5
 
     def checkForLevelUp(self):
         if self.exp >= self.exp_to_level:
@@ -171,41 +209,43 @@ class Character(pygame.sprite.Sprite):
                 self.y_change += PLAYER_SPEED
                 self.facing = 'down'
             if any((keys[pygame.K_UP], keys[pygame.K_DOWN])):
+                # self.game.all_sprites.change_layer(self, self.collision_rect.bottom)
                 self.game.all_sprites.change_layer(self, self.collision_rect.bottom)
+
 
     def animate(self):
         if self.facing == 'down':
             if self.y_change == 0:
-                self.image = self.game.character_spritesheet.get_sprite(0, 0, self.width, self.height)
+                self.image = self.game.character_spritesheet.get_sprite(0, 128, self.width, self.height)
             else:
                 self.image = self.down_animations[math.floor(self.animation_loop)]
-                self.animation_loop += 0.1
-                if self.animation_loop >= 3:
-                    self.animation_loop = 1
+                self.animation_loop += self.animation_loop_speed
+                if self.animation_loop >= 8:
+                    self.animation_loop = 0
         if self.facing == 'up':
             if self.y_change == 0:
                 self.image = self.game.character_spritesheet.get_sprite(0, 0, self.width, self.height)
             else:
-                self.image = self.down_animations[math.floor(self.animation_loop)]
-                self.animation_loop += 0.1
-                if self.animation_loop >= 3:
-                    self.animation_loop = 1
+                self.image = self.up_animations[math.floor(self.animation_loop)]
+                self.animation_loop += self.animation_loop_speed
+                if self.animation_loop >= 8:
+                    self.animation_loop = 0
         if self.facing == 'left':
             if self.x_change == 0:
-                self.image = self.game.character_spritesheet.get_sprite(0, 0, self.width, self.height)
+                self.image = self.game.character_spritesheet.get_sprite(0, 64, self.width, self.height)
             else:
-                self.image = self.down_animations[math.floor(self.animation_loop)]
-                self.animation_loop += 0.1
-                if self.animation_loop >= 3:
-                    self.animation_loop = 1
+                self.image = self.left_animations[math.floor(self.animation_loop)]
+                self.animation_loop += self.animation_loop_speed
+                if self.animation_loop >= 8:
+                    self.animation_loop = 0
         if self.facing == 'right':
             if self.x_change == 0:
-                self.image = self.game.character_spritesheet.get_sprite(0, 0, self.width, self.height)
+                self.image = self.game.character_spritesheet.get_sprite(0, 192, self.width, self.height)
             else:
-                self.image = self.down_animations[math.floor(self.animation_loop)]
-                self.animation_loop += 0.1
-                if self.animation_loop >= 3:
-                    self.animation_loop = 1
+                self.image = self.right_animations[math.floor(self.animation_loop)]
+                self.animation_loop += self.animation_loop_speed
+                if self.animation_loop >= 8:
+                    self.animation_loop = 0
 
     def collide_terrain(self, direction):
 
@@ -214,12 +254,10 @@ class Character(pygame.sprite.Sprite):
                 collide = pygame.Rect.colliderect(self.collision_rect, object.collision_rect)
                 if collide:
                     if self.x_change > 0:  # Moving Right
-                        self.rect.right = object.collision_rect.x + 5
-                        # self.rect.x = object.collision_rect.x - self.collision_rect.width
+                        self.rect.right = object.collision_rect.x + 22
                         self.collision_rect.right = object.collision_rect.x
-                        # self.collision_rect.x = object.collision_rect.x - self.collision_rect.width
                     if self.x_change < 0:  # Moving Left
-                        self.rect.x = object.collision_rect.right - 5
+                        self.rect.x = object.collision_rect.right - 22
                         self.collision_rect.x = object.collision_rect.right
 
         if direction == 'y':
@@ -228,10 +266,23 @@ class Character(pygame.sprite.Sprite):
                 if collide:
                     if self.y_change > 0:  # Moving Down
                         self.rect.bottom = object.collision_rect.y
-                        self.collision_rect.y = self.rect.bottom - 10
+                        self.collision_rect.y = self.rect.bottom - 5
                     if self.y_change < 0:  # Moving Up
-                        self.rect.bottom = object.collision_rect.bottom + 10
+                        self.rect.bottom = object.collision_rect.bottom + 5
                         self.collision_rect.y = object.collision_rect.bottom
+                    # print('Object Layer:', object._layer)
+                    # print('Player Layer:', self._layer)
+                    # print('Player Collision', self.collision_rect.bottom)
+                    # print('---------------')
+                    # print(self.game.all_sprites.get_layer_of_sprite(self))
+                    logging.info('------------------------------------')
+                    logging.info(str(self.game.current_level))
+                    for i in range(len(self.game.all_sprites)):
+                        logging.info(
+                            ('Layer:', self.game.all_sprites.get_layer_of_sprite(self.game.all_sprites.get_sprite(i)), 'Sprite:',
+                             self.game.all_sprites.get_sprite(i), self.game.all_sprites.get_sprite(i).collision_rect))
+                    logging.info('------------------------------------')
+
 
     def tempAttack(self, EnemyObject, EnemyName):
         EnemyObject = EnemyObject
@@ -241,11 +292,12 @@ class Character(pygame.sprite.Sprite):
         self.AttackChoice = True
 
         self.pos = (self.rect.x, self.rect.y)
-
+        self.facing = 'right'
         self.rect.x = BORDER_TILESIZE + 5
-        self.collision_rect.x = self.rect.x + 5
         self.rect.y = WIN_HEIGHT / 2
-        self.collision_rect.y = self.rect.bottom - 10
+        # self.collision_rect = pygame.Rect(self.x + 15, self.y - 5, 35, 10)
+        self.collision_rect.x = self.rect.x + 15
+        self.collision_rect.y = self.y - 5
 
         self.game.AttackLevelChange(EnemyName)
 

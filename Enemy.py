@@ -35,6 +35,8 @@ class Wolf(pygame.sprite.Sprite):
         self.rect.x = self.x
         self.rect.y = self.y
 
+        self.collision_rect = pygame.Rect(self.x, self.y, self.width, self.height)
+
         self._layer = self.rect.bottom
 
         if not self.inCombat:
@@ -68,8 +70,10 @@ class Wolf(pygame.sprite.Sprite):
         # self.collide_enemy()
 
         self.rect.x += self.x_change
+        self.collision_rect.x += self.x
         self.collide_terrain('x')
         self.rect.y += self.y_change
+        self.collision_rect.y += self.y
         self.collide_terrain('y')
 
         self.x_change = 0
