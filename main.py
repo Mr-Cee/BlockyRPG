@@ -158,9 +158,9 @@ class Game:
                     self.player.changeHealth(10)
                 if event.key == pygame.K_KP_MINUS:
                     self.player.changeHealth(-10)
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if self.player.AttackChoice:
-                    self.player.Loot()
+            # if event.type == pygame.MOUSEBUTTONDOWN:
+            #     if self.player.AttackChoice:
+            #         self.player.Loot()
 
     def update(self):
         self.all_sprites.update()

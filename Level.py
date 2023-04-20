@@ -3,6 +3,7 @@ import random
 
 import pygame
 
+import button
 from config import *
 from terrain import *
 from character import *
@@ -156,6 +157,10 @@ class Level:
             self.screen.blit(self.attackBackground, (0, 0))
             self.combat_enemy_sprites.draw(self.screen)
             self.combat_background_sprites.draw(self.screen)
+            if button.Button(self.screen, WIN_WIDTH/2-97, WIN_HEIGHT/2, pygame.image.load('assets/button_attack.png'), 195, 50).draw():
+                self.player.Loot()
+            if button.Button(self.screen, WIN_WIDTH / 2 - 97, WIN_HEIGHT / 2 + 60, pygame.image.load('assets/button_flee.png'), 195, 50).draw():
+                self.player.Flee()
         else:
             # Draw the Background
             self.screen.blit(self.background, (0, 0))

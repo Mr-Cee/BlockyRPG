@@ -185,7 +185,6 @@ class Wolf(pygame.sprite.Sprite):
                         self.facing = 'down'
                         self.movement_loop = 0
                         self.max_travel = random.randint(10, 30)
-                    print('New Direction:', self.facing)
 
     def collide_enemy(self):
         pass

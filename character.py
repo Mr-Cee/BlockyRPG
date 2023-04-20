@@ -110,24 +110,20 @@ class Character(pygame.sprite.Sprite):
         if current_pos_y < 0:
             self.game.LevelChange('up')
 
-        # for event in pygame.event.get():
-        #     if event.type == pygame.MOUSEBUTTONDOWN:
-        #         print('Click---------------------------------\n-------------------------')
-        #         if self.AttackChoice:
-        #             print('Click---------------------------------\n-------------------------')
-        #             self.Loot()
-
-        # if self.tempAttackPause > 0:
-        #     self.tempAttackPause -= 1
-        #     self.AttackChoice = True
-        #     if self.tempAttackPause == 0:
-        #         self.Loot()
-
     def Loot(self):
-
+        self.changeHealth(-10)
+        self.changeEXP(3)
         self.isAttackable = True
         self.AttackChoice = False
-        print('Removed Attack Choice')
+        self.game.RemoveAttackLevel()
+        self.rect.x, self.rect.y = self.pos
+        self.collision_rect.x = self.rect.x + 5
+        self.collision_rect.y = self.rect.bottom - 10
+
+    def Flee(self):
+        self.changeHealth(-15)
+        self.isAttackable = True
+        self.AttackChoice = False
         self.game.RemoveAttackLevel()
         self.rect.x, self.rect.y = self.pos
         self.collision_rect.x = self.rect.x + 5
@@ -262,8 +258,6 @@ class Character(pygame.sprite.Sprite):
             for object in self.game.enemy_sprites:
                 collide = pygame.Rect.colliderect(self.collision_rect, object.rect)
                 if collide:
-                    self.changeHealth(-10)
-                    self.changeEXP(3)
                     self.isAttackable = False
                     self.tempAttack(object, object.EnemyName)
                     templist.append(object)
