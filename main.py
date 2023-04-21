@@ -29,6 +29,8 @@ class Game:
         self.BottomPanel_IMG = pygame.image.load(self.resource_path('assets/BottomUI.png'))
         self.hpbar_empty_img = pygame.image.load(self.resource_path('assets/EmptyHPBar.png'))
         self.hpbar_inside_img = pygame.image.load(self.resource_path('assets/HPBarInside.png'))
+        self.textboxIMG = pygame.image.load(self.resource_path('assets/textbox.png'))
+        self.textboxIMG = pygame.transform.scale(self.textboxIMG, (WIN_WIDTH / 2, 160))
 
         self.enemyHPBar = pygame.image.load(self.resource_path('assets/enemy_health_bar.png'))
         self.enemyHPBar = pygame.transform.scale(self.enemyHPBar, (WIN_WIDTH/3, 50))
@@ -38,6 +40,7 @@ class Game:
         self.enemyHPBarFGGold = pygame.transform.scale(self.enemyHPBarFGGold, (WIN_WIDTH/3, 50))
         self.enemyHPBarFGSilver = pygame.image.load(self.resource_path('assets/enemy_health_bar_foreground_silver.png'))
         self.enemyHPBarFGSilver = pygame.transform.scale(self.enemyHPBarFGSilver, (WIN_WIDTH/3, 50))
+
 
         self.all_sprites = pygame.sprite.LayeredUpdates()
         self.player_sprite = pygame.sprite.Group()
@@ -81,6 +84,11 @@ class Game:
         log = "bot.log"
         logging.basicConfig(filename=log, level=logging.DEBUG, format='%(asctime)s %(message)s', filemode='a',
                             datefmt='%d/%m/%Y %H:%M:%S')
+
+        self.the_font = pygame.font.Font(None, 32)
+
+
+        self.message_log = []
 
         # for i in range(len(self.all_sprites.layers())):
         #     print(self.all_sprites.get_layer_of_sprite(i))
@@ -233,13 +241,47 @@ class Game:
         # EnemyHPBar(self, WIN_WIDTH / 2, 10, self.enemyHPBar)
         # EnemyHPBarFG(self, WIN_WIDTH / 2, 10, self.enemyHPBarFGSilver)
 
+    def console_print(self, message):
+        self.message_log.append(message)
 
+    def update_log(self):
+        # create a surface for the log:
+        # This one the same width as the RESOLUTION and 1/3 the height
+        self.log_surf = pygame.Surface((WIN_WIDTH/2, 160))
+        self.log_surf.blit(self.textboxIMG, (0, 0, WIN_WIDTH/2, 160))
+        # Populate it with, say, the last three messages:
+        # Note: You could do this in a more elegant loop if you wanted to.
+        #       You would probably be served by checking to see if you have any messages at all before
+        #       searching through the message log, to avoid looking for elements that aren't in the list.
+        #       for this example I added 3 placeholder messages at the start of the main function
+        #       to avoid that problem here.
+        if len(self.message_log) > 0:
+            new_log = []
+            m1 = self.message_log[-1]
+            m2 = self.message_log[-2]
+            m3 = self.message_log[-3]
+            new_log.append(m1)
+            new_log.append(m2)
+            new_log.append(m3)
+            font_y = 10
+            for m in new_log:
+                message = self.the_font.render(m, False, BLACK)
+                self.log_surf.blit(message, (15, font_y))
+                font_y += 34  # gives a little padding for the next message
+        # blit it to the main surface in a spot where it'll fit snugly:
+        # sorry for the magic numbers, ideally you would pre-define these positions
+        # as variables
 
+        self.screen.blit(self.log_surf, (WIN_WIDTH/2, WIN_HEIGHT))
 
     def new(self):
 
         self.playing = True
         self.UIBuild()
+        self.console_print('Test 1')
+        self.console_print('Test 2')
+        self.console_print('Test 3')
+
 
     def events(self):
         for event in pygame.event.get():
@@ -271,6 +313,7 @@ class Game:
     def update(self):
         self.all_sprites.update()
         self.current_level.update()
+        self.update_log()
 
 
     def draw(self):

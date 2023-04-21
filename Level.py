@@ -196,6 +196,7 @@ class Level:
         # Draw all the sprite lists we have
         # self.player_sprite.draw(self.screen)
         self.UI_Sprites.draw(self.screen)
+        self.screen.blit(self.game.log_surf, (WIN_WIDTH / 2, WIN_HEIGHT))
 
 
 

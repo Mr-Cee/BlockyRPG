@@ -301,6 +301,7 @@ class Character(pygame.sprite.Sprite):
         # print(str(EnemyObject.EnemyName) + ' ' + str(EnemyObject.hp) + '/' + str(EnemyObject.max_hp))
         # print('Attacked ' + str(EnemyObject.EnemyName) + 'for ' + str(tempAttack) + ' damage')
         EnemyObject.hp -= tempAttack
+        self.game.console_print('Attacked for: ' + str(tempAttack))
         # print(str(EnemyObject.EnemyName) + ' ' + str(EnemyObject.hp) + '/' + str(EnemyObject.max_hp))
         if EnemyObject.hp > 0:
             self.game.enemyHPBar = pygame.transform.scale(self.game.enemyHPBar,
