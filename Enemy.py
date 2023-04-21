@@ -19,6 +19,12 @@ class Wolf(pygame.sprite.Sprite):
 
         self.max_hp = 50
         self.hp = self.max_hp
+        self.font = pygame.font.Font('assets/BKANT.TTF', 20)
+        self.HPBarText = str(self.hp) + "/" + str(self.max_hp)
+        self.HPText = self.font.render(str(self.HPBarText), True, BLACK, None)
+        self.HPBarTextRect = self.HPText.get_rect()
+        self.HPBarTextRect.center = (WIN_WIDTH/2, 35)
+
         self.EXPGive = 10
 
 

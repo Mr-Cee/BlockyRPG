@@ -1,6 +1,6 @@
 import logging
 import random
-
+from UI import *
 import pyautogui as pyautogui
 import pygame
 import math
@@ -157,11 +157,9 @@ class Character(pygame.sprite.Sprite):
         self.AttackChoice = False
         self.canAttack = True
 
-
         if len(self.templist) > 0:
             for item in self.templist:
                 item.kill()
-
 
         self.game.RemoveAttackLevel()
 
@@ -299,11 +297,17 @@ class Character(pygame.sprite.Sprite):
 
     def AttackMonster(self):
         EnemyObject = self.monsterToAttack
-        tempAttack = random.randint(1+self.CharacterStrength, 5+self.CharacterStrength)
-        print(str(EnemyObject.EnemyName) + ' ' + str(EnemyObject.hp) + '/' + str(EnemyObject.max_hp))
-        print('Attacked ' + str(EnemyObject.EnemyName) + 'for '+ str(tempAttack) + ' damage')
+        tempAttack = random.randint(1 + self.CharacterStrength, 5 + self.CharacterStrength)
+        # print(str(EnemyObject.EnemyName) + ' ' + str(EnemyObject.hp) + '/' + str(EnemyObject.max_hp))
+        # print('Attacked ' + str(EnemyObject.EnemyName) + 'for ' + str(tempAttack) + ' damage')
         EnemyObject.hp -= tempAttack
-        print(str(EnemyObject.EnemyName) + ' ' + str(EnemyObject.hp) + '/' + str(EnemyObject.max_hp))
+        # print(str(EnemyObject.EnemyName) + ' ' + str(EnemyObject.hp) + '/' + str(EnemyObject.max_hp))
+        if EnemyObject.hp > 0:
+            self.game.enemyHPBar = pygame.transform.scale(self.game.enemyHPBar,
+                                                          (round(EnemyObject.hp / EnemyObject.max_hp * (WIN_WIDTH / 3)), 50))
+            self.font = pygame.font.Font('assets/BKANT.TTF', 20)
+            EnemyObject.HPBarText = str(round(EnemyObject.hp)) + "/" + str(round(EnemyObject.max_hp))
+            EnemyObject.HPText = self.font.render(str(EnemyObject.HPBarText), True, BLACK, None)
 
         if EnemyObject.hp <= 0:
             self.Loot(EnemyObject.EXPGive, EnemyObject)
@@ -313,7 +317,7 @@ class Character(pygame.sprite.Sprite):
 
     def tempAttack(self, EnemyObject, EnemyName):
         EnemyObject = EnemyObject
-        print('Attacking ' + EnemyName)
+
 
         self.tempAttackPause = 1 * FPS
         self.AttackChoice = True
@@ -339,6 +343,9 @@ class Character(pygame.sprite.Sprite):
                 if collide:
                     self.isAttackable = False
                     self.canAttack = True
+                    self.game.enemyHPBar = pygame.transform.scale(self.game.enemyHPBar,
+                                                                  (round(object.hp / object.max_hp * (WIN_WIDTH / 3)), 50))
+                    print("HP:",object.hp)
                     self.tempAttack(object, object.EnemyName)
                     self.templist.append(object)
 

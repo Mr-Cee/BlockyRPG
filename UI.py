@@ -1,4 +1,6 @@
 from character import *
+import pygame
+from config import *
 
 
 class UIPanel(pygame.sprite.Sprite):
@@ -85,8 +87,6 @@ class EXPBarInterior(pygame.sprite.Sprite):
         self.width = self.image.get_width()
         self.height = self.image.get_height()
 
-
-
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
@@ -132,5 +132,3 @@ class HUDMAIN(pygame.sprite.Sprite):
         self._layer = GAME_HEIGHT + 100
 
         pygame.sprite.Sprite.__init__(self, self.game.all_sprites, self.game.UI_Sprites)
-
-

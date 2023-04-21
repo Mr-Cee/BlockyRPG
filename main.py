@@ -30,6 +30,15 @@ class Game:
         self.hpbar_empty_img = pygame.image.load(self.resource_path('assets/EmptyHPBar.png'))
         self.hpbar_inside_img = pygame.image.load(self.resource_path('assets/HPBarInside.png'))
 
+        self.enemyHPBar = pygame.image.load(self.resource_path('assets/enemy_health_bar.png'))
+        self.enemyHPBar = pygame.transform.scale(self.enemyHPBar, (WIN_WIDTH/3, 50))
+        self.enemyHPBarBG = pygame.image.load(self.resource_path('assets/enemy_health_bar_background.png'))
+        self.enemyHPBarBG = pygame.transform.scale(self.enemyHPBarBG, (WIN_WIDTH/3, 50))
+        self.enemyHPBarFGGold = pygame.image.load(self.resource_path('assets/enemy_health_bar_foreground_gold.png'))
+        self.enemyHPBarFGGold = pygame.transform.scale(self.enemyHPBarFGGold, (WIN_WIDTH/3, 50))
+        self.enemyHPBarFGSilver = pygame.image.load(self.resource_path('assets/enemy_health_bar_foreground_silver.png'))
+        self.enemyHPBarFGSilver = pygame.transform.scale(self.enemyHPBarFGSilver, (WIN_WIDTH/3, 50))
+
         self.all_sprites = pygame.sprite.LayeredUpdates()
         self.player_sprite = pygame.sprite.Group()
         self.gear_sprites = pygame.sprite.Group()
@@ -128,6 +137,8 @@ class Game:
         tempNum = len(self.level_list) - 1
         for sprite in self.combat_background_sprites:
             sprite.kill()
+        for sprite in self.combat_UI_Sprites:
+            sprite.kill()
         if len(self.combat_enemy_sprites) > 0:
             for sprite in self.combat_enemy_sprites:
                 sprite.kill()
@@ -218,6 +229,12 @@ class Game:
         HUDMAIN(self, 10, WIN_HEIGHT + 10)  # HP/MP/XP HUD BARS
         self.RedHPBar = HPBarInterior(self, 193, WIN_HEIGHT + 22)  # HP RED BAR
         self.EXPYellowBar = pygame.image.load(self.resource_path('assets/XPBarInside.png'))
+        # EnemyHPBarBG(self, WIN_WIDTH / 2, 10, self.enemyHPBarBG)
+        # EnemyHPBar(self, WIN_WIDTH / 2, 10, self.enemyHPBar)
+        # EnemyHPBarFG(self, WIN_WIDTH / 2, 10, self.enemyHPBarFGSilver)
+
+
+
 
     def new(self):
 
@@ -255,9 +272,14 @@ class Game:
         self.all_sprites.update()
         self.current_level.update()
 
+
     def draw(self):
         if not self.player.isAttackable:
             self.screen.blit(WIN_Attack_BG, (0, 0))
+
+            # self.screen.blit(self.enemyHPBarBG, (WIN_HEIGHT/3, 10))
+            # self.screen.blit(self.enemyHPBar, (WIN_HEIGHT / 3, 10))
+            # self.screen.blit(self.enemyHPBarFGSilver, (WIN_HEIGHT / 3, 10))
 
         self.current_level.draw(self.screen)
 
