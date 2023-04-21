@@ -44,6 +44,7 @@ class Rock(pygame.sprite.Sprite):
         # self.rect = self.image.get_rect()
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
         self.collision_rect = self.rect
+        self.collision_rect = pygame.Rect(self.x+5, self.y + self.height-self.height/2-8, self.width-10, self.height/2+8)
 
         self._layer = self.y + self.height
 

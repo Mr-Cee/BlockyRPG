@@ -146,7 +146,7 @@ class Character(pygame.sprite.Sprite):
 
     def Loot(self):
         self.changeHealth(-10)
-        self.changeEXP(3)
+        self.changeEXP(10)
         self.isAttackable = True
         self.AttackChoice = False
         self.game.RemoveAttackLevel()
@@ -156,7 +156,7 @@ class Character(pygame.sprite.Sprite):
         self.collision_rect.y = self.rect.bottom - 5
 
     def Flee(self):
-        self.changeHealth(-15)
+        self.changeHealth(-20)
         self.isAttackable = True
         self.AttackChoice = False
         self.game.RemoveAttackLevel()
@@ -263,7 +263,7 @@ class Character(pygame.sprite.Sprite):
                 collide = pygame.Rect.colliderect(self.collision_rect, object.collision_rect)
                 if collide:
                     if self.y_change > 0:  # Moving Down
-                        self.rect.bottom = object.collision_rect.top
+                        self.rect.bottom = object.collision_rect.top - 5
                         self.collision_rect.bottom = object.collision_rect.top
                     if self.y_change < 0:  # Moving Up
                         self.rect.y = object.collision_rect.bottom - self.height + 5

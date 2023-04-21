@@ -1,6 +1,9 @@
 import logging
+import os
 import random
 import sys
+from math import floor
+
 import pygame
 from config import *
 from character import *
@@ -17,13 +20,14 @@ class Game:
         self.running = True
         self.characterList = []
 
-        self.font = pygame.font.Font('assets/BKANT.TTF', 10)
+        self.font = pygame.font.Font(self.resource_path('assets/BKANT.TTF'), 10)
 
         self.character_spritesheet = SpriteSheet('assets/CharacterWalkingSpritesheet.png')
 
-        self.BottomPanel_IMG = pygame.image.load('assets/BottomUI.png')
-        self.hpbar_empty_img = pygame.image.load('assets/EmptyHPBar.png')
-        self.hpbar_inside_img = pygame.image.load('assets/HPBarInside.png')
+        # self.BottomPanel_IMG = pygame.image.load('assets/BottomUI.png')
+        self.BottomPanel_IMG = pygame.image.load(self.resource_path('assets/BottomUI.png'))
+        self.hpbar_empty_img = pygame.image.load(self.resource_path('assets/EmptyHPBar.png'))
+        self.hpbar_inside_img = pygame.image.load(self.resource_path('assets/HPBarInside.png'))
 
         self.all_sprites = pygame.sprite.LayeredUpdates()
         self.player_sprite = pygame.sprite.Group()
@@ -37,7 +41,7 @@ class Game:
         self.UI_Sprites = pygame.sprite.Group()
 
         self.player = Character(self, WIN_WIDTH / 2, WIN_HEIGHT / 2)
-        self.font = pygame.font.Font('assets/BKANT.TTF', 9)
+        self.font = pygame.font.Font(self.resource_path('assets/BKANT.TTF'), 9)
 
         self.EnemyList = ['Wolf']
 
@@ -93,6 +97,16 @@ class Game:
         # for i in range(len(self.all_sprites)):
         #     logging.info(('Layer:', self.all_sprites.get_layer_of_sprite(self.all_sprites.get_sprite(i)), 'Sprite:', self.all_sprites.get_sprite(i), self.all_sprites.get_sprite(i).collision_rect))
         # logging.info('------------------------------------')
+
+    def resource_path(self, relative_path):
+        """ Get absolute path to resource, works for dev and for PyInstaller """
+        try:
+            # PyInstaller creates a temp folder and stores path in _MEIPASS
+            base_path = sys._MEIPASS
+        except Exception:
+            base_path = os.path.abspath(".")
+        return os.path.join(base_path, relative_path)
+
 
     def AttackLevelChange(self, EnemyName):
         tempNum = len(self.level_list)
@@ -166,10 +180,14 @@ class Game:
 
     def DeathReset(self):
         self.player.hp = self.player.max_hp
+        if self.player.exp > 0:
+            self.player.exp = floor(self.player.exp*.9)
+
         self.player.rect.x = WIN_WIDTH / 2
         self.player.rect.y = WIN_HEIGHT / 2
         self.player.collision_rect.x = self.player.rect.x + 22
         self.player.collision_rect.y = self.player.rect.bottom - 5
+
         self.current_level_no = 0
         self.current_level = self.level_list[self.current_level_no]
         self.level = self.current_level
@@ -180,14 +198,22 @@ class Game:
             for sprite in self.enemy_sprites:
                 sprite.kill()
 
-        self.current_level.GenerateEnemies()
+        self.current_level.GenerateEnemies(None)
         self.current_level.terrainGen()
+
+        self.font = pygame.font.Font('assets/BKANT.TTF', 20)
+        self.player.EXPBarText = str(self.player.exp) + "/" + str(self.player.exp_to_level)
+        self.player.EXPText = self.font.render(str(self.player.EXPBarText), True, BLACK, None)
+
+        self.font = pygame.font.Font('assets/BKANT.TTF', 20)
+        self.player.HPBarText = str(round(self.player.hp)) + "/" + str(round(self.player.max_hp))
+        self.player.HPText = self.font.render(str(self.player.HPBarText), True, BLACK, None)
 
     def UIBuild(self):
         UIPanel(self, 0, WIN_HEIGHT, self.BottomPanel_IMG)  # Background Panel
         HUDMAIN(self, 10, WIN_HEIGHT + 10)  # HP/MP/XP HUD BARS
         self.RedHPBar = HPBarInterior(self, 193, WIN_HEIGHT + 22)  # HP RED BAR
-        self.EXPYellowBar = pygame.image.load('assets/XPBarInside.png')
+        self.EXPYellowBar = pygame.image.load(self.resource_path('assets/XPBarInside.png'))
 
     def new(self):
 
@@ -230,11 +256,11 @@ class Game:
         self.screen.blit(self.player.EXPText, self.player.EXPBarTextRect)
 ################### Drawing Squares around objects for collisions ##################################
 
-        for object in self.background_sprites:
-            pygame.draw.rect(self.screen, BLACK, object.collision_rect)
-        for object in self.enemy_sprites:
-            pygame.draw.rect(self.screen, RED, object.rect)
-        pygame.draw.rect(self.screen, WHITE, self.player.collision_rect)
+        # for object in self.background_sprites:
+        #     pygame.draw.rect(self.screen, BLACK, object.collision_rect)
+        # for object in self.enemy_sprites:
+        #     pygame.draw.rect(self.screen, RED, object.rect)
+        # pygame.draw.rect(self.screen, WHITE, self.player.collision_rect)
 
 ###################################################################################################
         self.clock.tick(FPS)

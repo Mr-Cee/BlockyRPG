@@ -4,10 +4,6 @@ import random
 import pygame
 
 import button
-from config import *
-from terrain import *
-from character import *
-from SpriteUtilities import *
 from Enemy import *
 
 
@@ -41,13 +37,13 @@ class Level:
 
         # Background Image
         self.background = WIN_BG
-        self.attackBackground = pygame.image.load('assets/background_attack.png')
+        self.attackBackground = pygame.image.load(self.game.resource_path('assets/background_attack.png'))
         self.attackBackground = pygame.transform.scale(self.attackBackground, (WIN_WIDTH, WIN_HEIGHT))
 
         # Other Images
-        self.tree_image = pygame.image.load('assets/tree.png')
-        self.rock_img = pygame.image.load('assets/large_rock.png')
-        self.building1 = pygame.image.load('assets/Building_1.png')
+        self.tree_image = pygame.image.load(self.game.resource_path('assets/tree.png'))
+        self.rock_img = pygame.image.load(self.game.resource_path('assets/large_rock.png'))
+        self.building1 = pygame.image.load(self.game.resource_path('assets/Building_1.png'))
         self.wolf_spritesheet = SpriteSheet_Black('assets/Wolfsheet1.png')
         self.character_spritesheet = SpriteSheet('assets/CharacterSpritesheet.png')
 
@@ -163,9 +159,9 @@ class Level:
             # self.combat_background_sprites.draw(self.screen)
             self.combat_enemy_sprites.draw(self.screen)
             self.combat_background_sprites.draw(self.screen)
-            if button.Button(self.game, self.screen, WIN_WIDTH/2-97, WIN_HEIGHT/2, pygame.image.load('assets/button_attack.png'), 195, 50).draw():
+            if button.Button(self.game, self.screen, WIN_WIDTH/2-97, WIN_HEIGHT/2, pygame.image.load(self.game.resource_path('assets/button_attack.png')), 195, 50).draw():
                 self.player.Loot()
-            if button.Button(self.game, self.screen, WIN_WIDTH / 2 - 97, WIN_HEIGHT / 2 + 60, pygame.image.load('assets/button_flee.png'), 195, 50).draw():
+            if button.Button(self.game, self.screen, WIN_WIDTH / 2 - 97, WIN_HEIGHT / 2 + 60, pygame.image.load(self.game.resource_path('assets/button_flee.png')), 195, 50).draw():
                 self.player.Flee()
             self.player_sprite.draw(screen)
         else:

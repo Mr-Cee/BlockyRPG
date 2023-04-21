@@ -1,7 +1,6 @@
 import pygame
 from character import *
 
-
 # button class
 class Button:
     def __init__(self, game, surface, x, y, image, size_x, size_y):
