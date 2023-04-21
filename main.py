@@ -8,6 +8,7 @@ import pygame
 from config import *
 from character import *
 from terrain import *
+from Enemy import *
 from Level import *
 from UI import *
 
@@ -44,6 +45,11 @@ class Game:
         self.font = pygame.font.Font(self.resource_path('assets/BKANT.TTF'), 9)
 
         self.EnemyList = ['Wolf']
+
+        self.milliseconds_delay = 2000  # 1 seconds
+        self.CharacterAttackTimer = pygame.USEREVENT + 1
+        self.EnemyAttackTimer = pygame.USEREVENT + 2
+
 
         self.current_level_no = 0
         self.level_list = []
@@ -138,8 +144,6 @@ class Game:
         if self.leveldirection == 'right':
             self.player.rect.x = 1
             self.player.collision_rect.x = self.player.rect.x + 22
-            print('rect.x:', self.player.rect.x)
-            print('collision x:', self.player.collision_rect.x)
             self.current_level_no += 3
             self.current_level = self.level_list[self.current_level_no]
             self.level = self.current_level
@@ -234,6 +238,15 @@ class Game:
                     self.player.changeHealth(10)
                 if event.key == pygame.K_KP_MINUS:
                     self.player.changeHealth(-10)
+            # if event.type == self.CharacterAttackTimer:
+            #     self.player.monsterToAttack = self.current_level.Monster1
+            #     self.player.canAttack = False
+            #     self.player.AttackMonster()
+            #     pygame.time.set_timer(self.CharacterAttackTimer, 0)
+
+            if event.type == self.EnemyAttackTimer:
+                self.current_level.Monster1.AttackCharacter()
+                pygame.time.set_timer(self.EnemyAttackTimer, 0)
             # if event.type == pygame.MOUSEBUTTONDOWN:
             #     if self.player.AttackChoice:
             #         self.player.Loot()

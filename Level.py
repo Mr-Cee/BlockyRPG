@@ -39,6 +39,7 @@ class Level:
         self.background = WIN_BG
         self.attackBackground = pygame.image.load(self.game.resource_path('assets/background_attack.png'))
         self.attackBackground = pygame.transform.scale(self.attackBackground, (WIN_WIDTH, WIN_HEIGHT))
+        self.Monster1 = None
 
         # Other Images
         self.tree_image = pygame.image.load(self.game.resource_path('assets/tree.png'))
@@ -46,6 +47,10 @@ class Level:
         self.building1 = pygame.image.load(self.game.resource_path('assets/Building_1.png'))
         self.wolf_spritesheet = SpriteSheet_Black('assets/Wolfsheet1.png')
         self.character_spritesheet = SpriteSheet('assets/CharacterSpritesheet.png')
+
+        self.milliseconds_delay = 2000  # 1 seconds
+        self.CharacterAttackTimer = pygame.USEREVENT + 1
+        self.EnemyAttackTimer = pygame.USEREVENT + 2
 
 
 
@@ -134,7 +139,7 @@ class Level:
                          random.randint(BORDER_TILESIZE * 2, WIN_HEIGHT - (BORDER_TILESIZE * 2)))
         else:
             if EnemyName == 'Wolf':
-                Wolf(self, WIN_WIDTH - BORDER_TILESIZE * 4, WIN_HEIGHT / 2)
+                self.Monster1 = Wolf(self, WIN_WIDTH - BORDER_TILESIZE * 4, WIN_HEIGHT / 2)
 
     # Update everything on this level
     def update(self):
@@ -159,10 +164,16 @@ class Level:
             # self.combat_background_sprites.draw(self.screen)
             self.combat_enemy_sprites.draw(self.screen)
             self.combat_background_sprites.draw(self.screen)
-            if button.Button(self.game, self.screen, WIN_WIDTH/2-97, WIN_HEIGHT/2, pygame.image.load(self.game.resource_path('assets/button_attack.png')), 195, 50).draw():
-                self.player.Loot()
-            if button.Button(self.game, self.screen, WIN_WIDTH / 2 - 97, WIN_HEIGHT / 2 + 60, pygame.image.load(self.game.resource_path('assets/button_flee.png')), 195, 50).draw():
-                self.player.Flee()
+            if self.player.canAttack:
+                if button.Button(self.game, self.screen, WIN_WIDTH/2-97, WIN_HEIGHT/2, pygame.image.load(self.game.resource_path('assets/button_attack.png')), 195, 50).draw() and self.player.canAttack:
+                    self.player.canAttack = False
+                    # pygame.time.set_timer(self.CharacterAttackTimer, self.milliseconds_delay)
+                    #self.player.Loot()
+                    self.player.monsterToAttack = self.game.current_level.Monster1
+                    self.player.canAttack = False
+                    self.player.AttackMonster()
+                if button.Button(self.game, self.screen, WIN_WIDTH / 2 - 97, WIN_HEIGHT / 2 + 60, pygame.image.load(self.game.resource_path('assets/button_flee.png')), 195, 50).draw():
+                    self.player.Flee()
             self.player_sprite.draw(screen)
         else:
             # Draw the Background

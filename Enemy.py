@@ -2,6 +2,8 @@ from terrain import *
 import math
 import random
 from character import *
+from SpriteUtilities import *
+
 
 
 class Wolf(pygame.sprite.Sprite):
@@ -14,6 +16,13 @@ class Wolf(pygame.sprite.Sprite):
         self.y = y
         self.width = 32
         self.height = 64
+
+        self.max_hp = 50
+        self.hp = self.max_hp
+        self.EXPGive = 10
+
+
+        self.attackPower = 5
 
         self.x_change = 0
         self.y_change = 0
@@ -28,6 +37,10 @@ class Wolf(pygame.sprite.Sprite):
             self.inCombat = False
         else:
             self.inCombat = True
+
+        self.milliseconds_delay = 2000  # 1 seconds
+        self.CharacterAttackTimer = pygame.USEREVENT + 1
+        self.EnemyAttackTimer = pygame.USEREVENT + 2
 
         self.image = self.game.wolf_spritesheet.get_sprite(0, 0, self.width, self.height)
 
@@ -192,3 +205,15 @@ class Wolf(pygame.sprite.Sprite):
 
     def collide_enemy(self):
         pass
+    def AttackCharacter(self):
+        MonsterAttack = random.randint(1+self.attackPower, 10+self.attackPower )
+        print(self.EnemyName + ' attacked Character for: ' + str(MonsterAttack))
+        self.game.player.changeHealth(-MonsterAttack)
+        self.game.player.checkForDeath()
+        self.CheckForDeath()
+        self.game.player.canAttack = True
+
+    def CheckForDeath(self):
+        if self.hp <= 0:
+            self.game.player.Loot(self.EXPGive)
+

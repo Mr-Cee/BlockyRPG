@@ -1,4 +1,5 @@
 import logging
+import random
 
 import pyautogui as pyautogui
 import pygame
@@ -22,6 +23,8 @@ class Character(pygame.sprite.Sprite):
         self.exp = 0
         self.exp_to_level = 10
 
+        self.CharacterStrength = 20
+
         self.font = pygame.font.Font('assets/BKANT.TTF', 40)
         self.LevelText = self.font.render(str(self.playerLevel), True, BLACK, None)
 
@@ -38,7 +41,9 @@ class Character(pygame.sprite.Sprite):
 
         self.isAttackable = True  # Allows the character to attack or be attacked
         self.tempAttackPause = 0
+        self.canAttack = False
         self.AttackChoice = False
+        self.monsterToAttack = None
 
         self.x = x
         self.y = y
@@ -59,12 +64,11 @@ class Character(pygame.sprite.Sprite):
         self.rect.x = self.x
         self.rect.y = self.y
 
-
         # Character Level Text
         self.LevelTextRect = self.LevelText.get_rect()
         self.LevelTextRect.center = (78, WIN_HEIGHT + 79)
 
-        self.collision_rect = pygame.Rect(self.x + 22, self.y-5, 20, 10)
+        self.collision_rect = pygame.Rect(self.x + 22, self.y - 5, 20, 10)
 
         self._layer = self.collision_rect.bottom
 
@@ -114,6 +118,10 @@ class Character(pygame.sprite.Sprite):
                                  self.game.character_spritesheet.get_sprite(512, 192, self.width, self.height)
                                  ]
 
+        self.milliseconds_delay = 3000  # 1 seconds
+        self.timer_event = pygame.USEREVENT + 1
+        pygame.time.set_timer(self.timer_event, self.milliseconds_delay)
+
     def update(self):
         self.movement()
         self.animate()
@@ -143,13 +151,20 @@ class Character(pygame.sprite.Sprite):
 
         # print('Player', self._layer)
 
-
-    def Loot(self):
-        self.changeHealth(-10)
-        self.changeEXP(10)
+    def Loot(self, EXPGain, EnemyObject):
+        self.changeEXP(EXPGain)
         self.isAttackable = True
         self.AttackChoice = False
+        self.canAttack = True
+
+
+        if len(self.templist) > 0:
+            for item in self.templist:
+                item.kill()
+
+
         self.game.RemoveAttackLevel()
+
         self.rect.x, self.rect.y = self.pos
         # self.collision_rect = pygame.Rect(self.x + 22, self.y - 5, 35, 10)
         self.collision_rect.x = self.rect.x + 22
@@ -210,7 +225,6 @@ class Character(pygame.sprite.Sprite):
                 # self.game.all_sprites.change_layer(self, self.collision_rect.bottom)
                 self.game.all_sprites.change_layer(self, self.collision_rect.bottom)
 
-
     def animate(self):
         if self.facing == 'down':
             if self.y_change == 0:
@@ -269,13 +283,11 @@ class Character(pygame.sprite.Sprite):
                         self.rect.y = object.collision_rect.bottom - self.height + 5
                         self.collision_rect.top = object.collision_rect.bottom
 
-
                     # print('Object Layer:', object._layer)
                     # print('Player Layer:', self._layer)
                     # print('Player Collision', self.collision_rect.bottom)
                     # print('---------------')
                     # print(self.game.all_sprites.get_layer_of_sprite(self))
-
 
                     # logging.info('------------------------------------')
                     # logging.info(str(self.game.current_level))
@@ -285,6 +297,19 @@ class Character(pygame.sprite.Sprite):
                     #          self.game.all_sprites.get_sprite(i), self.game.all_sprites.get_sprite(i).collision_rect))
                     # logging.info('------------------------------------')
 
+    def AttackMonster(self):
+        EnemyObject = self.monsterToAttack
+        tempAttack = random.randint(1+self.CharacterStrength, 5+self.CharacterStrength)
+        print(str(EnemyObject.EnemyName) + ' ' + str(EnemyObject.hp) + '/' + str(EnemyObject.max_hp))
+        print('Attacked ' + str(EnemyObject.EnemyName) + 'for '+ str(tempAttack) + ' damage')
+        EnemyObject.hp -= tempAttack
+        print(str(EnemyObject.EnemyName) + ' ' + str(EnemyObject.hp) + '/' + str(EnemyObject.max_hp))
+
+        if EnemyObject.hp <= 0:
+            self.Loot(EnemyObject.EXPGive, EnemyObject)
+
+        if self.hp > 0 and EnemyObject.hp > 0:
+            pygame.time.set_timer(self.game.EnemyAttackTimer, self.game.milliseconds_delay)
 
     def tempAttack(self, EnemyObject, EnemyName):
         EnemyObject = EnemyObject
@@ -308,17 +333,18 @@ class Character(pygame.sprite.Sprite):
 
     def collide_enemy(self):
         if self.isAttackable:
-            templist = []
+            self.templist = []
             for object in self.game.enemy_sprites:
                 collide = pygame.Rect.colliderect(self.collision_rect, object.rect)
                 if collide:
                     self.isAttackable = False
+                    self.canAttack = True
                     self.tempAttack(object, object.EnemyName)
-                    templist.append(object)
+                    self.templist.append(object)
 
-            if len(templist) > 0:
-                for item in templist:
-                    item.kill()
+            # if len(templist) > 0:
+            #     for item in templist:
+            #         item.kill()
 
     def changeHealth(self, hpAmount):
         if self.hp + hpAmount < self.max_hp:
