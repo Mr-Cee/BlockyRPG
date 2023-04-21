@@ -106,7 +106,7 @@ class Level:
                 Tree(self, WIN_WIDTH/2, WIN_HEIGHT/2 + 50, self.tree_image)
                 Tree(self, WIN_WIDTH / 2, WIN_HEIGHT / 2 - 150, self.tree_image)
             else:
-                for _ in range(random.randint(10, int(WIN_WIDTH / (BORDER_TILESIZE * 2)))):
+                for _ in range(random.randint(10, 20)):
                     Tree(self, random.randint(BORDER_TILESIZE * 2, WIN_WIDTH - BORDER_TILESIZE * 2),
                          random.randint(BORDER_TILESIZE * 2,
                                         WIN_HEIGHT - (BORDER_TILESIZE * 2) - self.tree_image.get_height() / 2),
