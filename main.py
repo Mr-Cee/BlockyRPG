@@ -230,11 +230,11 @@ class Game:
         self.screen.blit(self.player.EXPText, self.player.EXPBarTextRect)
 ################### Drawing Squares around objects for collisions ##################################
 
-        for object in self.background_sprites:
-            pygame.draw.rect(self.screen, BLACK, object.collision_rect)
-        for object in self.enemy_sprites:
-            pygame.draw.rect(self.screen, RED, object.rect)
-        pygame.draw.rect(self.screen, WHITE, self.player.collision_rect)
+        # for object in self.background_sprites:
+        #     pygame.draw.rect(self.screen, BLACK, object.collision_rect)
+        # for object in self.enemy_sprites:
+        #     pygame.draw.rect(self.screen, RED, object.rect)
+        # pygame.draw.rect(self.screen, WHITE, self.player.collision_rect)
 
 ###################################################################################################
         self.clock.tick(FPS)

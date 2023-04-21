@@ -263,7 +263,7 @@ class Character(pygame.sprite.Sprite):
                 collide = pygame.Rect.colliderect(self.collision_rect, object.collision_rect)
                 if collide:
                     if self.y_change > 0:  # Moving Down
-                        self.rect.bottom = object.collision_rect.top
+                        self.rect.bottom = object.collision_rect.top - 5
                         self.collision_rect.bottom = object.collision_rect.top
                     if self.y_change < 0:  # Moving Up
                         self.rect.y = object.collision_rect.bottom - self.height + 5
