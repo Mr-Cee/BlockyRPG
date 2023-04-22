@@ -85,7 +85,7 @@ class Game:
         logging.basicConfig(filename=log, level=logging.DEBUG, format='%(asctime)s %(message)s', filemode='a',
                             datefmt='%d/%m/%Y %H:%M:%S')
 
-        self.the_font = pygame.font.Font(None, 32)
+        self.the_font = pygame.font.Font(None, 20)
 
 
         self.message_log = []
@@ -265,9 +265,9 @@ class Game:
             new_log.append(m3)
             font_y = 10
             for m in new_log:
-                message = self.the_font.render(m, False, BLACK)
+                message = self.the_font.render(m, True, BLACK)
                 self.log_surf.blit(message, (15, font_y))
-                font_y += 34  # gives a little padding for the next message
+                font_y += 20  # gives a little padding for the next message
         # blit it to the main surface in a spot where it'll fit snugly:
         # sorry for the magic numbers, ideally you would pre-define these positions
         # as variables

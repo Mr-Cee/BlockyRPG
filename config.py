@@ -15,7 +15,7 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 WIN_WIDTH = 800  # Must be Multiple of 32 to look nice
-WIN_HEIGHT = 640  # Must be Multiple of 32 to look nice
+WIN_HEIGHT = 500  # Must be Multiple of 32 to look nice
 GAME_HEIGHT = WIN_HEIGHT + 160
 # WIN_BG = (17, 102, 24)
 WIN_BG = pygame.image.load('assets/background_grass.png')
