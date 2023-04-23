@@ -128,18 +128,26 @@ class Level:
                 Rock(self, random.randint(BORDER_TILESIZE, WIN_WIDTH - BORDER_TILESIZE * 3), random.randint(randomYTop, randomYBottom), self.rock_img)
 
 
-    def GenerateEnemies(self, EnemyName):
-        EnemyName = EnemyName
+    def GenerateEnemies(self, Enemy):
+        if Enemy is None:
+            EnemyName = random.choice(self.game.EnemyList)
+        else:
+            EnemyName = Enemy
         EnemyList = self.game.EnemyList
+        EnemyStrength = int(self.game.previousLevel) * 2 + 1
+        EnemyHealth = int(self.game.previousLevel) * 10 + 5
+        EnemyEXPGain = int(self.game.previousLevel) * 3 + 3
+        print('Str: ', str(EnemyStrength))
+        print('HP:', str(EnemyHealth))
         if self.player.isAttackable:
             for _ in range(self.enemy_count):
                 RandChoice = random.choice(EnemyList)
                 if RandChoice == 'Wolf':
                     Wolf(self, random.randint(BORDER_TILESIZE * 2, WIN_WIDTH - BORDER_TILESIZE * 2),
-                         random.randint(BORDER_TILESIZE * 2, WIN_HEIGHT - (BORDER_TILESIZE * 2)))
+                         random.randint(BORDER_TILESIZE * 2, WIN_HEIGHT - (BORDER_TILESIZE * 2)), EnemyStrength, EnemyHealth,EnemyEXPGain)
         else:
             if EnemyName == 'Wolf':
-                self.Monster1 = Wolf(self, WIN_WIDTH - BORDER_TILESIZE * 4, WIN_HEIGHT / 2)
+                self.Monster1 = Wolf(self, WIN_WIDTH - BORDER_TILESIZE * 4, WIN_HEIGHT / 2, EnemyStrength, EnemyHealth, EnemyEXPGain)
 
     # Update everything on this level
     def update(self):

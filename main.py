@@ -61,7 +61,7 @@ class Game:
         self.milliseconds_delay = 2000  # 1 seconds
         self.CharacterAttackTimer = pygame.USEREVENT + 1
         self.EnemyAttackTimer = pygame.USEREVENT + 2
-
+        self.previousLevel = 0
 
         self.current_level_no = 0
         self.level_list = []
@@ -78,7 +78,7 @@ class Game:
         self.current_level = self.level_list[self.current_level_no]
         self.current_level.terrainGen()
         self.current_level.GenerateEnemies(None)
-        self.previousLevel = None
+
 
         # Set up logging
         log = "bot.log"
@@ -152,7 +152,7 @@ class Game:
                 sprite.kill()
         self.current_level_no = self.previousLevel
         self.current_level = self.level_list[self.current_level_no]
-        self.previousLevel = None
+        self.previousLevel = self.current_level_no
         self.level_list.pop(tempNum)
         self.player.collision_rect.x = self.player.rect.x + 22
         self.player.collision_rect.y = self.player.rect.bottom - 5
@@ -193,6 +193,9 @@ class Game:
 
         self.current_level.GenerateEnemies(None)
         self.current_level.terrainGen()
+
+        if self.current_level_no == 0:
+            self.console_print('You are in town')
 
         # logging.info('------------------------------------')
         # logging.info(str(self.current_level))
@@ -260,9 +263,15 @@ class Game:
             m1 = self.message_log[-1]
             m2 = self.message_log[-2]
             m3 = self.message_log[-3]
+            m4 = self.message_log[-4]
+            m5 = self.message_log[-5]
+            m6 = self.message_log[-6]
             new_log.append(m1)
             new_log.append(m2)
             new_log.append(m3)
+            new_log.append(m4)
+            new_log.append(m5)
+            new_log.append(m6)
             font_y = 10
             for m in new_log:
                 message = self.the_font.render(m, True, BLACK)
@@ -278,9 +287,12 @@ class Game:
 
         self.playing = True
         self.UIBuild()
-        self.console_print('Test 1')
-        self.console_print('Test 2')
-        self.console_print('Test 3')
+        self.console_print('')
+        self.console_print('')
+        self.console_print('')
+        self.console_print('')
+        self.console_print('')
+        self.console_print('')
 
 
     def events(self):
@@ -304,7 +316,7 @@ class Game:
             #     pygame.time.set_timer(self.CharacterAttackTimer, 0)
 
             if event.type == self.EnemyAttackTimer:
-                self.current_level.Monster1.AttackCharacter()
+                self.current_level.Monster1.AttackCharacter(self)
                 pygame.time.set_timer(self.EnemyAttackTimer, 0)
             # if event.type == pygame.MOUSEBUTTONDOWN:
             #     if self.player.AttackChoice:

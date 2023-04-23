@@ -5,9 +5,8 @@ from character import *
 from SpriteUtilities import *
 
 
-
 class Wolf(pygame.sprite.Sprite):
-    def __init__(self, game, x, y):
+    def __init__(self, game, x, y, AttackStrength, Health, EXPGain):
         self.game = game
 
         self.EnemyName = 'Wolf'
@@ -17,18 +16,17 @@ class Wolf(pygame.sprite.Sprite):
         self.width = 32
         self.height = 64
 
-        self.max_hp = 50
+        self.max_hp = Health
         self.hp = self.max_hp
         self.font = pygame.font.Font('assets/BKANT.TTF', 20)
         self.HPBarText = str(self.hp) + "/" + str(self.max_hp)
         self.HPText = self.font.render(str(self.HPBarText), True, BLACK, None)
         self.HPBarTextRect = self.HPText.get_rect()
-        self.HPBarTextRect.center = (WIN_WIDTH/2, 35)
+        self.HPBarTextRect.center = (WIN_WIDTH / 2, 35)
 
-        self.EXPGive = 10
+        self.EXPGive = EXPGain
 
-
-        self.attackPower = 5
+        self.attackPower = AttackStrength
 
         self.x_change = 0
         self.y_change = 0
@@ -211,9 +209,12 @@ class Wolf(pygame.sprite.Sprite):
 
     def collide_enemy(self):
         pass
-    def AttackCharacter(self):
-        MonsterAttack = random.randint(1+self.attackPower, 10+self.attackPower )
-        print(self.EnemyName + ' attacked Character for: ' + str(MonsterAttack))
+
+    def AttackCharacter(self, game):
+        game = game
+        MonsterAttack = random.randint(1 + self.attackPower, 5 + self.attackPower)
+        # print(self.EnemyName + ' attacked Character for: ' + str(MonsterAttack))
+        game.console_print((self.EnemyName + ' attack you for ' + str(MonsterAttack) + ' damage'))
         self.game.player.changeHealth(-MonsterAttack)
         self.game.player.checkForDeath()
         self.CheckForDeath()
@@ -222,4 +223,3 @@ class Wolf(pygame.sprite.Sprite):
     def CheckForDeath(self):
         if self.hp <= 0:
             self.game.player.Loot(self.EXPGive)
-

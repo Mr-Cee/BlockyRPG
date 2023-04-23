@@ -23,7 +23,7 @@ class Character(pygame.sprite.Sprite):
         self.exp = 0
         self.exp_to_level = 10
 
-        self.CharacterStrength = 20
+        self.CharacterStrength = 5
 
         self.font = pygame.font.Font('assets/BKANT.TTF', 40)
         self.LevelText = self.font.render(str(self.playerLevel), True, BLACK, None)
@@ -152,10 +152,14 @@ class Character(pygame.sprite.Sprite):
         # print('Player', self._layer)
 
     def Loot(self, EXPGain, EnemyObject):
+        self.game.console_print(
+            ('You killed a ' + EnemyObject.EnemyName + ' and gained ' + str(EXPGain) + ' experience'))
         self.changeEXP(EXPGain)
         self.isAttackable = True
         self.AttackChoice = False
         self.canAttack = True
+
+
 
         if len(self.templist) > 0:
             for item in self.templist:
@@ -172,6 +176,10 @@ class Character(pygame.sprite.Sprite):
         self.changeHealth(-20)
         self.isAttackable = True
         self.AttackChoice = False
+        self.game.console_print('You fled the battle!')
+        if len(self.templist) > 0:
+            for item in self.templist:
+                item.kill()
         self.game.RemoveAttackLevel()
         self.rect.x, self.rect.y = self.pos
         # self.collision_rect = pygame.Rect(self.x + 22, self.y - 5, 35, 10)
@@ -184,6 +192,9 @@ class Character(pygame.sprite.Sprite):
             self.playerLevel += 1
             self.exp = tempxp
             self.exp_to_level *= 2
+
+            self.CharacterStrength += 5
+
             self.font = pygame.font.Font('assets/BKANT.TTF', 40)
             self.LevelText = self.font.render(str(self.playerLevel), True, BLACK, None)
 
@@ -196,6 +207,8 @@ class Character(pygame.sprite.Sprite):
             self.font = pygame.font.Font('assets/BKANT.TTF', 20)
             self.HPBarText = str(self.hp) + "/" + str(self.max_hp)
             self.HPText = self.font.render(str(self.HPBarText), True, BLACK, None)
+
+            self.game.console_print(('You have leveled up to ' + str(self.playerLevel) + '!'))
 
     def checkForDeath(self):
         # Check for Death
@@ -301,11 +314,12 @@ class Character(pygame.sprite.Sprite):
         # print(str(EnemyObject.EnemyName) + ' ' + str(EnemyObject.hp) + '/' + str(EnemyObject.max_hp))
         # print('Attacked ' + str(EnemyObject.EnemyName) + 'for ' + str(tempAttack) + ' damage')
         EnemyObject.hp -= tempAttack
-        self.game.console_print('Attacked for: ' + str(tempAttack))
+        self.game.console_print(('You attacked a ' + EnemyObject.EnemyName + ' for ' + str(tempAttack) + ' damage'))
         # print(str(EnemyObject.EnemyName) + ' ' + str(EnemyObject.hp) + '/' + str(EnemyObject.max_hp))
         if EnemyObject.hp > 0:
             self.game.enemyHPBar = pygame.transform.scale(self.game.enemyHPBar,
-                                                          (round(EnemyObject.hp / EnemyObject.max_hp * (WIN_WIDTH / 3)), 50))
+                                                          (round(EnemyObject.hp / EnemyObject.max_hp * (WIN_WIDTH / 3)),
+                                                           50))
             self.font = pygame.font.Font('assets/BKANT.TTF', 20)
             EnemyObject.HPBarText = str(round(EnemyObject.hp)) + "/" + str(round(EnemyObject.max_hp))
             EnemyObject.HPText = self.font.render(str(EnemyObject.HPBarText), True, BLACK, None)
@@ -318,7 +332,6 @@ class Character(pygame.sprite.Sprite):
 
     def tempAttack(self, EnemyObject, EnemyName):
         EnemyObject = EnemyObject
-
 
         self.tempAttackPause = 1 * FPS
         self.AttackChoice = True
@@ -345,8 +358,8 @@ class Character(pygame.sprite.Sprite):
                     self.isAttackable = False
                     self.canAttack = True
                     self.game.enemyHPBar = pygame.transform.scale(self.game.enemyHPBar,
-                                                                  (round(object.hp / object.max_hp * (WIN_WIDTH / 3)), 50))
-                    print("HP:",object.hp)
+                                                                  (round(object.hp / object.max_hp * (WIN_WIDTH / 3)),
+                                                                   50))
                     self.tempAttack(object, object.EnemyName)
                     self.templist.append(object)
 
