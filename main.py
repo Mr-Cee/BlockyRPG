@@ -204,6 +204,26 @@ class Game:
         #                   self.all_sprites.get_sprite(i), self.all_sprites.get_sprite(i).collision_rect))
         # logging.info('------------------------------------')
 
+    def goToTown(self):
+        self.player.rect.x = WIN_WIDTH/2
+        self.player.rect.y = WIN_HEIGHT/2
+        self.player.collision_rect.x = self.player.rect.x + 22
+        self.player.collision_rect.y = self.player.rect.bottom - 5
+        self.current_level_no = 0
+        self.current_level = self.level_list[self.current_level_no]
+        self.level = self.current_level
+
+        for sprite in self.background_sprites:
+            sprite.kill()
+        if len(self.enemy_sprites) > 0:
+            for sprite in self.enemy_sprites:
+                sprite.kill()
+
+        self.current_level.GenerateEnemies(None)
+        self.current_level.terrainGen()
+
+
+        self.console_print('You are in town')
     def DeathReset(self):
         self.player.hp = self.player.max_hp
         if self.player.exp > 0:
@@ -309,6 +329,8 @@ class Game:
                     self.player.changeHealth(10)
                 if event.key == pygame.K_KP_MINUS:
                     self.player.changeHealth(-10)
+                if event.key == pygame.K_t:
+                    self.goToTown()
             # if event.type == self.CharacterAttackTimer:
             #     self.player.monsterToAttack = self.current_level.Monster1
             #     self.player.canAttack = False
