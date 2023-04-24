@@ -57,6 +57,7 @@ class Level:
 
     def terrainGen(self):
         # Horizontal Rock Walls
+    # Creates Terrain when not in combat
         if self.player.isAttackable:
             tempwidthcount = 0
             tempheightcount = 0
@@ -118,14 +119,21 @@ class Level:
                          self.tree_image)
                     Rock(self, random.randint(BORDER_TILESIZE * 3, WIN_WIDTH - BORDER_TILESIZE * 3),
                          random.randint(BORDER_TILESIZE * 3, WIN_HEIGHT - BORDER_TILESIZE * 3), self.rock_img)
+        # Creates Terrain while IN Combat
         else:
             for _ in range(5):
-                randomYTop = random.randint(BORDER_TILESIZE, WIN_HEIGHT/2 - 75)
-                randomYBottom = random.randint(WIN_HEIGHT / 2 + 75, WIN_HEIGHT - BORDER_TILESIZE * 2)
-                Tree(self, random.randint(BORDER_TILESIZE, WIN_WIDTH - BORDER_TILESIZE * 3), random.randint(randomYTop, randomYBottom), self.tree_image)
-                randomYTop = random.randint(BORDER_TILESIZE, WIN_HEIGHT / 2 - 75)
-                randomYBottom = random.randint(WIN_HEIGHT / 2 + 75, WIN_HEIGHT - BORDER_TILESIZE * 2)
-                Rock(self, random.randint(BORDER_TILESIZE, WIN_WIDTH - BORDER_TILESIZE * 3), random.randint(randomYTop, randomYBottom), self.rock_img)
+                randomYTop = random.randint(BORDER_TILESIZE, WIN_HEIGHT/2-self.tree_image.get_height())
+                randomYBottom = random.randint(WIN_HEIGHT/2+self.tree_image.get_height(), WIN_HEIGHT-BORDER_TILESIZE-self.tree_image.get_height())
+                randomY = random.choice((randomYTop, randomYBottom))
+                randomX = random.randint(BORDER_TILESIZE, WIN_WIDTH - BORDER_TILESIZE * 3)
+                Tree(self, randomX, randomY, self.tree_image)
+
+                randomYTop = random.randint(BORDER_TILESIZE, WIN_HEIGHT / 2 - self.rock_img.get_height())
+                randomYBottom = random.randint(WIN_HEIGHT / 2 + self.rock_img.get_height(),
+                                               WIN_HEIGHT - BORDER_TILESIZE - self.rock_img.get_height())
+                randomY = random.choice((randomYTop, randomYBottom))
+                randomX = random.randint(BORDER_TILESIZE, WIN_WIDTH - BORDER_TILESIZE * 3)
+                Rock(self, randomX, randomY, self.rock_img)
 
 
     def GenerateEnemies(self, Enemy):
@@ -137,17 +145,15 @@ class Level:
         EnemyStrength = int(self.game.previousLevel) * 2 + 1
         EnemyHealth = int(self.game.previousLevel) * 10 + 5
         EnemyEXPGain = int(self.game.previousLevel) * 3 + 3
-        print('Str: ', str(EnemyStrength))
-        print('HP:', str(EnemyHealth))
         if self.player.isAttackable:
             for _ in range(self.enemy_count):
                 RandChoice = random.choice(EnemyList)
                 if RandChoice == 'Wolf':
                     Wolf(self, random.randint(BORDER_TILESIZE * 2, WIN_WIDTH - BORDER_TILESIZE * 2),
-                         random.randint(BORDER_TILESIZE * 2, WIN_HEIGHT - (BORDER_TILESIZE * 2)), EnemyStrength, EnemyHealth,EnemyEXPGain)
+                         random.randint(BORDER_TILESIZE * 2, WIN_HEIGHT - (BORDER_TILESIZE * 2)), EnemyStrength, EnemyHealth*100,EnemyEXPGain)
         else:
             if EnemyName == 'Wolf':
-                self.Monster1 = Wolf(self, WIN_WIDTH - BORDER_TILESIZE * 4, WIN_HEIGHT / 2, EnemyStrength, EnemyHealth, EnemyEXPGain)
+                self.Monster1 = Wolf(self, WIN_WIDTH - BORDER_TILESIZE * 4, WIN_HEIGHT / 2, EnemyStrength, EnemyHealth*100, EnemyEXPGain)
 
     # Update everything on this level
     def update(self):
@@ -242,6 +248,7 @@ class AttackScreen(Level):
 
     def __init__(self, game, player, ):
         Level.__init__(self, game, player)
+        self.game = game
 
 
 

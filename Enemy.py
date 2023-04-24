@@ -42,6 +42,8 @@ class Wolf(pygame.sprite.Sprite):
         else:
             self.inCombat = True
 
+        self.AttackingMovement = False
+
         self.milliseconds_delay = 2000  # 1 seconds
         self.CharacterAttackTimer = pygame.USEREVENT + 1
         self.EnemyAttackTimer = pygame.USEREVENT + 2
@@ -129,6 +131,26 @@ class Wolf(pygame.sprite.Sprite):
                     self.facing = random.choice(self.facing_list)
                     self.movement_loop = 0
                     self.max_travel = random.randint(10, 30)
+        else:
+            self.facing = 'left'
+            if self.AttackingMovement:
+                if self.rect.left - self.game.player.rect.right >= 15:
+
+                    self.x_change -= ENEMY_SPEED*3
+                    self.movement_loop -= 1
+                    print(self.movement_loop, -self.max_travel, (self.rect.left-self.game.player.rect.right))
+                    if self.movement_loop <= -self.max_travel or (self.rect.left - self.game.player.rect.right <= 15):
+                        self.AttackingMovement = False
+                        self.movement_loop = 0
+                        self.game.player.canAttack = True
+                    # if self.rect.left - self.game.player.rect.right <= 15:
+                else:
+                    print('True?')
+                    self.AttackingMovement = False
+                    self.movement_loop = 0
+                    self.game.player.canAttack = True
+
+
 
         # self.game.all_sprites.change_layer(self, self.rect.bottom)
 
@@ -213,13 +235,19 @@ class Wolf(pygame.sprite.Sprite):
     def AttackCharacter(self, game):
         game = game
         MonsterAttack = random.randint(1 + self.attackPower, 5 + self.attackPower)
-        # print(self.EnemyName + ' attacked Character for: ' + str(MonsterAttack))
-        game.console_print((self.EnemyName + ' attack you for ' + str(MonsterAttack) + ' damage'))
-        self.game.player.changeHealth(-MonsterAttack)
-        self.game.player.checkForDeath()
-        self.CheckForDeath()
-        self.game.player.canAttack = True
+        if self.rect.left - self.game.player.rect.right > 15:
+            game.console_print((self.EnemyName + ' advances towards you.'))
+            self.max_travel = random.randint(50, 100)
+            self.AttackingMovement = True
+
+        else:
+            game.console_print((self.EnemyName + ' attack you for ' + str(MonsterAttack) + ' damage'))
+            self.game.player.changeHealth(-MonsterAttack)
+            self.game.player.checkForDeath()
+            self.CheckForDeath()
+            self.game.player.canAttack = True
 
     def CheckForDeath(self):
         if self.hp <= 0:
             self.game.player.Loot(self.EXPGive)
+            self.kill()

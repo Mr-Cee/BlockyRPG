@@ -52,6 +52,7 @@ class Game:
         self.combat_UI_Sprites = pygame.sprite.Group()
         self.attack_sprites = pygame.sprite.Group()
         self.UI_Sprites = pygame.sprite.Group()
+        self.temp_Sprite_list = []
 
         self.player = Character(self, WIN_WIDTH / 2, WIN_HEIGHT / 2)
         self.font = pygame.font.Font(self.resource_path('assets/BKANT.TTF'), 9)
@@ -138,6 +139,9 @@ class Game:
         self.current_level_no = tempNum
         self.current_level = self.level_list[tempNum]
         self.level = self.current_level
+        for sprite in self.background_sprites:
+            self.temp_Sprite_list.append(sprite)
+            sprite.kill()
         self.current_level.terrainGen()
         self.current_level.GenerateEnemies(EnemyName)
 
@@ -150,12 +154,19 @@ class Game:
         if len(self.combat_enemy_sprites) > 0:
             for sprite in self.combat_enemy_sprites:
                 sprite.kill()
+        for sprite in self.temp_Sprite_list:
+            self.background_sprites.add(sprite)
+
+        self.temp_Sprite_list.clear()
+        self.all_sprites.update()
         self.current_level_no = self.previousLevel
         self.current_level = self.level_list[self.current_level_no]
         self.previousLevel = self.current_level_no
         self.level_list.pop(tempNum)
         self.player.collision_rect.x = self.player.rect.x + 22
         self.player.collision_rect.y = self.player.rect.bottom - 5
+
+
 
     def LevelChange(self, direction):
         self.leveldirection = direction
@@ -373,6 +384,12 @@ class Game:
         # for object in self.enemy_sprites:
         #     pygame.draw.rect(self.screen, RED, object.rect)
         # pygame.draw.rect(self.screen, WHITE, self.player.collision_rect)
+
+        # for object in self.background_sprites:
+        #     pygame.draw.rect(self.screen, BLACK, object.rect)
+        # for object in self.enemy_sprites:
+        #     pygame.draw.rect(self.screen, RED, object.rect)
+        # pygame.draw.rect(self.screen, WHITE, self.player.rect)
 
 ###################################################################################################
         self.clock.tick(FPS)

@@ -339,7 +339,7 @@ class Character(pygame.sprite.Sprite):
         self.pos = (self.rect.x, self.rect.y)
         self.facing = 'right'
         self.rect.x = BORDER_TILESIZE + 5
-        self.rect.y = WIN_HEIGHT / 2
+        self.rect.y = WIN_HEIGHT / 2 - self.height/3
         # self.collision_rect = pygame.Rect(self.x + 15, self.y - 5, 35, 10)
         self.collision_rect.x = self.rect.x + 15
         self.collision_rect.y = self.y - 5
@@ -357,6 +357,7 @@ class Character(pygame.sprite.Sprite):
                 if collide:
                     self.isAttackable = False
                     self.canAttack = True
+                    object.facing = 'left'
                     self.game.enemyHPBar = pygame.transform.scale(self.game.enemyHPBar,
                                                                   (round(object.hp / object.max_hp * (WIN_WIDTH / 3)),
                                                                    50))
