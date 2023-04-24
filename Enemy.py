@@ -76,12 +76,22 @@ class Wolf(pygame.sprite.Sprite):
         self.left_animations = [self.game.wolf_spritesheet.get_sprite(320, 288, 64, 32),
                                 self.game.wolf_spritesheet.get_sprite(384, 288, 64, 32),
                                 self.game.wolf_spritesheet.get_sprite(448, 288, 64, 32),
-                                self.game.wolf_spritesheet.get_sprite(512, 288, 64, 32)]
+                                self.game.wolf_spritesheet.get_sprite(512, 288, 64, 32),
+                                self.game.wolf_spritesheet.get_sprite(576, 288, 64, 32)]
 
         self.right_animations = [self.game.wolf_spritesheet.get_sprite(320, 96, 64, 32),
                                  self.game.wolf_spritesheet.get_sprite(384, 96, 64, 32),
                                  self.game.wolf_spritesheet.get_sprite(448, 96, 64, 32),
-                                 self.game.wolf_spritesheet.get_sprite(512, 96, 64, 32), ]
+                                 self.game.wolf_spritesheet.get_sprite(512, 96, 64, 32),
+                                 self.game.wolf_spritesheet.get_sprite(576, 96, 64, 32)]
+
+        self.left_attack_animations = [self.game.wolf_spritesheet.get_sprite(320, 352, 64, 32),
+                                       self.game.wolf_spritesheet.get_sprite(384, 352, 64, 32),
+                                       self.game.wolf_spritesheet.get_sprite(448, 352, 64, 32),
+                                       self.game.wolf_spritesheet.get_sprite(512, 352, 64, 32),
+                                       self.game.wolf_spritesheet.get_sprite(576, 352, 64, 32)]
+        self.AttackPlayerAnim = False
+        self.attack_anim_done = True
 
     def update(self):
         self.movement()
@@ -100,6 +110,10 @@ class Wolf(pygame.sprite.Sprite):
 
         if self.rect.x > WIN_WIDTH or self.rect.x < 0 or self.rect.y < 0 or self.rect.y > WIN_HEIGHT:
             self.kill()
+
+        # if self.inCombat and self.attack_anim_done == False:
+        #     self.game.player.canAttack = True
+        #     self.attack_anim_done = True
 
     def movement(self):
         if not self.inCombat:
@@ -136,21 +150,19 @@ class Wolf(pygame.sprite.Sprite):
             if self.AttackingMovement:
                 if self.rect.left - self.game.player.rect.right >= 15:
 
-                    self.x_change -= ENEMY_SPEED*3
+                    self.x_change -= ENEMY_SPEED * 5
                     self.movement_loop -= 1
-                    print(self.movement_loop, -self.max_travel, (self.rect.left-self.game.player.rect.right))
+                    # print(self.movement_loop, -self.max_travel, (self.rect.left - self.game.player.rect.right))
                     if self.movement_loop <= -self.max_travel or (self.rect.left - self.game.player.rect.right <= 15):
                         self.AttackingMovement = False
                         self.movement_loop = 0
                         self.game.player.canAttack = True
                     # if self.rect.left - self.game.player.rect.right <= 15:
                 else:
-                    print('True?')
+                    # print('True?')
                     self.AttackingMovement = False
                     self.movement_loop = 0
                     self.game.player.canAttack = True
-
-
 
         # self.game.all_sprites.change_layer(self, self.rect.bottom)
 
@@ -177,7 +189,7 @@ class Wolf(pygame.sprite.Sprite):
             else:
                 self.image = self.left_animations[math.floor(self.animation_loop)]
                 self.animation_loop += 0.1
-                if self.animation_loop >= 3:
+                if self.animation_loop >= 4:
                     self.animation_loop = 0
         if self.facing == 'right':
             if self.x_change == 0:
@@ -185,8 +197,16 @@ class Wolf(pygame.sprite.Sprite):
             else:
                 self.image = self.right_animations[math.floor(self.animation_loop)]
                 self.animation_loop += 0.1
-                if self.animation_loop >= 3:
+                if self.animation_loop >= 4:
                     self.animation_loop = 0
+        if self.AttackPlayerAnim:
+            self.image = self.left_attack_animations[math.floor(self.animation_loop)]
+            self.animation_loop += 0.5
+            if self.animation_loop >= 4:
+                self.animation_loop = 0
+                self.AttackPlayerAnim = False
+                self.attack_anim_done = True
+                self.game.player.canAttack = True
 
     def collide_terrain(self, direction):
 
@@ -237,15 +257,18 @@ class Wolf(pygame.sprite.Sprite):
         MonsterAttack = random.randint(1 + self.attackPower, 5 + self.attackPower)
         if self.rect.left - self.game.player.rect.right > 15:
             game.console_print((self.EnemyName + ' advances towards you.'))
-            self.max_travel = random.randint(50, 100)
+            self.max_travel = random.randint(500, 1000)
             self.AttackingMovement = True
 
         else:
+            self.AttackPlayerAnim = True
+            self.attack_anim_done = False
             game.console_print((self.EnemyName + ' attack you for ' + str(MonsterAttack) + ' damage'))
             self.game.player.changeHealth(-MonsterAttack)
             self.game.player.checkForDeath()
             self.CheckForDeath()
-            self.game.player.canAttack = True
+            # self.game.player.canAttack = True
+            # pygame.time.set_timer(self.game.CharacterAttackTimer, self.game.milliseconds_delay)
 
     def CheckForDeath(self):
         if self.hp <= 0:

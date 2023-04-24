@@ -343,11 +343,7 @@ class Game:
                 if event.key == pygame.K_t:
                     self.goToTown()
             # if event.type == self.CharacterAttackTimer:
-            #     self.player.monsterToAttack = self.current_level.Monster1
-            #     self.player.canAttack = False
-            #     self.player.AttackMonster()
-            #     pygame.time.set_timer(self.CharacterAttackTimer, 0)
-
+            #     self.player.canAttack = True
             if event.type == self.EnemyAttackTimer:
                 self.current_level.Monster1.AttackCharacter(self)
                 pygame.time.set_timer(self.EnemyAttackTimer, 0)
