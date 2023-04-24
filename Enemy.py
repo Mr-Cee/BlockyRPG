@@ -257,7 +257,7 @@ class Wolf(pygame.sprite.Sprite):
         MonsterAttack = random.randint(1 + self.attackPower, 5 + self.attackPower)
         if self.rect.left - self.game.player.rect.right > 15:
             game.console_print((self.EnemyName + ' advances towards you.'))
-            self.max_travel = random.randint(500, 1000)
+            self.max_travel = random.randint(150, 250)
             self.AttackingMovement = True
 
         else:

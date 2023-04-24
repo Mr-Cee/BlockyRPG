@@ -34,6 +34,8 @@ class Level:
         self.background = WIN_BG
         self.attackBackground = pygame.image.load(self.game.resource_path('assets/background_attack.png'))
         self.attackBackground = pygame.transform.scale(self.attackBackground, (WIN_WIDTH, WIN_HEIGHT))
+        self.AttackSelectionBG = pygame.image.load(self.game.resource_path('assets/AttackChoiceBG.png')).convert_alpha()
+        self.AttackSelectionBG = pygame.transform.scale(self.AttackSelectionBG, (WIN_WIDTH / 5 * 3, 50))
         self.Monster1 = None
 
         # Other Images
@@ -143,11 +145,11 @@ class Level:
                 if RandChoice == 'Wolf':
                     Wolf(self, random.randint(BORDER_TILESIZE * 2, WIN_WIDTH - BORDER_TILESIZE * 2),
                          random.randint(BORDER_TILESIZE * 2, WIN_HEIGHT - (BORDER_TILESIZE * 2)), EnemyStrength,
-                         EnemyHealth * 100, EnemyEXPGain)
+                         EnemyHealth, EnemyEXPGain)
         else:
             if EnemyName == 'Wolf':
                 self.Monster1 = Wolf(self, WIN_WIDTH - BORDER_TILESIZE * 4, WIN_HEIGHT / 2, EnemyStrength,
-                                     EnemyHealth * 100, EnemyEXPGain)
+                                     EnemyHealth, EnemyEXPGain)
 
     # Update everything on this level
     def update(self):
@@ -181,6 +183,7 @@ class Level:
             self.screen.blit(self.Monster1.HPText, self.Monster1.HPBarTextRect)
 
             if self.player.canAttack:
+                self.screen.blit(self.AttackSelectionBG, (WIN_WIDTH/5, WIN_HEIGHT-50))
                 if button.Button(self.game, self.screen, WIN_WIDTH / 2 - 97, WIN_HEIGHT / 2,
                                  pygame.image.load(self.game.resource_path('assets/button_attack.png')), 195,
                                  50).draw() and self.player.canAttack:
