@@ -1,8 +1,3 @@
-import math
-import random
-
-import pygame
-
 import button
 from Enemy import *
 
@@ -52,12 +47,9 @@ class Level:
         self.CharacterAttackTimer = pygame.USEREVENT + 1
         self.EnemyAttackTimer = pygame.USEREVENT + 2
 
-
-
-
     def terrainGen(self):
         # Horizontal Rock Walls
-    # Creates Terrain when not in combat
+        # Creates Terrain when not in combat
         if self.player.isAttackable:
             tempwidthcount = 0
             tempheightcount = 0
@@ -109,7 +101,7 @@ class Level:
 
             if self.in_town:
                 Building(self, 25, 25, self.building1)
-                Tree(self, WIN_WIDTH/2, WIN_HEIGHT/2 + 50, self.tree_image)
+                Tree(self, WIN_WIDTH / 2, WIN_HEIGHT / 2 + 50, self.tree_image)
                 Tree(self, WIN_WIDTH / 2, WIN_HEIGHT / 2 - 150, self.tree_image)
             else:
                 for _ in range(random.randint(10, 20)):
@@ -122,8 +114,9 @@ class Level:
         # Creates Terrain while IN Combat
         else:
             for _ in range(5):
-                randomYTop = random.randint(BORDER_TILESIZE, WIN_HEIGHT/2-self.tree_image.get_height())
-                randomYBottom = random.randint(WIN_HEIGHT/2+self.tree_image.get_height(), WIN_HEIGHT-BORDER_TILESIZE-self.tree_image.get_height())
+                randomYTop = random.randint(BORDER_TILESIZE, WIN_HEIGHT / 2 - self.tree_image.get_height())
+                randomYBottom = random.randint(WIN_HEIGHT / 2 + self.tree_image.get_height(),
+                                               WIN_HEIGHT - BORDER_TILESIZE - self.tree_image.get_height())
                 randomY = random.choice((randomYTop, randomYBottom))
                 randomX = random.randint(BORDER_TILESIZE, WIN_WIDTH - BORDER_TILESIZE * 3)
                 Tree(self, randomX, randomY, self.tree_image)
@@ -134,7 +127,6 @@ class Level:
                 randomY = random.choice((randomYTop, randomYBottom))
                 randomX = random.randint(BORDER_TILESIZE, WIN_WIDTH - BORDER_TILESIZE * 3)
                 Rock(self, randomX, randomY, self.rock_img)
-
 
     def GenerateEnemies(self, Enemy):
         if Enemy is None:
@@ -150,10 +142,12 @@ class Level:
                 RandChoice = random.choice(EnemyList)
                 if RandChoice == 'Wolf':
                     Wolf(self, random.randint(BORDER_TILESIZE * 2, WIN_WIDTH - BORDER_TILESIZE * 2),
-                         random.randint(BORDER_TILESIZE * 2, WIN_HEIGHT - (BORDER_TILESIZE * 2)), EnemyStrength, EnemyHealth*100,EnemyEXPGain)
+                         random.randint(BORDER_TILESIZE * 2, WIN_HEIGHT - (BORDER_TILESIZE * 2)), EnemyStrength,
+                         EnemyHealth * 100, EnemyEXPGain)
         else:
             if EnemyName == 'Wolf':
-                self.Monster1 = Wolf(self, WIN_WIDTH - BORDER_TILESIZE * 4, WIN_HEIGHT / 2, EnemyStrength, EnemyHealth*100, EnemyEXPGain)
+                self.Monster1 = Wolf(self, WIN_WIDTH - BORDER_TILESIZE * 4, WIN_HEIGHT / 2, EnemyStrength,
+                                     EnemyHealth * 100, EnemyEXPGain)
 
     # Update everything on this level
     def update(self):
@@ -161,7 +155,6 @@ class Level:
         self.background_sprites.update()
         self.UI_Sprites.update()
         self.combat_UI_Sprites.update()
-
 
         # Heal while in Town
         if self.in_town:
@@ -181,21 +174,24 @@ class Level:
             self.combat_background_sprites.draw(self.screen)
             self.combat_UI_Sprites.draw(self.screen)
 
-            self.screen.blit(self.game.enemyHPBarBG, (WIN_WIDTH/3, 10))
-            self.screen.blit(self.game.enemyHPBar, (WIN_WIDTH/3, 10))
+            self.screen.blit(self.game.enemyHPBarBG, (WIN_WIDTH / 3, 10))
+            self.screen.blit(self.game.enemyHPBar, (WIN_WIDTH / 3, 10))
             # self.screen.blit(pygame.transform.scale(self.game.enemyHPBar, ((self.Monster1.hp/self.Monster1.max_hp*200), 50)), (WIN_WIDTH/3, 10))
             self.screen.blit(self.game.enemyHPBarFGSilver, (WIN_WIDTH, 10))
             self.screen.blit(self.Monster1.HPText, self.Monster1.HPBarTextRect)
 
             if self.player.canAttack:
-                if button.Button(self.game, self.screen, WIN_WIDTH/2-97, WIN_HEIGHT/2, pygame.image.load(self.game.resource_path('assets/button_attack.png')), 195, 50).draw() and self.player.canAttack:
+                if button.Button(self.game, self.screen, WIN_WIDTH / 2 - 97, WIN_HEIGHT / 2,
+                                 pygame.image.load(self.game.resource_path('assets/button_attack.png')), 195,
+                                 50).draw() and self.player.canAttack:
                     self.player.canAttack = False
                     # pygame.time.set_timer(self.CharacterAttackTimer, self.milliseconds_delay)
-                    #self.player.Loot()
+                    # self.player.Loot()
                     self.player.monsterToAttack = self.game.current_level.Monster1
                     self.player.canAttack = False
                     self.player.AttackMonster()
-                if button.Button(self.game, self.screen, WIN_WIDTH / 2 - 97, WIN_HEIGHT / 2 + 60, pygame.image.load(self.game.resource_path('assets/button_flee.png')), 195, 50).draw():
+                if button.Button(self.game, self.screen, WIN_WIDTH / 2 - 97, WIN_HEIGHT / 2 + 60,
+                                 pygame.image.load(self.game.resource_path('assets/button_flee.png')), 195, 50).draw():
                     self.player.Flee()
             self.player_sprite.draw(screen)
         else:
@@ -211,11 +207,6 @@ class Level:
         # self.player_sprite.draw(self.screen)
         self.UI_Sprites.draw(self.screen)
         self.screen.blit(self.game.log_surf, (WIN_WIDTH / 2, WIN_HEIGHT))
-
-
-
-
-
 
         # print('--------------------------------------')
         # print('Player Layer:', self.game.player._layer)
@@ -249,7 +240,6 @@ class AttackScreen(Level):
     def __init__(self, game, player, ):
         Level.__init__(self, game, player)
         self.game = game
-
 
 
 class Level_02(Level):
