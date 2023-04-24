@@ -187,10 +187,17 @@ class Wolf(pygame.sprite.Sprite):
             if self.x_change == 0:
                 self.image = self.game.wolf_spritesheet.get_sprite(320, 288, 64, 32)
             else:
-                self.image = self.left_animations[math.floor(self.animation_loop)]
-                self.animation_loop += 0.1
-                if self.animation_loop >= 4:
-                    self.animation_loop = 0
+                if not self.inCombat:
+                    self.image = self.left_animations[math.floor(self.animation_loop)]
+                    self.animation_loop += 0.1
+                    if self.animation_loop >= 4:
+                        self.animation_loop = 0
+                else:
+                    self.image = self.left_animations[math.floor(self.animation_loop)]
+                    self.animation_loop += 0.75
+                    if self.animation_loop >= 4:
+                        self.animation_loop = 0
+
         if self.facing == 'right':
             if self.x_change == 0:
                 self.image = self.game.wolf_spritesheet.get_sprite(0, 0, self.width, self.height)
@@ -257,7 +264,7 @@ class Wolf(pygame.sprite.Sprite):
         MonsterAttack = random.randint(1 + self.attackPower, 5 + self.attackPower)
         if self.rect.left - self.game.player.rect.right > 15:
             game.console_print((self.EnemyName + ' advances towards you.'))
-            self.max_travel = random.randint(150, 250)
+            self.max_travel = random.randint(75, 125)
             self.AttackingMovement = True
 
         else:
