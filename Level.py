@@ -20,6 +20,7 @@ class Level:
         self.player_sprite = self.game.player_sprite
         self.UI_Sprites = self.game.UI_Sprites
         self.combat_UI_Sprites = self.game.combat_UI_Sprites
+        self.combat_attack_sprites = self.game.combat_attack_sprites
 
         # Exits Booleans
         self.north_exit = False
@@ -157,6 +158,7 @@ class Level:
         self.background_sprites.update()
         self.UI_Sprites.update()
         self.combat_UI_Sprites.update()
+        self.combat_attack_sprites.update()
 
         # Heal while in Town
         if self.in_town:
@@ -175,6 +177,7 @@ class Level:
             self.combat_enemy_sprites.draw(self.screen)
             self.combat_background_sprites.draw(self.screen)
             self.combat_UI_Sprites.draw(self.screen)
+            self.combat_attack_sprites.draw(self.screen)
 
             self.screen.blit(self.game.enemyHPBarBG, (WIN_WIDTH / 3, 10))
             self.screen.blit(self.game.enemyHPBar, (WIN_WIDTH / 3, 10))

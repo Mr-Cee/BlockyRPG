@@ -26,6 +26,7 @@ class Game:
         self.font = pygame.font.Font(self.resource_path('assets/BKANT.TTF'), 10)
 
         self.character_spritesheet = SpriteSheet('assets/CharacterWalkingSpritesheet.png')
+        self.WeaponsAndMagicSpritesheet = SpriteSheet('assets/Weapons&Magic.png')
 
         # self.BottomPanel_IMG = pygame.image.load('assets/BottomUI.png')
         self.BottomPanel_IMG = pygame.image.load(self.resource_path('assets/BottomUI.png'))
@@ -56,6 +57,7 @@ class Game:
         self.enemy_sprites = pygame.sprite.Group()
         self.combat_enemy_sprites = pygame.sprite.Group()
         self.combat_background_sprites = pygame.sprite.Group()
+        self.combat_attack_sprites = pygame.sprite.Group()
         self.combat_UI_Sprites = pygame.sprite.Group()
         self.attack_sprites = pygame.sprite.Group()
         self.UI_Sprites = pygame.sprite.Group()
