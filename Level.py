@@ -45,6 +45,8 @@ class Level:
         self.building1 = pygame.image.load(self.game.resource_path('assets/Building_1.png'))
         self.wolf_spritesheet = SpriteSheet_Black('assets/Wolfsheet1.png')
         self.character_spritesheet = SpriteSheet('assets/CharacterSpritesheet.png')
+        self.Fireball_img = pygame.image.load(self.game.resource_path('assets/flame_icon.png'))
+        self.Fireball_img = pygame.transform.scale(self.Fireball_img, (40, 40))
 
         self.milliseconds_delay = 2000  # 1 seconds
         self.CharacterAttackTimer = pygame.USEREVENT + 1
@@ -190,6 +192,12 @@ class Level:
 
             if self.player.canAttack:
                 self.screen.blit(self.AttackSelectionBG, (WIN_WIDTH/5, WIN_HEIGHT-50))
+                if button.Button(self.game, self.screen, WIN_WIDTH/5+35, WIN_HEIGHT-48, self.Fireball_img,40, 40).draw() and self.player.canAttack:
+                    self.player.canAttack = False
+                    self.player.monsterToAttack = self.game.current_level.Monster1
+                    self.player.CastSpellFromBar()
+
+
                 if button.Button(self.game, self.screen, WIN_WIDTH / 2 - 97, WIN_HEIGHT / 2,
                                  pygame.image.load(self.game.resource_path('assets/button_attack.png')), 195,
                                  50).draw() and self.player.canAttack:

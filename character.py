@@ -61,6 +61,7 @@ class Character(pygame.sprite.Sprite):
         self.image = self.game.character_spritesheet.get_sprite(0, 192, self.width, self.height)
         self.FireballImage = self.game.WeaponsAndMagicSpritesheet.get_sprite(68, 198, 24, 12)
         self.SpellCastSheet = SpriteSheet('assets/CharacterSpellSheet.png')
+        self.SpellName = ''
 
         self.rect = self.image.get_rect()
         self.rect.x = self.x
@@ -277,10 +278,12 @@ class Character(pygame.sprite.Sprite):
         if self.facing == 'right':
             if self.CastSpellStart:
                 self.image = self.spellcast_animations[math.floor(self.animation_loop)]
-                self.animation_loop += 0.1
+                self.animation_loop += 7/FPS
                 if self.animation_loop >= 6:
                     self.CastSpellStart = False
+                    self.animation_loop = 0
                     self.CastSpell()
+
             else:
                 if self.x_change == 0:
                     self.image = self.game.character_spritesheet.get_sprite(0, 192, self.width, self.height)
@@ -290,7 +293,6 @@ class Character(pygame.sprite.Sprite):
                     self.animation_loop += self.animation_loop_speed
                     if self.animation_loop >= 8:
                         self.animation_loop = 0
-
 
     def collide_terrain(self, direction):
 
@@ -330,52 +332,42 @@ class Character(pygame.sprite.Sprite):
                     #          self.game.all_sprites.get_sprite(i), self.game.all_sprites.get_sprite(i).collision_rect))
                     # logging.info('------------------------------------')
 
-
     def CastSpell(self):
+        if self.SpellName == 'Fireball':
+            spell_image = self.FireballImage
+        else:
+            spell_image = self.FireballImage
+
         EnemyObject = self.monsterToAttack
-        Projectile(self.game, self.pos, self.direction, self.FireballImage, EnemyObject, self.attackDamage)
+        Projectile(self.game, self.pos, self.direction, spell_image, EnemyObject, self.attackDamage)
         _, angle = (self.monsterToAttack.pos - self.pos).as_polar()
 
-    def AttackMonster(self):
-        EnemyObject = self.monsterToAttack
+    def CastSpellFromBar(self):
         self.attackDamage = random.randint(1 + self.CharacterStrength, 5 + self.CharacterStrength)
+        self.direction = math.atan2((self.monsterToAttack.y - self.rect.y), (self.monsterToAttack.x - self.rect.x))
         self.CastSpellStart = True
-        print(self.pos.x, self.pos.y)
 
+    def AttackMonster(self):
+        self.Enemy = self.monsterToAttack
+        self.attackDamage = random.randint(1 + self.CharacterStrength, 5 + self.CharacterStrength)
+        self.Enemy.hp -= self.attackDamage
+
+        self.game.console_print(
+            ('You attacked a ' + self.Enemy.EnemyName + ' for ' + str(self.attackDamage) + ' damage'))
         # print(str(EnemyObject.EnemyName) + ' ' + str(EnemyObject.hp) + '/' + str(EnemyObject.max_hp))
-        # print('Attacked ' + str(EnemyObject.EnemyName) + 'for ' + str(tempAttack) + ' damage')
-        # EnemyObject.hp -= tempAttack
+        if self.Enemy.hp > 0:
+            self.game.enemyHPBar = pygame.transform.scale(self.game.enemyHPBar, (
+                math.floor((self.Enemy.hp / self.Enemy.max_hp) * (WIN_WIDTH / 3)), 50))
 
-        # Enemy_x, Enemy_y = self.monsterToAttack.x, self.monsterToAttack.y
-        # P_X, P_Y = Enemy_x - self.pos.x, Enemy_y - self.pos.y
-        # distance = (P_X ** 2 + P_Y ** 2) ** .5
-        # if distance != 0:
-        #     NORMALIZED_DISTANCE = 100
-        #     multiplier = NORMALIZED_DISTANCE / distance
-        #     P_X *= multiplier
-        #     P_Y *= multiplier
-        angle = 0
-        # direction = pygame.Vector2(EnemyObject.x, EnemyObject.y)
-        self.direction = math.atan2((self.monsterToAttack.y - self.rect.y),
-                               (self.monsterToAttack.x - self.rect.x))
+            self.font = pygame.font.Font('assets/BKANT.TTF', 20)
+            self.Enemy.HPBarText = str(round(self.Enemy.hp)) + "/" + str(round(self.Enemy.max_hp))
+            self.Enemy.HPText = self.font.render(str(self.Enemy.HPBarText), True, BLACK, None)
 
-        # Fireball = Projectile(self.game, self.pos, self.direction, self.FireballImage, EnemyObject, tempAttack)
-        # _, angle = (self.monsterToAttack.pos - self.pos).as_polar()
-        # self.game.console_print(('You attacked a ' + EnemyObject.EnemyName + ' for ' + str(tempAttack) + ' damage'))
-        # # print(str(EnemyObject.EnemyName) + ' ' + str(EnemyObject.hp) + '/' + str(EnemyObject.max_hp))
-        # if EnemyObject.hp > 0:
-        #     self.game.enemyHPBar = pygame.transform.scale(self.game.enemyHPBar,
-        #                                                   (round(EnemyObject.hp / EnemyObject.max_hp * (WIN_WIDTH / 3)),
-        #                                                    50))
-        #     self.font = pygame.font.Font('assets/BKANT.TTF', 20)
-        #     EnemyObject.HPBarText = str(round(EnemyObject.hp)) + "/" + str(round(EnemyObject.max_hp))
-        #     EnemyObject.HPText = self.font.render(str(EnemyObject.HPBarText), True, BLACK, None)
-        #
-        # if EnemyObject.hp <= 0:
-        #     self.Loot(EnemyObject.EXPGive, EnemyObject)
-        #
-        # if self.hp > 0 and EnemyObject.hp > 0:
-        #     pygame.time.set_timer(self.game.EnemyAttackTimer, self.game.milliseconds_delay)
+        if self.Enemy.hp <= 0:
+            self.game.player.Loot(self.Enemy.EXPGive, self.Enemy)
+
+        if self.game.player.hp > 0 and self.Enemy.hp > 0:
+            pygame.time.set_timer(self.game.EnemyAttackTimer, self.game.milliseconds_delay)
 
     def tempAttack(self, EnemyObject, EnemyName):
         EnemyObject = EnemyObject
@@ -451,7 +443,6 @@ class Projectile(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect(center=pos)
         self.direction = direction
-        print('Direction', self.direction)
         self.pos = pygame.math.Vector2(self.rect.center)
 
         self.dt = self.game.clock.tick(FPS * 5)
