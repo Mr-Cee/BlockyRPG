@@ -145,11 +145,11 @@ class Level:
                 if RandChoice == 'Wolf':
                     Wolf(self, random.randint(BORDER_TILESIZE * 2, WIN_WIDTH - BORDER_TILESIZE * 2),
                          random.randint(BORDER_TILESIZE * 2, WIN_HEIGHT - (BORDER_TILESIZE * 2)), EnemyStrength,
-                         EnemyHealth, EnemyEXPGain)
+                         EnemyHealth*self.game.DEBUGMOD, EnemyEXPGain)
         else:
             if EnemyName == 'Wolf':
                 self.Monster1 = Wolf(self, WIN_WIDTH - BORDER_TILESIZE * 4, WIN_HEIGHT / 2, EnemyStrength,
-                                     EnemyHealth, EnemyEXPGain)
+                                     EnemyHealth*self.game.DEBUGMOD, EnemyEXPGain)
 
     # Update everything on this level
     def update(self):

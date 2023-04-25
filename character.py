@@ -123,6 +123,7 @@ class Character(pygame.sprite.Sprite):
         pygame.time.set_timer(self.timer_event, self.milliseconds_delay)
 
     def update(self):
+        self.checkForLevelUp()
         self.movement()
         self.animate()
         self.collide_enemy()
@@ -154,7 +155,7 @@ class Character(pygame.sprite.Sprite):
     def Loot(self, EXPGain, EnemyObject):
         self.game.console_print(
             ('You killed a ' + EnemyObject.EnemyName + ' and gained ' + str(EXPGain) + ' experience'))
-        self.changeEXP(EXPGain)
+        self.changeEXP(EXPGain*self.game.DEBUGMOD)
         self.isAttackable = True
         self.AttackChoice = False
         self.canAttack = True

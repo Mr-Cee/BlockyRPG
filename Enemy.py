@@ -152,7 +152,7 @@ class Wolf(pygame.sprite.Sprite):
 
                     self.x_change -= ENEMY_SPEED * 5
                     self.movement_loop -= 1
-                    # print(self.movement_loop, -self.max_travel, (self.rect.left - self.game.player.rect.right))
+                    print(self.movement_loop, -self.max_travel, (self.rect.left - self.game.player.rect.right))
                     if self.movement_loop <= -self.max_travel or (self.rect.left - self.game.player.rect.right <= 15):
                         self.AttackingMovement = False
                         self.movement_loop = 0
@@ -264,7 +264,7 @@ class Wolf(pygame.sprite.Sprite):
         MonsterAttack = random.randint(1 + self.attackPower, 5 + self.attackPower)
         if self.rect.left - self.game.player.rect.right > 15:
             game.console_print((self.EnemyName + ' advances towards you.'))
-            self.max_travel = random.randint(75, 125)
+            self.max_travel = WIN_WIDTH/13
             self.AttackingMovement = True
 
         else:

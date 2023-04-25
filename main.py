@@ -16,6 +16,8 @@ from UI import *
 class Game:
     def __init__(self):
         pygame.init()
+        self.DEBUGMOD = 1
+        self.DEBUGGING = False
         self.screen = pygame.display.set_mode((WIN_WIDTH, GAME_HEIGHT))
         self.clock = pygame.time.Clock()
         self.running = True
@@ -32,15 +34,20 @@ class Game:
         self.textboxIMG = pygame.image.load(self.resource_path('assets/textbox.png'))
         self.textboxIMG = pygame.transform.scale(self.textboxIMG, (WIN_WIDTH / 2, 160))
 
-        self.enemyHPBar = pygame.image.load(self.resource_path('assets/enemy_health_bar.png'))
-        self.enemyHPBar = pygame.transform.scale(self.enemyHPBar, (WIN_WIDTH/3, 50))
-        self.enemyHPBarBG = pygame.image.load(self.resource_path('assets/enemy_health_bar_background.png'))
-        self.enemyHPBarBG = pygame.transform.scale(self.enemyHPBarBG, (WIN_WIDTH/3, 50))
-        self.enemyHPBarFGGold = pygame.image.load(self.resource_path('assets/enemy_health_bar_foreground_gold.png'))
-        self.enemyHPBarFGGold = pygame.transform.scale(self.enemyHPBarFGGold, (WIN_WIDTH/3, 50))
-        self.enemyHPBarFGSilver = pygame.image.load(self.resource_path('assets/enemy_health_bar_foreground_silver.png'))
-        self.enemyHPBarFGSilver = pygame.transform.scale(self.enemyHPBarFGSilver, (WIN_WIDTH/3, 50))
+        self.font = pygame.font.Font('assets/BKANT.TTF', 15)
+        self.DEBUGText = 'DEBUGGING/TESTING'
+        self.DEBUGText = self.font.render(str(self.DEBUGText), True, RED, None)
+        self.DEBUGTextRect = self.DEBUGText.get_rect()
+        self.DEBUGTextRect.topright = (WIN_WIDTH - 10, 5)
 
+        self.enemyHPBar = pygame.image.load(self.resource_path('assets/enemy_health_bar.png'))
+        self.enemyHPBar = pygame.transform.scale(self.enemyHPBar, (WIN_WIDTH / 3, 50))
+        self.enemyHPBarBG = pygame.image.load(self.resource_path('assets/enemy_health_bar_background.png'))
+        self.enemyHPBarBG = pygame.transform.scale(self.enemyHPBarBG, (WIN_WIDTH / 3, 50))
+        self.enemyHPBarFGGold = pygame.image.load(self.resource_path('assets/enemy_health_bar_foreground_gold.png'))
+        self.enemyHPBarFGGold = pygame.transform.scale(self.enemyHPBarFGGold, (WIN_WIDTH / 3, 50))
+        self.enemyHPBarFGSilver = pygame.image.load(self.resource_path('assets/enemy_health_bar_foreground_silver.png'))
+        self.enemyHPBarFGSilver = pygame.transform.scale(self.enemyHPBarFGSilver, (WIN_WIDTH / 3, 50))
 
         self.all_sprites = pygame.sprite.LayeredUpdates()
         self.player_sprite = pygame.sprite.Group()
@@ -80,14 +87,12 @@ class Game:
         self.current_level.terrainGen()
         self.current_level.GenerateEnemies(None)
 
-
         # Set up logging
         log = "bot.log"
         logging.basicConfig(filename=log, level=logging.DEBUG, format='%(asctime)s %(message)s', filemode='a',
                             datefmt='%d/%m/%Y %H:%M:%S')
 
         self.the_font = pygame.font.Font(None, 20)
-
 
         self.message_log = []
 
@@ -131,7 +136,6 @@ class Game:
             base_path = os.path.abspath(".")
         return os.path.join(base_path, relative_path)
 
-
     def AttackLevelChange(self, EnemyName):
         tempNum = len(self.level_list)
         self.previousLevel = self.current_level_no
@@ -165,8 +169,6 @@ class Game:
         self.level_list.pop(tempNum)
         self.player.collision_rect.x = self.player.rect.x + 22
         self.player.collision_rect.y = self.player.rect.bottom - 5
-
-
 
     def LevelChange(self, direction):
         self.leveldirection = direction
@@ -216,8 +218,8 @@ class Game:
         # logging.info('------------------------------------')
 
     def goToTown(self):
-        self.player.rect.x = WIN_WIDTH/2
-        self.player.rect.y = WIN_HEIGHT/2
+        self.player.rect.x = WIN_WIDTH / 2
+        self.player.rect.y = WIN_HEIGHT / 2
         self.player.collision_rect.x = self.player.rect.x + 22
         self.player.collision_rect.y = self.player.rect.bottom - 5
         self.current_level_no = 0
@@ -233,12 +235,12 @@ class Game:
         self.current_level.GenerateEnemies(None)
         self.current_level.terrainGen()
 
-
         self.console_print('You are in town')
+
     def DeathReset(self):
         self.player.hp = self.player.max_hp
         if self.player.exp > 0:
-            self.player.exp = floor(self.player.exp*.9)
+            self.player.exp = floor(self.player.exp * .9)
 
         self.player.rect.x = WIN_WIDTH / 2
         self.player.rect.y = WIN_HEIGHT / 2
@@ -281,8 +283,8 @@ class Game:
     def update_log(self):
         # create a surface for the log:
         # This one the same width as the RESOLUTION and 1/3 the height
-        self.log_surf = pygame.Surface((WIN_WIDTH/2, 160))
-        self.log_surf.blit(self.textboxIMG, (0, 0, WIN_WIDTH/2, 160))
+        self.log_surf = pygame.Surface((WIN_WIDTH / 2, 160))
+        self.log_surf.blit(self.textboxIMG, (0, 0, WIN_WIDTH / 2, 160))
         # Populate it with, say, the last three messages:
         # Note: You could do this in a more elegant loop if you wanted to.
         #       You would probably be served by checking to see if you have any messages at all before
@@ -312,7 +314,7 @@ class Game:
         # sorry for the magic numbers, ideally you would pre-define these positions
         # as variables
 
-        self.screen.blit(self.log_surf, (WIN_WIDTH/2, WIN_HEIGHT))
+        self.screen.blit(self.log_surf, (WIN_WIDTH / 2, WIN_HEIGHT))
 
     def new(self):
 
@@ -325,6 +327,23 @@ class Game:
         self.console_print('')
         self.console_print('')
 
+    def DebugSettings(self):
+        if self.DEBUGGING:
+            self.DEBUGMOD = 100
+            self.player.max_hp = 100 * self.DEBUGMOD
+            self.player.hp = self.player.max_hp
+            self.player.CharacterStrength = self.player.playerLevel * 5 * self.DEBUGMOD
+        else:
+            self.DEBUGMOD = 1
+            self.player.max_hp = self.player.playerLevel * 20 + 80
+            self.player.hp = self.player.max_hp
+            self.player.CharacterStrength = 5 * self.player.playerLevel
+
+        self.font = pygame.font.Font('assets/BKANT.TTF', 20)
+        self.player.HPBarText = str(self.player.hp) + "/" + str(self.player.max_hp)
+        self.player.HPText = self.font.render(str(self.player.HPBarText), True, BLACK, None)
+        self.player.HPBarTextRect = self.player.HPText.get_rect()
+        self.player.HPBarTextRect.center = (275, WIN_HEIGHT + 36)
 
     def events(self):
         for event in pygame.event.get():
@@ -342,6 +361,10 @@ class Game:
                     self.player.changeHealth(-10)
                 if event.key == pygame.K_t:
                     self.goToTown()
+                if event.key == pygame.K_d:
+                    self.DEBUGGING = not self.DEBUGGING
+                    self.DebugSettings()
+
             # if event.type == self.CharacterAttackTimer:
             #     self.player.canAttack = True
             if event.type == self.EnemyAttackTimer:
@@ -355,7 +378,6 @@ class Game:
         self.all_sprites.update()
         self.current_level.update()
         self.update_log()
-
 
     def draw(self):
         if not self.player.isAttackable:
@@ -373,7 +395,9 @@ class Game:
             (193, WIN_HEIGHT + 109))
         self.screen.blit(self.player.HPText, self.player.HPBarTextRect)
         self.screen.blit(self.player.EXPText, self.player.EXPBarTextRect)
-################### Drawing Squares around objects for collisions ##################################
+        if self.DEBUGGING:
+            self.screen.blit(self.DEBUGText, self.DEBUGTextRect)
+        ################### Drawing Squares around objects for collisions ##################################
 
         # for object in self.background_sprites:
         #     pygame.draw.rect(self.screen, BLACK, object.collision_rect)
@@ -387,7 +411,7 @@ class Game:
         #     pygame.draw.rect(self.screen, RED, object.rect)
         # pygame.draw.rect(self.screen, WHITE, self.player.rect)
 
-###################################################################################################
+        ###################################################################################################
         self.clock.tick(FPS)
         pygame.display.update()
 
