@@ -49,7 +49,6 @@ class Character(pygame.sprite.Sprite):
         self.y = y
         self.width = CHARACTER_TILESIZE
         self.height = CHARACTER_TILESIZE
-        self.pos = (self.x, self.y)
 
         self.x_change = 0
         self.y_change = 0
@@ -64,6 +63,7 @@ class Character(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
+        self.pos = pygame.Vector2(self.rect.x, self.rect.y)
 
         # Character Level Text
         self.LevelTextRect = self.LevelText.get_rect()
@@ -131,10 +131,12 @@ class Character(pygame.sprite.Sprite):
 
         self.rect.x += self.x_change
         self.collision_rect.x += self.x_change
+        self.pos.x = self.rect.right
         self.collide_terrain('x')
 
         self.rect.y += self.y_change
         self.collision_rect.y = self.rect.bottom - 5
+        self.pos.y = self.rect.y + 32
         self.collide_terrain('y')
 
         self.game.all_sprites.change_layer(self, self.collision_rect.bottom)
@@ -311,10 +313,28 @@ class Character(pygame.sprite.Sprite):
     def AttackMonster(self):
         EnemyObject = self.monsterToAttack
         tempAttack = random.randint(1 + self.CharacterStrength, 5 + self.CharacterStrength)
+        print(self.pos.x, self.pos.y)
+
         # print(str(EnemyObject.EnemyName) + ' ' + str(EnemyObject.hp) + '/' + str(EnemyObject.max_hp))
         # print('Attacked ' + str(EnemyObject.EnemyName) + 'for ' + str(tempAttack) + ' damage')
         # EnemyObject.hp -= tempAttack
-        Fireball = Projectile(self.rect.left, self.height / 2 + EnemyObject.y, self.game, self.FireballImage, EnemyObject, tempAttack)
+
+        # Enemy_x, Enemy_y = self.monsterToAttack.x, self.monsterToAttack.y
+        # P_X, P_Y = Enemy_x - self.pos.x, Enemy_y - self.pos.y
+        # distance = (P_X ** 2 + P_Y ** 2) ** .5
+        # if distance != 0:
+        #     NORMALIZED_DISTANCE = 100
+        #     multiplier = NORMALIZED_DISTANCE / distance
+        #     P_X *= multiplier
+        #     P_Y *= multiplier
+        angle = 0
+        # direction = pygame.Vector2(EnemyObject.x, EnemyObject.y)
+        direction = math.atan2((self.monsterToAttack.y - self.rect.y),
+                               (self.monsterToAttack.x - self.rect.x))
+
+
+        Fireball = Projectile(self.game, self.pos, direction, self.FireballImage, EnemyObject, tempAttack)
+        _, angle = (self.monsterToAttack.pos - self.pos).as_polar()
         # self.game.console_print(('You attacked a ' + EnemyObject.EnemyName + ' for ' + str(tempAttack) + ' damage'))
         # # print(str(EnemyObject.EnemyName) + ' ' + str(EnemyObject.hp) + '/' + str(EnemyObject.max_hp))
         # if EnemyObject.hp > 0:
@@ -337,7 +357,7 @@ class Character(pygame.sprite.Sprite):
         self.tempAttackPause = 1 * FPS
         self.AttackChoice = True
 
-        self.pos = (self.rect.x, self.rect.y)
+        # self.pos = (self.rect.x, self.rect.y)
         self.facing = 'right'
         self.rect.x = BORDER_TILESIZE + 5
         self.rect.y = WIN_HEIGHT / 2 - self.height / 3
@@ -358,16 +378,17 @@ class Character(pygame.sprite.Sprite):
             for object in self.game.enemy_sprites:
                 collide = pygame.Rect.colliderect(self.collision_rect, object.rect)
                 if collide:
+                    enemyRedHPBar = EnemyHPBarInterior(self.game, object, WIN_WIDTH / 3 + 11, 16)
+                    enemyHPFG = EnemyHPBarFG(self.game, object, WIN_WIDTH / 3, 10)
+
                     self.isAttackable = False
                     self.canAttack = True
                     object.facing = 'left'
-                    self.game.enemyHPBar = pygame.transform.scale(self.game.enemyHPBar,
-                                                                  (round(object.hp / object.max_hp * (WIN_WIDTH / 3)),
-                                                                   50))
+                    # self.game.enemyHPBar = pygame.transform.scale(self.game.enemyHPBar,
+                    #                                               (round(object.hp / object.max_hp * (WIN_WIDTH / 3)),
+                    #                                                50))
                     self.tempAttack(object, object.EnemyName)
                     self.templist.append(object)
-
-
 
             # if len(templist) > 0:
             #     for item in templist:
@@ -392,37 +413,51 @@ class Character(pygame.sprite.Sprite):
 
 
 class Projectile(pygame.sprite.Sprite):
-    def __init__(self, x, y, game, image, Enemy, AttackDamage):
+    def __init__(self, game, pos, direction, image, Enemy, AttackDamage):
         self.game = game
         self.Enemy = Enemy
         self.AttackDamage = AttackDamage
-        pygame.sprite.Sprite.__init__(self, self.game.all_sprites, self.game.combat_attack_sprites)
-        self.x = x
-        self.y = y
+        # self.x = x
+        # self.y = y
         self.screen = self.game.screen
         self.image = image
-        self.rect = self.image.get_rect()
-        self.rect.x = self.x
-        self.rect.y = self.y
+        pygame.sprite.Sprite.__init__(self, self.game.all_sprites, self.game.combat_attack_sprites)
+
+        self.rect = self.image.get_rect(center=pos)
+        self.direction = direction
+        print('Direction', self.direction)
+        self.pos = pygame.math.Vector2(self.rect.center)
+
+        self.dt = self.game.clock.tick(FPS*5)
+        # self.speed = pygame.math.Vector2(x=run, y=rise)
 
     def update(self):
-        self.rect.x += 10
-        self.collide_with_enemy()
+        # self.rect.x += 10
+        # print(self.pos.x, self.pos.y)
+        # self.pos += self.direction
+        self.rect.x += self.dt * math.cos(self.direction)
+        self.rect.y += self.dt * math.sin(self.direction)
 
+        # self.pos += self.direction * self.dt
+        # self.rect.center = self.pos
+        self.collide_with_enemy()
+        if not pygame.display.get_surface().get_rect().contains(self.rect):
+            self.kill()
 
     def collide_with_enemy(self):
+
         collide = pygame.Rect.colliderect(self.rect, self.Enemy.rect)
 
         if collide:
             self.kill()
             self.Enemy.hp -= self.AttackDamage
-            self.game.console_print(('You attacked a ' + self.Enemy.EnemyName + ' for ' + str(self.AttackDamage) + ' damage'))
+            self.game.console_print(
+                ('You attacked a ' + self.Enemy.EnemyName + ' for ' + str(self.AttackDamage) + ' damage'))
             # print(str(EnemyObject.EnemyName) + ' ' + str(EnemyObject.hp) + '/' + str(EnemyObject.max_hp))
             if self.Enemy.hp > 0:
-                self.game.enemyHPBar = pygame.transform.scale(self.game.enemyHPBar,
-                                                              (round(self.Enemy.hp / self.Enemy.max_hp * (
-                                                                          WIN_WIDTH / 3)),
-                                                               50))
+                self.game.enemyHPBar = pygame.transform.scale(self.game.enemyHPBar, (
+                    math.floor((self.Enemy.hp / self.Enemy.max_hp) * (WIN_WIDTH / 3)), 50))
+
                 self.font = pygame.font.Font('assets/BKANT.TTF', 20)
                 self.Enemy.HPBarText = str(round(self.Enemy.hp)) + "/" + str(round(self.Enemy.max_hp))
                 self.Enemy.HPText = self.font.render(str(self.Enemy.HPBarText), True, BLACK, None)
@@ -432,7 +467,6 @@ class Projectile(pygame.sprite.Sprite):
 
             if self.game.player.hp > 0 and self.Enemy.hp > 0:
                 pygame.time.set_timer(self.game.EnemyAttackTimer, self.game.milliseconds_delay)
-
 
     # def draw(self):
     #     # pygame.draw.circle(win, self.color, (self.x, self.y), self.radius)

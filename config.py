@@ -44,6 +44,7 @@ BORDER_TILESIZE = 32
 
 # Player Settings
 PLAYER_SPEED = 5
+PROJECTILE_SPEED = 10
 
 # Enemy Settings
 ENEMY_SPEED = 1

@@ -1,3 +1,5 @@
+import pygame
+
 from terrain import *
 import math
 import random
@@ -22,7 +24,7 @@ class Wolf(pygame.sprite.Sprite):
         self.HPBarText = str(self.hp) + "/" + str(self.max_hp)
         self.HPText = self.font.render(str(self.HPBarText), True, BLACK, None)
         self.HPBarTextRect = self.HPText.get_rect()
-        self.HPBarTextRect.center = (WIN_WIDTH / 2, 35)
+        self.HPBarTextRect.center = (WIN_WIDTH / 2, 25)
 
         self.EXPGive = EXPGain
 
@@ -51,6 +53,7 @@ class Wolf(pygame.sprite.Sprite):
         self.image = self.game.wolf_spritesheet.get_sprite(0, 0, self.width, self.height)
 
         self.rect = self.image.get_rect()
+        self.pos = pygame.Vector2(self.rect.center)
         self.rect.x = self.x
         self.rect.y = self.y
 

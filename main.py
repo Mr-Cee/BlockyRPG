@@ -273,6 +273,7 @@ class Game:
     def UIBuild(self):
         UIPanel(self, 0, WIN_HEIGHT, self.BottomPanel_IMG)  # Background Panel
         HUDMAIN(self, 10, WIN_HEIGHT + 10)  # HP/MP/XP HUD BARS
+
         self.RedHPBar = HPBarInterior(self, 193, WIN_HEIGHT + 22)  # HP RED BAR
         self.EXPYellowBar = pygame.image.load(self.resource_path('assets/XPBarInside.png'))
         # EnemyHPBarBG(self, WIN_WIDTH / 2, 10, self.enemyHPBarBG)

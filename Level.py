@@ -179,10 +179,13 @@ class Level:
             self.combat_UI_Sprites.draw(self.screen)
             self.combat_attack_sprites.draw(self.screen)
 
-            self.screen.blit(self.game.enemyHPBarBG, (WIN_WIDTH / 3, 10))
-            self.screen.blit(self.game.enemyHPBar, (WIN_WIDTH / 3, 10))
-            # self.screen.blit(pygame.transform.scale(self.game.enemyHPBar, ((self.Monster1.hp/self.Monster1.max_hp*200), 50)), (WIN_WIDTH/3, 10))
-            self.screen.blit(self.game.enemyHPBarFGSilver, (WIN_WIDTH, 10))
+            # self.screen.blit(self.game.enemyHPBarBG, (WIN_WIDTH / 3, 10))
+            # self.screen.blit(self.game.enemyHPBar, (WIN_WIDTH / 3, 10))
+            # self.screen.blit(self.game.enemyHPBarFGSilver, (WIN_WIDTH, 10))
+
+
+
+
             self.screen.blit(self.Monster1.HPText, self.Monster1.HPBarTextRect)
 
             if self.player.canAttack:
