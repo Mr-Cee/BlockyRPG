@@ -19,6 +19,8 @@ class Character(pygame.sprite.Sprite):
         self.screen = self.game.screen
         self.max_hp = 100
         self.hp = self.max_hp
+        self.max_mp = 100
+        self.mp = self.max_mp
 
         self.playerLevel = 1
         self.exp = 0
@@ -66,6 +68,7 @@ class Character(pygame.sprite.Sprite):
 
         self.image = self.game.character_spritesheet.get_sprite(0, 192, self.width, self.height)
         self.FireballImage = self.game.WeaponsAndMagicSpritesheet.get_sprite(68, 198, 24, 12)
+        self.AcidImage = self.game.WeaponsAndMagicSpritesheet.get_sprite(74, 246, 18, 12)
         self.SpellCastSheet = SpriteSheet('assets/CharacterSpellSheet.png')
         self.SpellName = ''
 
@@ -360,6 +363,8 @@ class Character(pygame.sprite.Sprite):
     def CastSpell(self):
         if self.SpellName == 'Fireball':
             spell_image = self.FireballImage
+        elif self.SpellName == 'Acid':
+            spell_image = self.AcidImage
         else:
             spell_image = self.FireballImage
 
@@ -370,6 +375,8 @@ class Character(pygame.sprite.Sprite):
     def CastSpellFromBar(self):
         if self.SpellName == 'Fireball':
             self.attackDamage = random.randint(self.FireballDamage, 5 + self.FireballDamage)
+        elif self.SpellName == 'Acid':
+            self.attackDamage = random.randint(self.AcidDamage, 5 + self.AcidDamage)
         else:
             self.attackDamage = random.randint(self.CharacterStrength, 5 + self.CharacterStrength)
         if self.attackDamage > self.monsterToAttack.hp:

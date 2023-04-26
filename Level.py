@@ -37,6 +37,7 @@ class Level:
         self.attackBackground = pygame.transform.scale(self.attackBackground, (WIN_WIDTH, WIN_HEIGHT))
         self.AttackSelectionBG = pygame.image.load(self.game.resource_path('assets/AttackChoiceBG.png')).convert_alpha()
         self.AttackSelectionBG = pygame.transform.scale(self.AttackSelectionBG, (WIN_WIDTH / 5 * 3, 50))
+        self.AttackSelectionBG_rect = self.AttackSelectionBG.get_rect()
         self.Monster1 = None
 
         # Other Images
@@ -46,8 +47,12 @@ class Level:
         self.wolf_spritesheet = SpriteSheet_Black('assets/Wolfsheet1.png')
         self.goblin_walking_spritesheet = SpriteSheet('assets/goblin.png')
         self.character_spritesheet = SpriteSheet('assets/CharacterSpritesheet.png')
+
+
         self.Fireball_img = pygame.image.load(self.game.resource_path('assets/flame_icon.png'))
         self.Fireball_img = pygame.transform.scale(self.Fireball_img, (40, 40))
+        self.Acid_img = pygame.image.load(self.game.resource_path('assets/acid-bolt.png'))
+        self.Acid_img = pygame.transform.scale(self.Acid_img, (40, 40))
 
         self.milliseconds_delay = 2000  # 1 seconds
         self.CharacterAttackTimer = pygame.USEREVENT + 1
@@ -193,9 +198,14 @@ class Level:
 
             if self.player.canAttack:
                 self.screen.blit(self.AttackSelectionBG, (WIN_WIDTH / 5, WIN_HEIGHT - 50))
-                if button.Button(self.game, self.screen, WIN_WIDTH / 5 + 35, WIN_HEIGHT - 48, self.Fireball_img, 40,
-                                 40, "Fireball", "Cast a fireball for ", (str(self.player.FireballDamage) + "-" + str(self.player.FireballDamage + 5) + " damage.")).draw() and self.player.canAttack:
+                if button.Button(self.game, self.screen, WIN_WIDTH / 5 + 35, WIN_HEIGHT - 48, self.Fireball_img, 40, 40, "Fireball", "Cast a fireball for ", (str(self.player.FireballDamage) + "-" + str(self.player.FireballDamage + 5) + " damage.")).draw() and self.player.canAttack:
                     self.game.player.SpellName = 'Fireball'
+                    self.player.canAttack = False
+                    self.player.monsterToAttack = self.game.current_level.Monster1
+                    self.player.CastSpellFromBar()
+
+                if button.Button(self.game, self.screen, WIN_WIDTH / 5 + 110, WIN_HEIGHT - 48, self.Acid_img, 40, 40, "Acid", "Cast an Acid ball for ", (str(self.player.AcidDamage) + "-" + str(self.player.AcidDamage + 5) + " damage.")).draw() and self.player.canAttack:
+                    self.game.player.SpellName = 'Acid'
                     self.player.canAttack = False
                     self.player.monsterToAttack = self.game.current_level.Monster1
                     self.player.CastSpellFromBar()
