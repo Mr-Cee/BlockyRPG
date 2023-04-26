@@ -180,6 +180,8 @@ class Level:
         if self.in_town:
             if self.player.hp < self.player.max_hp:
                 self.player.changeHealth(.025)
+            if self.player.mp < self.player.max_mp:
+                self.player.changeMana(.025)
 
     def draw(self, screen):
         # Draw everyone on this level

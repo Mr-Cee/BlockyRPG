@@ -361,16 +361,27 @@ class Character(pygame.sprite.Sprite):
                     # logging.info('------------------------------------')
 
     def CastSpell(self):
+        EnemyObject = self.monsterToAttack
         if self.SpellName == 'Fireball':
-            spell_image = self.FireballImage
+            if self.mp >= 25:
+                spell_image = self.FireballImage
+                self.mp -= 25
+                Projectile(self.game, self.pos, self.direction, self.SpellName, spell_image, EnemyObject,
+                           self.attackDamage)
+                _, angle = (self.monsterToAttack.pos - self.pos).as_polar()
+            else:
+                self.game.console_print('Need at least 25 mana to cast Fireball')
         elif self.SpellName == 'Acid':
-            spell_image = self.AcidImage
+            if self.mp >= 50:
+                spell_image = self.AcidImage
+                self.mp -= 50
+                Projectile(self.game, self.pos, self.direction, self.SpellName, spell_image, EnemyObject,
+                           self.attackDamage)
+                _, angle = (self.monsterToAttack.pos - self.pos).as_polar()
+            else:
+                self.game.console_print('Need at least 50 mana to cast Acid')
         else:
             spell_image = self.FireballImage
-
-        EnemyObject = self.monsterToAttack
-        Projectile(self.game, self.pos, self.direction, self.SpellName, spell_image, EnemyObject, self.attackDamage)
-        _, angle = (self.monsterToAttack.pos - self.pos).as_polar()
 
     def CastSpellFromBar(self):
         if self.SpellName == 'Fireball':
@@ -468,6 +479,14 @@ class Character(pygame.sprite.Sprite):
         self.HPBarText = str(round(self.hp)) + "/" + str(round(self.max_hp))
         self.HPText = self.font.render(str(self.HPBarText), True, BLACK, None)
         self.checkForDeath()
+
+    def changeMana(self, mpAmount):
+        if self.mp + mpAmount < self.max_mp:
+            self.mp += mpAmount
+            print(self.mp)
+        else:
+            self.mp = self.max_mp
+
 
     def changeEXP(self, expAmount):
         self.exp += expAmount
