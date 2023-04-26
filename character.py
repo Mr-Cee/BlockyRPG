@@ -367,7 +367,7 @@ class Character(pygame.sprite.Sprite):
 
     def CastSpellFromBar(self):
         self.attackDamage = random.randint(1 + self.CharacterStrength, 5 + self.CharacterStrength)
-        self.direction = math.atan2((self.monsterToAttack.y - self.rect.y), (self.monsterToAttack.x - self.rect.x))
+        self.direction = math.atan2((self.monsterToAttack.y-self.monsterToAttack.height/3 - self.rect.y), (self.monsterToAttack.x - self.rect.x))
         self.animation_loop = 0
         self.CastSpellStart = True
 
