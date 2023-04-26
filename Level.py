@@ -148,11 +148,11 @@ class Level:
                 if RandChoice == 'Wolf':
                     Wolf(self, random.randint(BORDER_TILESIZE * 2, WIN_WIDTH - BORDER_TILESIZE * 2),
                          random.randint(BORDER_TILESIZE * 2, WIN_HEIGHT - (BORDER_TILESIZE * 2)), EnemyStrength,
-                         EnemyHealth*self.game.DEBUGMOD, EnemyEXPGain)
+                         EnemyHealth * self.game.DEBUGMOD, EnemyEXPGain)
         else:
             if EnemyName == 'Wolf':
                 self.Monster1 = Wolf(self, WIN_WIDTH - BORDER_TILESIZE * 4, WIN_HEIGHT / 2, EnemyStrength,
-                                     EnemyHealth*self.game.DEBUGMOD, EnemyEXPGain)
+                                     EnemyHealth * self.game.DEBUGMOD, EnemyEXPGain)
 
     # Update everything on this level
     def update(self):
@@ -174,29 +174,21 @@ class Level:
 
         if not self.player.isAttackable:
             self.screen.blit(self.attackBackground, (0, 0))
-            # self.combat_enemy_sprites.draw(self.screen)
-            # self.combat_background_sprites.draw(self.screen)
+
             self.combat_enemy_sprites.draw(self.screen)
             self.combat_background_sprites.draw(self.screen)
             self.combat_UI_Sprites.draw(self.screen)
             self.combat_attack_sprites.draw(self.screen)
-
-            # self.screen.blit(self.game.enemyHPBarBG, (WIN_WIDTH / 3, 10))
-            # self.screen.blit(self.game.enemyHPBar, (WIN_WIDTH / 3, 10))
-            # self.screen.blit(self.game.enemyHPBarFGSilver, (WIN_WIDTH, 10))
-
-
-
-
+            self.player_sprite.draw(screen)
             self.screen.blit(self.Monster1.HPText, self.Monster1.HPBarTextRect)
 
             if self.player.canAttack:
-                self.screen.blit(self.AttackSelectionBG, (WIN_WIDTH/5, WIN_HEIGHT-50))
-                if button.Button(self.game, self.screen, WIN_WIDTH/5+35, WIN_HEIGHT-48, self.Fireball_img,40, 40).draw() and self.player.canAttack:
+                self.screen.blit(self.AttackSelectionBG, (WIN_WIDTH / 5, WIN_HEIGHT - 50))
+                if button.Button(self.game, self.screen, WIN_WIDTH / 5 + 35, WIN_HEIGHT - 48, self.Fireball_img, 40,
+                                 40).draw() and self.player.canAttack:
                     self.player.canAttack = False
                     self.player.monsterToAttack = self.game.current_level.Monster1
                     self.player.CastSpellFromBar()
-
 
                 if button.Button(self.game, self.screen, WIN_WIDTH / 2 - 97, WIN_HEIGHT / 2,
                                  pygame.image.load(self.game.resource_path('assets/button_attack.png')), 195,
@@ -210,7 +202,10 @@ class Level:
                 if button.Button(self.game, self.screen, WIN_WIDTH / 2 - 97, WIN_HEIGHT / 2 + 60,
                                  pygame.image.load(self.game.resource_path('assets/button_flee.png')), 195, 50).draw():
                     self.player.Flee()
-            self.player_sprite.draw(screen)
+
+
+
+
         else:
             # Draw the Background
             self.screen.blit(self.background, (0, 0))

@@ -407,12 +407,16 @@ class Game:
         # for object in self.enemy_sprites:
         #     pygame.draw.rect(self.screen, RED, object.rect)
         # pygame.draw.rect(self.screen, WHITE, self.player.collision_rect)
-
+        #
         # for object in self.background_sprites:
         #     pygame.draw.rect(self.screen, BLACK, object.rect)
         # for object in self.enemy_sprites:
         #     pygame.draw.rect(self.screen, RED, object.rect)
-        # pygame.draw.rect(self.screen, WHITE, self.player.rect)
+        #
+        # # pygame.draw.rect(self.screen, WHITE, self.player.rect)
+        #
+        # for sprite in self.combat_attack_sprites:
+        #     pygame.draw.rect(self.screen, BLUE, sprite.rect)
 
         ###################################################################################################
         self.clock.tick(FPS)

@@ -2,7 +2,7 @@ import pygame
 from character import *
 
 # button class
-class Button:
+class Button():
     def __init__(self, game, surface, x, y, image, size_x, size_y):
         self.image = pygame.transform.scale(image, (size_x, size_y))
         self.rect = self.image.get_rect()
@@ -12,7 +12,9 @@ class Button:
         self.game = game
         self.Combat_UI_Sprites = self.game.combat_UI_Sprites
 
-        self._layer = 900
+        self._layer = WIN_HEIGHT + 100
+
+
 
     def draw(self):
         action = False
@@ -31,5 +33,7 @@ class Button:
 
         # draw button
         self.surface.blit(self.image, (self.rect.x, self.rect.y))
+
+
 
         return action

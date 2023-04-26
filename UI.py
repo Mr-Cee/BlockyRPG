@@ -117,8 +117,6 @@ class EnemyHPBarFG(pygame.sprite.Sprite):
 
         self.width = self.image.get_width()
         self.height = self.image.get_height()
-        print('FG Width:', self.width)
-        print('FG Height:', self.height)
 
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
         self.rect.center = WIN_WIDTH / 2, 25
@@ -159,14 +157,16 @@ class EnemyHPBarInterior(pygame.sprite.Sprite):
     def update(self):
         try:
             if self.Enemy.hp > 0:
-                self.image = pygame.transform.scale(self.image, (round(
-                    (self.game.current_level.Monster1.hp / self.game.current_level.Monster1.max_hp) * (
-                            WIN_WIDTH / 3 - 35), 2), 19))
+                ratio = (round((self.game.current_level.Monster1.hp / self.game.current_level.Monster1.max_hp) * (WIN_WIDTH / 3 - 35), 2))
+                if ratio > 0:
+                    self.image = pygame.transform.scale(self.image, (ratio, 19))
+                else:
+                    self.image = pygame.transform.scale(self.image, (0, 19))
 
             else:
                 self.kill()
         except AttributeError:
-            print('NoneType')
+            pass
 
 
 class EXPBarInterior(pygame.sprite.Sprite):

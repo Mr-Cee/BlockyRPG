@@ -15,6 +15,7 @@ class Character(pygame.sprite.Sprite):
                             datefmt='%d/%m/%Y %H:%M:%S')
 
         self.game = game
+        self.dt = self.game.clock.tick(FPS * 250)
         self.screen = self.game.screen
         self.max_hp = 100
         self.hp = self.max_hp
@@ -40,6 +41,7 @@ class Character(pygame.sprite.Sprite):
         self.EXPBarTextRect.center = (290, WIN_HEIGHT + 123)
 
         self.isAttackable = True  # Allows the character to attack or be attacked
+        self.moveTowardsEnemy = False
         self.CastSpellStart = False
         self.tempAttackPause = 0
         self.canAttack = False
@@ -53,6 +55,8 @@ class Character(pygame.sprite.Sprite):
 
         self.x_change = 0
         self.y_change = 0
+        self.movement_loop = 0
+        self.max_travel = 10
 
         self.facing = 'down'
         self.animation_loop = 1
@@ -140,6 +144,8 @@ class Character(pygame.sprite.Sprite):
         self.movement()
         self.animate()
         self.collide_enemy()
+
+
 
         self.rect.x += self.x_change
         self.collision_rect.x += self.x_change
@@ -249,6 +255,24 @@ class Character(pygame.sprite.Sprite):
             if any((keys[pygame.K_UP], keys[pygame.K_DOWN])):
                 # self.game.all_sprites.change_layer(self, self.collision_rect.bottom)
                 self.game.all_sprites.change_layer(self, self.collision_rect.bottom)
+        elif self.moveTowardsEnemy:
+            if self.monsterToAttack.rect.left - self.rect.right >= 15:
+                self.x_change += self.dt * math.cos(self.direction)
+                self.y_change += self.dt * math.sin(self.direction)
+                self.movement_loop += self.dt
+                # print(self.movement_loop, -self.max_travel, (self.rect.left - self.game.player.rect.right))
+                if self.movement_loop >= self.max_travel or self.monsterToAttack.rect.left - self.rect.right <= 15:
+                    self.moveTowardsEnemy = False
+                    self.movement_loop = 0
+                    if self.game.player.hp > 0 and self.Enemy.hp > 0:
+                        pygame.time.set_timer(self.game.EnemyAttackTimer, self.game.milliseconds_delay)
+            else:
+                self.moveTowardsEnemy = False
+                self.movement_loop = 0
+                if self.game.player.hp > 0 and self.Enemy.hp > 0:
+                    pygame.time.set_timer(self.game.EnemyAttackTimer, self.game.milliseconds_delay)
+
+                    # self.game.player.canAttack = True
 
     def animate(self):
         if self.facing == 'down':
@@ -283,7 +307,6 @@ class Character(pygame.sprite.Sprite):
                     self.CastSpellStart = False
                     self.animation_loop = 0
                     self.CastSpell()
-
             else:
                 if self.x_change == 0:
                     self.image = self.game.character_spritesheet.get_sprite(0, 192, self.width, self.height)
@@ -345,29 +368,37 @@ class Character(pygame.sprite.Sprite):
     def CastSpellFromBar(self):
         self.attackDamage = random.randint(1 + self.CharacterStrength, 5 + self.CharacterStrength)
         self.direction = math.atan2((self.monsterToAttack.y - self.rect.y), (self.monsterToAttack.x - self.rect.x))
+        self.animation_loop = 0
         self.CastSpellStart = True
 
     def AttackMonster(self):
         self.Enemy = self.monsterToAttack
-        self.attackDamage = random.randint(1 + self.CharacterStrength, 5 + self.CharacterStrength)
-        self.Enemy.hp -= self.attackDamage
+        if self.Enemy.rect.left - self.rect.right > 15:
+            self.direction = math.atan2((self.monsterToAttack.y-self.monsterToAttack.height/3 - self.rect.y), (self.monsterToAttack.x - self.rect.right))
+            self.max_travel = random.randint(WIN_WIDTH/5, WIN_WIDTH/4)
+            self.movement_loop = 0
+            self.moveTowardsEnemy = True
 
-        self.game.console_print(
-            ('You attacked a ' + self.Enemy.EnemyName + ' for ' + str(self.attackDamage) + ' damage'))
-        # print(str(EnemyObject.EnemyName) + ' ' + str(EnemyObject.hp) + '/' + str(EnemyObject.max_hp))
-        if self.Enemy.hp > 0:
-            self.game.enemyHPBar = pygame.transform.scale(self.game.enemyHPBar, (
-                math.floor((self.Enemy.hp / self.Enemy.max_hp) * (WIN_WIDTH / 3)), 50))
+        else:
+            self.attackDamage = random.randint(1 + self.CharacterStrength, 5 + self.CharacterStrength)
+            self.Enemy.hp -= self.attackDamage
 
-            self.font = pygame.font.Font('assets/BKANT.TTF', 20)
-            self.Enemy.HPBarText = str(round(self.Enemy.hp)) + "/" + str(round(self.Enemy.max_hp))
-            self.Enemy.HPText = self.font.render(str(self.Enemy.HPBarText), True, BLACK, None)
+            self.game.console_print(
+                ('You attacked a ' + self.Enemy.EnemyName + ' for ' + str(self.attackDamage) + ' damage'))
+            # print(str(EnemyObject.EnemyName) + ' ' + str(EnemyObject.hp) + '/' + str(EnemyObject.max_hp))
+            if self.Enemy.hp > 0:
+                self.game.enemyHPBar = pygame.transform.scale(self.game.enemyHPBar, (
+                    math.floor((self.Enemy.hp / self.Enemy.max_hp) * (WIN_WIDTH / 3)), 50))
 
-        if self.Enemy.hp <= 0:
-            self.game.player.Loot(self.Enemy.EXPGive, self.Enemy)
+                self.font = pygame.font.Font('assets/BKANT.TTF', 20)
+                self.Enemy.HPBarText = str(round(self.Enemy.hp)) + "/" + str(round(self.Enemy.max_hp))
+                self.Enemy.HPText = self.font.render(str(self.Enemy.HPBarText), True, BLACK, None)
 
-        if self.game.player.hp > 0 and self.Enemy.hp > 0:
-            pygame.time.set_timer(self.game.EnemyAttackTimer, self.game.milliseconds_delay)
+            if self.Enemy.hp <= 0:
+                self.Enemy.CheckForDeath()
+
+            if self.game.player.hp > 0 and self.Enemy.hp > 0:
+                pygame.time.set_timer(self.game.EnemyAttackTimer, self.game.milliseconds_delay)
 
     def tempAttack(self, EnemyObject, EnemyName):
         EnemyObject = EnemyObject
@@ -435,6 +466,7 @@ class Projectile(pygame.sprite.Sprite):
         self.game = game
         self.Enemy = Enemy
         self.AttackDamage = AttackDamage
+
         # self.x = x
         # self.y = y
         self.screen = self.game.screen
@@ -442,6 +474,7 @@ class Projectile(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self, self.game.all_sprites, self.game.combat_attack_sprites)
 
         self.rect = self.image.get_rect(center=pos)
+        self.rect.x = self.game.player.rect.left
         self.direction = direction
         self.pos = pygame.math.Vector2(self.rect.center)
 
@@ -480,7 +513,8 @@ class Projectile(pygame.sprite.Sprite):
                 self.Enemy.HPText = self.font.render(str(self.Enemy.HPBarText), True, BLACK, None)
 
             if self.Enemy.hp <= 0:
-                self.game.player.Loot(self.Enemy.EXPGive, self.Enemy)
+                # self.game.player.Loot(self.Enemy.EXPGive, self.Enemy)
+                self.Enemy.CheckForDeath()
 
             if self.game.player.hp > 0 and self.Enemy.hp > 0:
                 pygame.time.set_timer(self.game.EnemyAttackTimer, self.game.milliseconds_delay)
