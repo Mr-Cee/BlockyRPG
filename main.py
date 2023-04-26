@@ -66,7 +66,8 @@ class Game:
         self.player = Character(self, WIN_WIDTH / 2, WIN_HEIGHT / 2)
         self.font = pygame.font.Font(self.resource_path('assets/BKANT.TTF'), 9)
 
-        self.EnemyList = ['Wolf']
+        self.EnemyList = ['Wolf',
+                          'Goblin']
 
         self.milliseconds_delay = 2000  # 1 seconds
         self.CharacterAttackTimer = pygame.USEREVENT + 1
@@ -98,37 +99,6 @@ class Game:
 
         self.message_log = []
 
-        # for i in range(len(self.all_sprites.layers())):
-        #     print(self.all_sprites.get_layer_of_sprite(i))
-        # logging.info(self.all_sprites.get_layer_of_sprite(_))
-        # print(self.all_sprites.layers())
-        # print(len(self.all_sprites.layers()))
-        # print('Layer:', self.all_sprites.get_layer_of_sprite(self.all_sprites.get_sprite(1)), 'Sprite:', self.all_sprites.get_sprite(1))
-        # print(self.all_sprites.get_sprite(1).collision_rect)
-        # print(self.all_sprites.get_sprite(1))
-        # print(self.all_sprites.get_sprite(2))
-        # print(self.all_sprites.get_sprite(3))
-        # print(self.all_sprites.get_sprites_from_layer(32))
-
-        # print(self.all_sprites.get_layer_of_sprite(self.player))
-        #
-        # print('length:', len(self.all_sprites))
-        #
-        # print('Layer:', self.all_sprites.get_layer_of_sprite(self.all_sprites.get_sprite(29)))
-        #
-        # print('Sprite:', self.all_sprites.get_sprite(29))
-
-        # for i in range(len(self.all_sprites)):
-        #     print('Layer:', self.all_sprites.get_layer_of_sprite(self.all_sprites.get_sprite(i)), "   ", 'Sprite:', self.all_sprites.get_sprite(i))
-
-        # for i in range(len(self.all_sprites.layers())):
-        #     logging.info(str(self.all_sprites.get_sprite(i)) + 'in layer' + str(self.all_sprites.get_layer_of_sprite(self.all_sprites.get_sprite(i))))
-        # logging.info('------------------------------------')
-        # logging.info(str(self.current_level))
-        # for i in range(len(self.all_sprites)):
-        #     logging.info(('Layer:', self.all_sprites.get_layer_of_sprite(self.all_sprites.get_sprite(i)), 'Sprite:', self.all_sprites.get_sprite(i), self.all_sprites.get_sprite(i).collision_rect))
-        # logging.info('------------------------------------')
-
     def resource_path(self, relative_path):
         """ Get absolute path to resource, works for dev and for PyInstaller """
         try:
@@ -148,6 +118,7 @@ class Game:
         for sprite in self.background_sprites:
             self.temp_Sprite_list.append(sprite)
             sprite.kill()
+        print(EnemyName)
         self.current_level.terrainGen()
         self.current_level.GenerateEnemies(EnemyName)
 

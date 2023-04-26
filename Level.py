@@ -44,6 +44,7 @@ class Level:
         self.rock_img = pygame.image.load(self.game.resource_path('assets/large_rock.png'))
         self.building1 = pygame.image.load(self.game.resource_path('assets/Building_1.png'))
         self.wolf_spritesheet = SpriteSheet_Black('assets/Wolfsheet1.png')
+        self.goblin_walking_spritesheet = SpriteSheet('assets/goblin.png')
         self.character_spritesheet = SpriteSheet('assets/CharacterSpritesheet.png')
         self.Fireball_img = pygame.image.load(self.game.resource_path('assets/flame_icon.png'))
         self.Fireball_img = pygame.transform.scale(self.Fireball_img, (40, 40))
@@ -149,10 +150,18 @@ class Level:
                     Wolf(self, random.randint(BORDER_TILESIZE * 2, WIN_WIDTH - BORDER_TILESIZE * 2),
                          random.randint(BORDER_TILESIZE * 2, WIN_HEIGHT - (BORDER_TILESIZE * 2)), EnemyStrength,
                          EnemyHealth * self.game.DEBUGMOD, EnemyEXPGain)
+                if RandChoice == 'Goblin':
+                    Goblin(self, random.randint(BORDER_TILESIZE * 2, WIN_WIDTH - BORDER_TILESIZE * 2),
+                         random.randint(BORDER_TILESIZE * 2, WIN_HEIGHT - (BORDER_TILESIZE * 2)), EnemyStrength*2,
+                         EnemyHealth * 2 * self.game.DEBUGMOD, EnemyEXPGain * 2)
+
         else:
             if EnemyName == 'Wolf':
                 self.Monster1 = Wolf(self, WIN_WIDTH - BORDER_TILESIZE * 4, WIN_HEIGHT / 2, EnemyStrength,
                                      EnemyHealth * self.game.DEBUGMOD, EnemyEXPGain)
+            if EnemyName == 'Goblin':
+                self.Monster1 = Goblin(self, WIN_WIDTH - BORDER_TILESIZE * 4, WIN_HEIGHT / 2, EnemyStrength*2,
+                                     EnemyHealth*2 * self.game.DEBUGMOD, EnemyEXPGain*2)
 
     # Update everything on this level
     def update(self):
