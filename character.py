@@ -39,6 +39,11 @@ class Character(pygame.sprite.Sprite):
         self.HPBarTextRect = self.HPText.get_rect()
         self.HPBarTextRect.center = (275, WIN_HEIGHT + 36)
 
+        self.MPBarText = str(self.mp) + "/" + str(self.max_mp)
+        self.MPText = self.font.render(str(self.MPBarText), True, BLACK, None)
+        self.MPBarTextRect = self.MPText.get_rect()
+        self.MPBarTextRect.center = (275, WIN_HEIGHT + 77)
+
         self.EXPBarText = str(self.exp) + "/" + str(self.exp_to_level)
         self.EXPText = self.font.render(str(self.EXPBarText), True, BLACK, None)
         self.EXPBarTextRect = self.HPText.get_rect()

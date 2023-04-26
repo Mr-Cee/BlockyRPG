@@ -72,6 +72,35 @@ class HPBarInterior(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (round((self.player.hp / self.player.max_hp) * 164, 2), 28))
 
 
+class MPBarInterior(pygame.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.game = game
+        self.screen = self.game.screen
+        self.player = self.game.player
+
+        self.x = x
+        self.y = y
+
+        self.image = pygame.image.load('assets/MPBarInside.png')
+
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
+
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+        self.collision_rect = pygame.Rect(self.x, self.y, self.width, self.height)
+
+        # self.MPText = str(self.player.mp)
+
+        self._layer = GAME_HEIGHT + 100
+
+        pygame.sprite.Sprite.__init__(self, self.game.all_sprites, self.game.UI_Sprites)
+
+    def update(self):
+        self.image = pygame.transform.scale(self.image, (round((self.player.mp / self.player.max_mp) * 164, 2), 28))
+
+
 class EnemyHPBarBG(pygame.sprite.Sprite):
     def __init__(self, game, Enemy, x, y):
         self.game = game

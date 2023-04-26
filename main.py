@@ -245,6 +245,7 @@ class Game:
         HUDMAIN(self, 10, WIN_HEIGHT + 10)  # HP/MP/XP HUD BARS
 
         self.RedHPBar = HPBarInterior(self, 193, WIN_HEIGHT + 22)  # HP RED BAR
+        MPBarInterior(self, 193, WIN_HEIGHT + 65)
         self.EXPYellowBar = pygame.image.load(self.resource_path('assets/XPBarInside.png'))
         # EnemyHPBarBG(self, WIN_WIDTH / 2, 10, self.enemyHPBarBG)
         # EnemyHPBar(self, WIN_WIDTH / 2, 10, self.enemyHPBar)
@@ -367,6 +368,7 @@ class Game:
             pygame.transform.scale(self.EXPYellowBar, (((self.player.exp / self.player.exp_to_level) * 164), 28)),
             (193, WIN_HEIGHT + 109))
         self.screen.blit(self.player.HPText, self.player.HPBarTextRect)
+        self.screen.blit(self.player.MPText, self.player.MPBarTextRect)
         self.screen.blit(self.player.EXPText, self.player.EXPBarTextRect)
         if self.DEBUGGING:
             self.screen.blit(self.DEBUGText, self.DEBUGTextRect)
