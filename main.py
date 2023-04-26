@@ -118,7 +118,6 @@ class Game:
         for sprite in self.background_sprites:
             self.temp_Sprite_list.append(sprite)
             sprite.kill()
-        print(EnemyName)
         self.current_level.terrainGen()
         self.current_level.GenerateEnemies(EnemyName)
 
@@ -372,18 +371,15 @@ class Game:
         if self.DEBUGGING:
             self.screen.blit(self.DEBUGText, self.DEBUGTextRect)
         ################### Drawing Squares around objects for collisions ##################################
-
+        #
         # for object in self.background_sprites:
         #     pygame.draw.rect(self.screen, BLACK, object.collision_rect)
         # for object in self.enemy_sprites:
         #     pygame.draw.rect(self.screen, RED, object.rect)
         # pygame.draw.rect(self.screen, WHITE, self.player.collision_rect)
         #
-        # for object in self.background_sprites:
-        #     pygame.draw.rect(self.screen, BLACK, object.rect)
-        # for object in self.enemy_sprites:
-        #     pygame.draw.rect(self.screen, RED, object.rect)
-        #
+        # # for object in self.background_sprites:
+        # #     pygame.draw.rect(self.screen, BLACK, object.rect)
         # # pygame.draw.rect(self.screen, WHITE, self.player.rect)
         #
         # for sprite in self.combat_attack_sprites:

@@ -276,7 +276,7 @@ class EnemyTemplate(pygame.sprite.Sprite):
 
     def CheckForDeath(self):
         if self.hp <= 0:
-            print('test')
+            self.hp = 0
             self.animation_loop = 0
             self.DeathAnimation = True
             # self.game.player.Loot(self.EXPGive, self)

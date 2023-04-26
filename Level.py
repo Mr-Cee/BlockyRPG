@@ -194,14 +194,15 @@ class Level:
             if self.player.canAttack:
                 self.screen.blit(self.AttackSelectionBG, (WIN_WIDTH / 5, WIN_HEIGHT - 50))
                 if button.Button(self.game, self.screen, WIN_WIDTH / 5 + 35, WIN_HEIGHT - 48, self.Fireball_img, 40,
-                                 40).draw() and self.player.canAttack:
+                                 40, "Fireball", "Cast a fireball for ", (str(self.player.FireballDamage) + "-" + str(self.player.FireballDamage + 5) + " damage.")).draw() and self.player.canAttack:
+                    self.game.player.SpellName = 'Fireball'
                     self.player.canAttack = False
                     self.player.monsterToAttack = self.game.current_level.Monster1
                     self.player.CastSpellFromBar()
 
                 if button.Button(self.game, self.screen, WIN_WIDTH / 2 - 97, WIN_HEIGHT / 2,
                                  pygame.image.load(self.game.resource_path('assets/button_attack.png')), 195,
-                                 50).draw() and self.player.canAttack:
+                                 50, "", "","").draw() and self.player.canAttack:
                     self.player.canAttack = False
                     # pygame.time.set_timer(self.CharacterAttackTimer, self.milliseconds_delay)
                     # self.player.Loot()
@@ -209,7 +210,7 @@ class Level:
                     self.player.canAttack = False
                     self.player.AttackMonster()
                 if button.Button(self.game, self.screen, WIN_WIDTH / 2 - 97, WIN_HEIGHT / 2 + 60,
-                                 pygame.image.load(self.game.resource_path('assets/button_flee.png')), 195, 50).draw():
+                                 pygame.image.load(self.game.resource_path('assets/button_flee.png')), 195, 50, "", "","").draw():
                     self.player.Flee()
 
 
