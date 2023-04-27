@@ -179,6 +179,11 @@ class Level:
                            random.randint(BORDER_TILESIZE * 2, WIN_HEIGHT - (BORDER_TILESIZE * 2)),
                            EnemyStrength * 3 * self.DEBUGMODSTR,
                            EnemyHealth * 3 * self.DEBUGMODHP, EnemyEXPGain * 3 * self.DEBUGMODEXP)
+                if RandChoice == 'Gray Spider':
+                    Gray_Spider(self, random.randint(BORDER_TILESIZE * 2, WIN_WIDTH - BORDER_TILESIZE * 2),
+                           random.randint(BORDER_TILESIZE * 2, WIN_HEIGHT - (BORDER_TILESIZE * 2)),
+                           EnemyStrength * self.DEBUGMODSTR,
+                           EnemyHealth * self.DEBUGMODHP, EnemyEXPGain * self.DEBUGMODEXP)
 
         else:
             if EnemyName == 'Wolf':
@@ -193,6 +198,10 @@ class Level:
                 self.Monster1 = Red_Imp(self, WIN_WIDTH - BORDER_TILESIZE * 4, WIN_HEIGHT / 2,
                                        EnemyStrength * 3 * self.DEBUGMODSTR,
                                        EnemyHealth * 3 * self.DEBUGMODHP, EnemyEXPGain * 3 * self.DEBUGMODEXP)
+            if EnemyName == 'Gray Spider':
+                self.Monster1 = Gray_Spider(self, WIN_WIDTH - BORDER_TILESIZE * 4, WIN_HEIGHT / 2,
+                                       EnemyStrength * self.DEBUGMODSTR,
+                                       EnemyHealth * self.DEBUGMODHP, EnemyEXPGain * self.DEBUGMODEXP)
 
     # Update everything on this level
     def update(self):

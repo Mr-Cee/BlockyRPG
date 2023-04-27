@@ -404,6 +404,58 @@ class Red_Imp(EnemyTemplate):
                                  ]
 
 
+class Gray_Spider(EnemyTemplate):
+    def __init__(self, game, x, y, AttackStrength, Health, EXPGain):
+        EnemyTemplate.__init__(self, game, x, y, AttackStrength, Health, EXPGain)
+        self.EnemyName = 'Gray Spider'
+
+        self.width = 64
+        self.height = 64
+
+        self.Gray_Spider_spritesheet = SpriteSheet('assets/Enemy_Gray_Spider.png')
+
+        self.image = self.Gray_Spider_spritesheet.get_sprite(0, 0, self.width, self.height)
+
+        self.up_animations = [self.Gray_Spider_spritesheet.get_sprite(320, 0, self.width, self.height),
+                              self.Gray_Spider_spritesheet.get_sprite(384, 0, self.width, self.height),
+                              self.Gray_Spider_spritesheet.get_sprite(448, 0, self.width, self.height),
+                              self.Gray_Spider_spritesheet.get_sprite(512, 0, self.width, self.height),
+                              self.Gray_Spider_spritesheet.get_sprite(576, 0, self.width, self.height)
+                              ]
+        self.left_animations = [self.Gray_Spider_spritesheet.get_sprite(320, 64, self.width, self.height),
+                                self.Gray_Spider_spritesheet.get_sprite(384, 64, self.width, self.height),
+                                self.Gray_Spider_spritesheet.get_sprite(448, 64, self.width, self.height),
+                                self.Gray_Spider_spritesheet.get_sprite(512, 64, self.width, self.height),
+                                self.Gray_Spider_spritesheet.get_sprite(576, 64, self.width, self.height)
+                                ]
+
+        self.down_animations = [self.Gray_Spider_spritesheet.get_sprite(320, 128, self.width, self.height),
+                                self.Gray_Spider_spritesheet.get_sprite(384, 128, self.width, self.height),
+                                self.Gray_Spider_spritesheet.get_sprite(448, 128, self.width, self.height),
+                                self.Gray_Spider_spritesheet.get_sprite(512, 128, self.width, self.height),
+                                self.Gray_Spider_spritesheet.get_sprite(576, 128, self.width, self.height)
+                                ]
+
+        self.right_animations = [self.Gray_Spider_spritesheet.get_sprite(320, 192, self.width, self.height),
+                                 self.Gray_Spider_spritesheet.get_sprite(384, 192, self.width, self.height),
+                                 self.Gray_Spider_spritesheet.get_sprite(448, 192, self.width, self.height),
+                                 self.Gray_Spider_spritesheet.get_sprite(512, 192, self.width, self.height),
+                                 self.Gray_Spider_spritesheet.get_sprite(576, 192, self.width, self.height)
+                                 ]
+
+        self.left_attack_animations = [self.Gray_Spider_spritesheet.get_sprite(0, 64, self.width, self.height),
+                                       self.Gray_Spider_spritesheet.get_sprite(64, 64, self.width, self.height),
+                                       self.Gray_Spider_spritesheet.get_sprite(128, 64, self.width, self.height),
+                                       self.Gray_Spider_spritesheet.get_sprite(192, 64, self.width, self.height)
+                                       ]
+
+        self.death_animations = [self.Gray_Spider_spritesheet.get_sprite(0, 256, self.width, self.height),
+                                 self.Gray_Spider_spritesheet.get_sprite(64, 256, self.width, self.height),
+                                 self.Gray_Spider_spritesheet.get_sprite(128, 256, self.width, self.height),
+                                 self.Gray_Spider_spritesheet.get_sprite(192, 256, self.width, self.height)
+                                 ]
+
+
 class Wolf(EnemyTemplate):
     def __init__(self, game, x, y, AttackStrength, Health, EXPGain):
         EnemyTemplate.__init__(self, game, x, y, AttackStrength, Health, EXPGain)

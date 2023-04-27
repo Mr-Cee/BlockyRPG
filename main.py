@@ -69,7 +69,9 @@ class Game:
 
         self.EnemyList = ['Wolf',
                           'Goblin',
-                          'Red Imp']
+                          'Red Imp',
+                          'Gray Spider'
+                          ]
 
         self.milliseconds_delay = 2000  # 1 seconds
         self.CharacterAttackTimer = pygame.USEREVENT + 1
