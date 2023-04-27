@@ -7,6 +7,7 @@ class Level:
     Create a child class for each level with level specific info
     """
 
+
     def __init__(self, game, player):
         self.game = game
         self.player = player

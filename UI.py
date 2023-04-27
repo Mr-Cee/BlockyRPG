@@ -91,6 +91,7 @@ class MPBarInterior(pygame.sprite.Sprite):
         self.rect.y = self.y
         self.collision_rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
+
         # self.MPText = str(self.player.mp)
 
         self._layer = GAME_HEIGHT + 100

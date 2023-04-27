@@ -264,6 +264,7 @@ class EnemyTemplate(pygame.sprite.Sprite):
             self.movement_loop = 0
             self.AttackingMovement = True
 
+
         else:
             self.AttackPlayerAnim = True
             self.attack_anim_done = False

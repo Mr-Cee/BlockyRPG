@@ -34,6 +34,7 @@ class Character(pygame.sprite.Sprite):
         self.AcidDamage = 150
         self.AcidCost = 25
 
+
         self.font = pygame.font.Font('assets/BKANT.TTF', 40)
         self.LevelText = self.font.render(str(self.playerLevel), True, BLACK, None)
 

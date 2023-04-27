@@ -78,3 +78,4 @@ class Button():
                 self.clicked = True
 
         return action
+

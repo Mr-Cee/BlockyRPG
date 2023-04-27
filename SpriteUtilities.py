@@ -13,6 +13,7 @@ class SpriteSheet:
         return sprite
 
 
+
 class SpriteSheet_Black:
     def __init__(self, file):
         self.sheet = pygame.image.load(file).convert()

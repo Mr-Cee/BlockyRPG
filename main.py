@@ -13,6 +13,7 @@ from Level import *
 from UI import *
 
 
+
 class Game:
     def __init__(self):
         pygame.init()
