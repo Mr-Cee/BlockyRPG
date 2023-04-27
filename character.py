@@ -27,8 +27,12 @@ class Character(pygame.sprite.Sprite):
         self.exp_to_level = 10
 
         self.CharacterStrength = 5
+
         self.FireballDamage = 10
-        self.AcidDamage = 15
+        self.FireballCost = 25
+
+        self.AcidDamage = 150
+        self.AcidCost = 25
 
         self.font = pygame.font.Font('assets/BKANT.TTF', 40)
         self.LevelText = self.font.render(str(self.playerLevel), True, BLACK, None)
@@ -155,8 +159,6 @@ class Character(pygame.sprite.Sprite):
         self.animate()
         self.collide_enemy()
 
-
-
         self.rect.x += self.x_change
         self.collision_rect.x += self.x_change
         self.pos.x = self.rect.right
@@ -197,7 +199,7 @@ class Character(pygame.sprite.Sprite):
 
         self.game.RemoveAttackLevel()
 
-        self.rect.x, self.rect.y = self.pos
+        self.rect.x, self.rect.y = self.previousPOS
         # self.collision_rect = pygame.Rect(self.x + 22, self.y - 5, 35, 10)
         self.collision_rect.x = self.rect.x + 22
         self.collision_rect.y = self.rect.bottom - 5
@@ -224,6 +226,8 @@ class Character(pygame.sprite.Sprite):
             self.exp_to_level *= 2
 
             self.CharacterStrength += 5
+            self.FireballDamage += 10
+            self.AcidDamage += 15
 
             self.font = pygame.font.Font('assets/BKANT.TTF', 40)
             self.LevelText = self.font.render(str(self.playerLevel), True, BLACK, None)
@@ -231,6 +235,8 @@ class Character(pygame.sprite.Sprite):
             self.font = pygame.font.Font('assets/BKANT.TTF', 20)
             self.EXPBarText = str(self.exp) + "/" + str(self.exp_to_level)
             self.EXPText = self.font.render(str(self.EXPBarText), True, BLACK, None)
+            self.EXPBarTextRect = self.EXPText.get_rect()
+            self.EXPBarTextRect.center = (290, WIN_HEIGHT + 123)
 
             self.max_hp += 20
             self.hp = self.max_hp
@@ -312,7 +318,7 @@ class Character(pygame.sprite.Sprite):
         if self.facing == 'right':
             if self.CastSpellStart:
                 self.image = self.spellcast_animations[math.floor(self.animation_loop)]
-                self.animation_loop += 7/FPS
+                self.animation_loop += 7 / FPS
                 if self.animation_loop >= 6:
                     self.CastSpellStart = False
                     self.animation_loop = 0
@@ -368,23 +374,25 @@ class Character(pygame.sprite.Sprite):
     def CastSpell(self):
         EnemyObject = self.monsterToAttack
         if self.SpellName == 'Fireball':
-            if self.mp >= 25:
+            if self.mp >= self.FireballCost:
                 spell_image = self.FireballImage
-                self.mp -= 25
+                self.changeMana(-self.FireballCost)
                 Projectile(self.game, self.pos, self.direction, self.SpellName, spell_image, EnemyObject,
                            self.attackDamage)
                 _, angle = (self.monsterToAttack.pos - self.pos).as_polar()
             else:
                 self.game.console_print('Need at least 25 mana to cast Fireball')
+                self.canAttack = True
         elif self.SpellName == 'Acid':
-            if self.mp >= 50:
+            if self.mp >= self.AcidCost:
                 spell_image = self.AcidImage
-                self.mp -= 50
+                self.changeMana(-self.AcidCost)
                 Projectile(self.game, self.pos, self.direction, self.SpellName, spell_image, EnemyObject,
                            self.attackDamage)
                 _, angle = (self.monsterToAttack.pos - self.pos).as_polar()
             else:
                 self.game.console_print('Need at least 50 mana to cast Acid')
+                self.canAttack = True
         else:
             spell_image = self.FireballImage
 
@@ -397,15 +405,17 @@ class Character(pygame.sprite.Sprite):
             self.attackDamage = random.randint(self.CharacterStrength, 5 + self.CharacterStrength)
         if self.attackDamage > self.monsterToAttack.hp:
             self.attackDamage = self.monsterToAttack.hp
-        self.direction = math.atan2((self.monsterToAttack.y-self.monsterToAttack.height/3 - self.rect.y), (self.monsterToAttack.x - self.rect.x))
+        self.direction = math.atan2((self.monsterToAttack.y - self.monsterToAttack.height / 3 - self.rect.y),
+                                    (self.monsterToAttack.x - self.rect.x))
         self.animation_loop = 0
         self.CastSpellStart = True
 
     def AttackMonster(self):
         self.Enemy = self.monsterToAttack
         if self.Enemy.rect.left - self.rect.right > 15:
-            self.direction = math.atan2((self.monsterToAttack.y-self.monsterToAttack.height/3 - self.rect.y), (self.monsterToAttack.x - self.rect.right))
-            self.max_travel = random.randint(WIN_WIDTH/5, WIN_WIDTH/4)
+            self.direction = math.atan2((self.monsterToAttack.y - self.monsterToAttack.height / 3 - self.rect.y),
+                                        (self.monsterToAttack.x - self.rect.right))
+            self.max_travel = random.randint(WIN_WIDTH / 5, WIN_WIDTH / 4)
             self.movement_loop = 0
             self.moveTowardsEnemy = True
 
@@ -438,7 +448,7 @@ class Character(pygame.sprite.Sprite):
         self.tempAttackPause = 1 * FPS
         self.AttackChoice = True
 
-        # self.pos = (self.rect.x, self.rect.y)
+        self.previousPOS = (self.rect.x, self.rect.y)
         self.facing = 'right'
         self.rect.x = BORDER_TILESIZE + 5
         self.rect.y = WIN_HEIGHT / 2 - self.height / 3
@@ -488,10 +498,11 @@ class Character(pygame.sprite.Sprite):
     def changeMana(self, mpAmount):
         if self.mp + mpAmount < self.max_mp:
             self.mp += mpAmount
-            print(self.mp)
         else:
             self.mp = self.max_mp
-
+        self.font = pygame.font.Font('assets/BKANT.TTF', 20)
+        self.MPBarText = str(round(self.mp)) + "/" + str(round(self.max_mp))
+        self.MPText = self.font.render(str(self.MPBarText), True, BLACK, None)
 
     def changeEXP(self, expAmount):
         self.exp += expAmount
@@ -543,7 +554,8 @@ class Projectile(pygame.sprite.Sprite):
             self.kill()
             self.Enemy.hp -= self.AttackDamage
             self.game.console_print(
-                ('You cast ' + self.SpellName + ' and hit the ' + self.Enemy.EnemyName + ' for ' + str(self.AttackDamage) + ' damage'))
+                ('You cast ' + self.SpellName + ' and hit the ' + self.Enemy.EnemyName + ' for ' + str(
+                    self.AttackDamage) + ' damage'))
             # print(str(EnemyObject.EnemyName) + ' ' + str(EnemyObject.hp) + '/' + str(EnemyObject.max_hp))
             if self.Enemy.hp > 0:
                 self.game.enemyHPBar = pygame.transform.scale(self.game.enemyHPBar, (

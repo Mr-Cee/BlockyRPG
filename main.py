@@ -130,8 +130,8 @@ class Game:
         if len(self.combat_enemy_sprites) > 0:
             for sprite in self.combat_enemy_sprites:
                 sprite.kill()
-        for sprite in self.temp_Sprite_list:
-            self.background_sprites.add(sprite)
+        # for sprite in self.temp_Sprite_list:
+        #     self.background_sprites.add(sprite)
 
         self.temp_Sprite_list.clear()
         self.all_sprites.update()
@@ -139,8 +139,11 @@ class Game:
         self.current_level = self.level_list[self.current_level_no]
         self.previousLevel = self.current_level_no
         self.level_list.pop(tempNum)
+        self.player.rect.x, self.player.rect.y = self.player.previousPOS[0], self.player.previousPOS[1]
         self.player.collision_rect.x = self.player.rect.x + 22
         self.player.collision_rect.y = self.player.rect.bottom - 5
+
+        self.current_level.terrainGen()
 
     def LevelChange(self, direction):
         self.leveldirection = direction
@@ -245,8 +248,9 @@ class Game:
         HUDMAIN(self, 10, WIN_HEIGHT + 10)  # HP/MP/XP HUD BARS
 
         self.RedHPBar = HPBarInterior(self, 193, WIN_HEIGHT + 22)  # HP RED BAR
-        MPBarInterior(self, 193, WIN_HEIGHT + 65)
+        # MPBarInterior(self, 193, WIN_HEIGHT + 65)
         self.EXPYellowBar = pygame.image.load(self.resource_path('assets/XPBarInside.png'))
+        self.MPBlueBar = pygame.image.load(self.resource_path('assets/MPBarInside.png'))
         # EnemyHPBarBG(self, WIN_WIDTH / 2, 10, self.enemyHPBarBG)
         # EnemyHPBar(self, WIN_WIDTH / 2, 10, self.enemyHPBar)
         # EnemyHPBarFG(self, WIN_WIDTH / 2, 10, self.enemyHPBarFGSilver)
@@ -331,6 +335,7 @@ class Game:
                     self.player.exp -= 1
                 if event.key == pygame.K_KP_PLUS:
                     self.player.changeHealth(10)
+                    self.player.changeMana(25)
                 if event.key == pygame.K_KP_MINUS:
                     self.player.changeHealth(-10)
                 if event.key == pygame.K_t:
@@ -364,9 +369,13 @@ class Game:
         self.current_level.draw(self.screen)
 
         self.screen.blit(self.player.LevelText, self.player.LevelTextRect)
-        self.screen.blit(
-            pygame.transform.scale(self.EXPYellowBar, (((self.player.exp / self.player.exp_to_level) * 164), 28)),
-            (193, WIN_HEIGHT + 109))
+        if self.player.exp > self.player.exp_to_level:
+            self.screen.blit(
+                pygame.transform.scale(self.EXPYellowBar, (164, 28)), (193, WIN_HEIGHT + 109))
+        else:
+            self.screen.blit(pygame.transform.scale(self.EXPYellowBar, (((self.player.exp / self.player.exp_to_level) * 164), 28)), (193, WIN_HEIGHT + 109))
+        self.screen.blit(pygame.transform.scale(self.MPBlueBar, (((self.player.mp / self.player.max_mp) * 164), 28)), (193, WIN_HEIGHT + 65))
+
         self.screen.blit(self.player.HPText, self.player.HPBarTextRect)
         self.screen.blit(self.player.MPText, self.player.MPBarTextRect)
         self.screen.blit(self.player.EXPText, self.player.EXPBarTextRect)

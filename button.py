@@ -3,16 +3,17 @@ from character import *
 
 # button class
 class Button():
-    def __init__(self, game, surface, x, y, image, size_x, size_y, text, text2, text3):
+    def __init__(self, game, surface, x, y, image, size_x, size_y, SpellName, Description, DamageText, CostText):
         self.image = pygame.transform.scale(image, (size_x, size_y))
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
         self.clicked = False
         self.surface = surface
         self.game = game
-        self.text = text
-        self.text2 = text2
-        self.text3 = text3
+        self.text = SpellName
+        self.text2 = Description
+        self.text3 = DamageText
+        self.text4 = CostText
 
 
         self.font = pygame.font.Font('assets/BKANT.TTF', 20)
@@ -28,6 +29,10 @@ class Button():
         self.Text3 = self.text3
         self.TextTip3 = self.font.render(str(self.Text3), True, BLACK, None)
         self.TextRect3 = self.TextTip3.get_rect()
+
+        self.Text4 = self.text4
+        self.TextTip4 = self.font.render(str(self.Text4), True, BLACK, None)
+        self.TextRect4 = self.TextTip4.get_rect()
 
 
 
@@ -51,18 +56,23 @@ class Button():
         # check mouseover and clicked conditions
         if self.rect.collidepoint(pos):
             self.TextRect.centerx = pos[0]
-            self.TextRect.bottom = pos[1]-50
+            self.TextRect.bottom = pos[1]-75
             self.TextRect2.centerx = pos[0]
-            self.TextRect2.bottom = pos[1] - 35
+            self.TextRect2.bottom = pos[1] - 50
             self.TextRect3.centerx = pos[0]
-            self.TextRect3.bottom = pos[1] - 16
+            self.TextRect3.bottom = pos[1] - 35
+            self.TextRect4.centerx = pos[0]
+            self.TextRect4.bottom = pos[1]-16
             pygame.draw.rect(self.surface, SOFTBROWN, self.TextRect, border_radius=3)
             pygame.draw.rect(self.surface, SOFTBROWN, self.TextRect2, border_radius=3)
             pygame.draw.rect(self.surface, SOFTBROWN, self.TextRect3, border_radius=3)
+            pygame.draw.rect(self.surface, SOFTBROWN, self.TextRect4, border_radius=3)
+
 
             self.surface.blit(self.TextTip, self.TextRect)
             self.surface.blit(self.TextTip2, self.TextRect2)
             self.surface.blit(self.TextTip3, self.TextRect3)
+            self.surface.blit(self.TextTip4, self.TextRect4)
             if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
                 action = True
                 self.clicked = True

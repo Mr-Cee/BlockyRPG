@@ -12,6 +12,7 @@ class SpriteSheet:
         sprite.set_colorkey(WHITE)
         return sprite
 
+
 class SpriteSheet_Black:
     def __init__(self, file):
         self.sheet = pygame.image.load(file).convert()
@@ -22,6 +23,7 @@ class SpriteSheet_Black:
         sprite.blit(self.sheet, (0, 0), (x, y, width, height))
         sprite.set_colorkey(BLACK)
         return sprite
+
 
 class SpriteSheet_Blue:
     def __init__(self, file):
