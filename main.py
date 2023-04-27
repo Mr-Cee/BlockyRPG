@@ -68,7 +68,8 @@ class Game:
         self.font = pygame.font.Font(self.resource_path('assets/BKANT.TTF'), 9)
 
         self.EnemyList = ['Wolf',
-                          'Goblin']
+                          'Goblin',
+                          'Red Imp']
 
         self.milliseconds_delay = 2000  # 1 seconds
         self.CharacterAttackTimer = pygame.USEREVENT + 1

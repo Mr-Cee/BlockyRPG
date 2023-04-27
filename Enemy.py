@@ -163,7 +163,7 @@ class EnemyTemplate(pygame.sprite.Sprite):
                 self.image = self.down_animations[0]
             else:
                 self.image = self.down_animations[math.floor(self.animation_loop)]
-                self.animation_loop += 0.05
+                self.animation_loop += len(self.down_animations) / FPS
                 if self.animation_loop >= len(self.down_animations) - 1:
                     self.animation_loop = 0
         if self.facing == 'up':
@@ -171,7 +171,7 @@ class EnemyTemplate(pygame.sprite.Sprite):
                 self.image = self.up_animations[0]
             else:
                 self.image = self.up_animations[math.floor(self.animation_loop)]
-                self.animation_loop += 0.1
+                self.animation_loop += len(self.up_animations) / FPS
                 if self.animation_loop >= len(self.up_animations) - 1:
                     self.animation_loop = 0
         if self.facing == 'left':
@@ -180,12 +180,12 @@ class EnemyTemplate(pygame.sprite.Sprite):
             else:
                 if not self.inCombat:
                     self.image = self.left_animations[math.floor(self.animation_loop)]
-                    self.animation_loop += 0.1
+                    self.animation_loop += len(self.left_animations) / FPS
                     if self.animation_loop >= len(self.left_animations) - 1:
                         self.animation_loop = 0
                 else:
                     self.image = self.left_animations[math.floor(self.animation_loop)]
-                    self.animation_loop += 0.75
+                    self.animation_loop += len(self.left_animations) / FPS
                     if self.animation_loop >= len(self.left_animations) - 1:
                         self.animation_loop = 0
 
@@ -194,13 +194,13 @@ class EnemyTemplate(pygame.sprite.Sprite):
                 self.image = self.right_animations[0]
             else:
                 self.image = self.right_animations[math.floor(self.animation_loop)]
-                self.animation_loop += 0.1
+                self.animation_loop += len(self.right_animations) / FPS
                 if self.animation_loop >= len(self.right_animations) - 1:
                     self.animation_loop = 0
 
         if self.AttackPlayerAnim:
             self.image = self.left_attack_animations[math.floor(self.animation_loop)]
-            self.animation_loop += 0.5
+            self.animation_loop += len(self.left_attack_animations) / FPS
             if self.animation_loop >= len(self.left_attack_animations) - 1:
                 self.animation_loop = 0
                 self.AttackPlayerAnim = False
@@ -209,7 +209,7 @@ class EnemyTemplate(pygame.sprite.Sprite):
 
         if self.DeathAnimation:
             self.image = self.death_animations[math.floor(self.animation_loop)]
-            self.animation_loop += 0.1
+            self.animation_loop += len(self.death_animations) / FPS
             if self.animation_loop >= len(self.death_animations) - 1:
                 self.animation_loop = 0
                 self.DeathAnimation = False
@@ -348,6 +348,59 @@ class Goblin(EnemyTemplate):
                                  self.goblin_walking_spritesheet.get_sprite(128, 256, self.width, self.height),
                                  self.goblin_walking_spritesheet.get_sprite(192, 256, self.width, self.height),
                                  self.goblin_walking_spritesheet.get_sprite(256, 256, self.width, self.height)
+                                 ]
+
+
+class Red_Imp(EnemyTemplate):
+    def __init__(self, game, x, y, AttackStrength, Health, EXPGain):
+        EnemyTemplate.__init__(self, game, x, y, AttackStrength, Health, EXPGain)
+        self.EnemyName = 'Red Imp'
+
+        self.width = 64
+        self.height = 64
+
+        self.red_imp_walking_spritesheet = SpriteSheet('assets/Enemy_Red_Imp_Sword_Walk.png')
+        self.red_imp_attack_spritesheet = SpriteSheet('assets/Enemy_Red_Imp_Sword_Attack.png')
+        self.red_imp_death_spritesheet = SpriteSheet('assets/Enemy_Red_Imp_Death.png')
+
+        self.image = self.game.goblin_walking_spritesheet.get_sprite(0, 0, self.width, self.height)
+
+        self.up_animations = [self.red_imp_walking_spritesheet.get_sprite(0, 0, self.width, self.height),
+                              self.red_imp_walking_spritesheet.get_sprite(64, 0, self.width, self.height),
+                              self.red_imp_walking_spritesheet.get_sprite(128, 0, self.width, self.height),
+                              self.red_imp_walking_spritesheet.get_sprite(192, 0, self.width, self.height)
+                              ]
+        self.left_animations = [self.red_imp_walking_spritesheet.get_sprite(0, 64, self.width, self.height),
+                                self.red_imp_walking_spritesheet.get_sprite(64, 64, self.width, self.height),
+                                self.red_imp_walking_spritesheet.get_sprite(128, 64, self.width, self.height),
+                                self.red_imp_walking_spritesheet.get_sprite(192, 64, self.width, self.height)
+                                ]
+
+        self.down_animations = [self.red_imp_walking_spritesheet.get_sprite(0, 128, self.width, self.height),
+                                self.red_imp_walking_spritesheet.get_sprite(64, 128, self.width, self.height),
+                                self.red_imp_walking_spritesheet.get_sprite(128, 128, self.width, self.height),
+                                self.red_imp_walking_spritesheet.get_sprite(192, 128, self.width, self.height)
+                                ]
+
+        self.right_animations = [self.red_imp_walking_spritesheet.get_sprite(0, 192, self.width, self.height),
+                                 self.red_imp_walking_spritesheet.get_sprite(64, 192, self.width, self.height),
+                                 self.red_imp_walking_spritesheet.get_sprite(128, 192, self.width, self.height),
+                                 self.red_imp_walking_spritesheet.get_sprite(192, 192, self.width, self.height)
+                                 ]
+
+        self.left_attack_animations = [self.red_imp_attack_spritesheet.get_sprite(0, 64, self.width, self.height),
+                                       self.red_imp_attack_spritesheet.get_sprite(64, 64, self.width, self.height),
+                                       self.red_imp_attack_spritesheet.get_sprite(128, 64, self.width, self.height),
+                                       self.red_imp_attack_spritesheet.get_sprite(192, 64, self.width, self.height)
+                                       ]
+
+        self.death_animations = [self.red_imp_death_spritesheet.get_sprite(0, 0, self.width, self.height),
+                                 self.red_imp_death_spritesheet.get_sprite(64, 0, self.width, self.height),
+                                 self.red_imp_death_spritesheet.get_sprite(128, 0, self.width, self.height),
+                                 self.red_imp_death_spritesheet.get_sprite(192, 0, self.width, self.height),
+                                 self.red_imp_death_spritesheet.get_sprite(256, 0, self.width, self.height),
+                                 self.red_imp_death_spritesheet.get_sprite(256, 0, self.width, self.height),
+                                 self.red_imp_death_spritesheet.get_sprite(256, 0, self.width, self.height)
                                  ]
 
 

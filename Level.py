@@ -174,6 +174,11 @@ class Level:
                            random.randint(BORDER_TILESIZE * 2, WIN_HEIGHT - (BORDER_TILESIZE * 2)),
                            EnemyStrength * 2 * self.DEBUGMODSTR,
                            EnemyHealth * 2 * self.DEBUGMODHP, EnemyEXPGain * 2 * self.DEBUGMODEXP)
+                if RandChoice == 'Red Imp':
+                    Red_Imp(self, random.randint(BORDER_TILESIZE * 2, WIN_WIDTH - BORDER_TILESIZE * 2),
+                           random.randint(BORDER_TILESIZE * 2, WIN_HEIGHT - (BORDER_TILESIZE * 2)),
+                           EnemyStrength * 3 * self.DEBUGMODSTR,
+                           EnemyHealth * 3 * self.DEBUGMODHP, EnemyEXPGain * 3 * self.DEBUGMODEXP)
 
         else:
             if EnemyName == 'Wolf':
@@ -184,6 +189,10 @@ class Level:
                 self.Monster1 = Goblin(self, WIN_WIDTH - BORDER_TILESIZE * 4, WIN_HEIGHT / 2,
                                        EnemyStrength * 2 * self.DEBUGMODSTR,
                                        EnemyHealth * 2 * self.DEBUGMODHP, EnemyEXPGain * 2 * self.DEBUGMODEXP)
+            if EnemyName == 'Red Imp':
+                self.Monster1 = Red_Imp(self, WIN_WIDTH - BORDER_TILESIZE * 4, WIN_HEIGHT / 2,
+                                       EnemyStrength * 3 * self.DEBUGMODSTR,
+                                       EnemyHealth * 3 * self.DEBUGMODHP, EnemyEXPGain * 3 * self.DEBUGMODEXP)
 
     # Update everything on this level
     def update(self):

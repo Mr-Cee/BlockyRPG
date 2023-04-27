@@ -28,6 +28,7 @@ class Character(pygame.sprite.Sprite):
         self.exp_to_level = 10
 
         self.CharacterStrength = 5
+        self.CritChance = 90
 
         self.FireballDamage = 10
         self.FireballCost = 25
@@ -450,21 +451,6 @@ class Character(pygame.sprite.Sprite):
     def AttackMonster(self):
         self.Enemy = self.monsterToAttack
         if self.Enemy.rect.left - self.rect.right > 15:
-            # print('MonsterX,Y Before:', self.Enemy.rect.x,self.Enemy.rect.y)
-            # print('PlayerX,Y Before:', self.rect.x, self.rect.y)
-            # print(self.monsterToAttack.rect.y, self.rect.y, (self.monsterToAttack.rect.y - self.rect.y))
-            # print(self.monsterToAttack.rect.x, self.rect.x, (self.monsterToAttack.rect.x - self.rect.right))
-            # self.monster_direction = pygame.Vector2(self.monsterToAttack.y - self.rect.y,
-            #                                 (self.monsterToAttack.x - self.rect.right))
-            #
-            # print(self.monster_direction)
-            # print(math.cos(self.monster_direction)*5,math.sin(self.monster_direction)*5)
-
-            # print(math.cos(self.monster_direction))
-            # print(math.sin(self.monster_direction))
-            # # self.monster_direction = math.atan2(self.monsterToAttack.rect.y - self.rect.y,
-            # #                             (self.monsterToAttack.rect.x - self.rect.right))
-            # print(self.monster_direction)
             self.max_travel = random.randint(WIN_WIDTH / 5, WIN_WIDTH / 4)
             self.movement_loop = 0
             self.moveTowardsEnemy = True
