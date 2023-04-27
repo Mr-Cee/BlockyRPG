@@ -387,17 +387,21 @@ class Character(pygame.sprite.Sprite):
             if self.mp >= 25:
                 self.changeMana(-25)
                 self.attackDamage = random.randint(self.FireballDamage, 5 + self.FireballDamage)
+                self.animation_loop = 0
                 self.CastSpellStart = True
             else:
                 self.game.console_print('Need at least 25 mana to cast Fireball')
+                self.canAttack = True
 
         elif self.SpellName == 'Acid':
             if self.mp >= 50:
                 self.changeMana(-50)
                 self.attackDamage = random.randint(self.AcidDamage, 5 + self.AcidDamage)
+                self.animation_loop = 0
                 self.CastSpellStart = True
             else:
                 self.game.console_print('Need at least 50 mana to cast Acid')
+                self.canAttack = True
         else:
             self.attackDamage = random.randint(self.CharacterStrength, 5 + self.CharacterStrength)
         if self.attackDamage > self.monsterToAttack.hp:
@@ -493,9 +497,12 @@ class Character(pygame.sprite.Sprite):
     def changeMana(self, mpAmount):
         if self.mp + mpAmount < self.max_mp:
             self.mp += mpAmount
-            print(self.mp)
         else:
             self.mp = self.max_mp
+
+        self.font = pygame.font.Font('assets/BKANT.TTF', 20)
+        self.MPBarText = str(round(self.mp)) + "/" + str(round(self.max_mp))
+        self.MPText = self.font.render(str(self.MPBarText), True, BLACK, None)
 
 
     def changeEXP(self, expAmount):
