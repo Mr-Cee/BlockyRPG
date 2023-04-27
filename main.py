@@ -121,6 +121,7 @@ class Game:
             sprite.kill()
         self.current_level.terrainGen()
         self.current_level.GenerateEnemies(EnemyName)
+        print('Main:AtKChg:', self.player.rect.x, self.player.rect.y)
 
     def RemoveAttackLevel(self):
         tempNum = len(self.level_list) - 1
@@ -388,11 +389,13 @@ class Game:
         #     pygame.draw.rect(self.screen, BLACK, object.collision_rect)
         # for object in self.enemy_sprites:
         #     pygame.draw.rect(self.screen, RED, object.rect)
+        # for sprite in self.combat_enemy_sprites:
+        #     pygame.draw.rect(self.screen, RED, sprite.rect)
         # pygame.draw.rect(self.screen, WHITE, self.player.collision_rect)
-        #
+
         # # for object in self.background_sprites:
         # #     pygame.draw.rect(self.screen, BLACK, object.rect)
-        # # pygame.draw.rect(self.screen, WHITE, self.player.rect)
+        # pygame.draw.rect(self.screen, WHITE, self.player.rect)
         #
         # for sprite in self.combat_attack_sprites:
         #     pygame.draw.rect(self.screen, BLUE, sprite.rect)

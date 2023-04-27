@@ -136,8 +136,13 @@ class EnemyTemplate(pygame.sprite.Sprite):
             self.facing = 'left'
             if self.AttackingMovement:
                 if self.rect.left - self.game.player.rect.right >= 15:
-                    self.x_change -= ENEMY_SPEED * 5
-                    self.movement_loop -= ENEMY_SPEED * 5
+                    dx, dy = (self.game.player.rect.x - self.rect.right), (self.game.player.rect.y - self.rect.y)
+                    rads = math.atan2(dy, dx)
+                    self.player_direction = rads
+                    self.x_change += math.cos(self.player_direction) * 5
+                    self.y_change += math.sin(self.player_direction) * 5
+                    # self.x_change -= ENEMY_SPEED * 5
+                    self.movement_loop -= 5
                     # print(self.movement_loop, -self.max_travel, (self.rect.left - self.game.player.rect.right))
                     if self.movement_loop <= -self.max_travel or (self.rect.left - self.game.player.rect.right <= 15):
                         self.AttackingMovement = False
@@ -262,9 +267,8 @@ class EnemyTemplate(pygame.sprite.Sprite):
             game.console_print((self.EnemyName + ' advances towards you.'))
             self.max_travel = random.randint(WIN_WIDTH / 5, WIN_WIDTH / 4)
             self.movement_loop = 0
+            print(self.rect.x, self.rect.y)
             self.AttackingMovement = True
-
-
         else:
             self.AttackPlayerAnim = True
             self.attack_anim_done = False
@@ -278,6 +282,11 @@ class EnemyTemplate(pygame.sprite.Sprite):
     def CheckForDeath(self):
         if self.hp <= 0:
             self.hp = 0
+            self.font = pygame.font.Font('assets/BKANT.TTF', 20)
+            self.HPBarText = str(self.hp) + "/" + str(self.max_hp)
+            self.HPText = self.font.render(str(self.HPBarText), True, BLACK, None)
+            self.HPBarTextRect = self.HPText.get_rect()
+            self.HPBarTextRect.center = (WIN_WIDTH / 2, 25)
             self.animation_loop = 0
             self.DeathAnimation = True
             # self.game.player.Loot(self.EXPGive, self)

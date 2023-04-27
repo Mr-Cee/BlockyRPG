@@ -15,6 +15,7 @@ class Character(pygame.sprite.Sprite):
                             datefmt='%d/%m/%Y %H:%M:%S')
 
         self.game = game
+        self.screen = self.game.screen
         self.dt = self.game.clock.tick(FPS * 250)
         self.screen = self.game.screen
         self.max_hp = 100
@@ -33,7 +34,6 @@ class Character(pygame.sprite.Sprite):
 
         self.AcidDamage = 150
         self.AcidCost = 25
-
 
         self.font = pygame.font.Font('assets/BKANT.TTF', 40)
         self.LevelText = self.font.render(str(self.playerLevel), True, BLACK, None)
@@ -81,6 +81,9 @@ class Character(pygame.sprite.Sprite):
         self.AcidImage = self.game.WeaponsAndMagicSpritesheet.get_sprite(74, 246, 18, 12)
         self.SpellCastSheet = SpriteSheet('assets/CharacterSpellSheet.png')
         self.SpellName = ''
+        self.MeleeSlashSheet = SpriteSheet('assets/CharacterSlashSheet.png')
+        self.SwordSlashSheet = SpriteSheet('assets/WEAPON_longsword_slash.png')
+        self.MeleeAttack_Anim = False
 
         self.rect = self.image.get_rect()
         self.rect.x = self.x
@@ -150,9 +153,25 @@ class Character(pygame.sprite.Sprite):
                                      self.SpellCastSheet.get_sprite(384, 200, self.width, self.height)
                                      ]
 
+        self.melee_attack_animation = [self.MeleeSlashSheet.get_sprite(0, 192, self.width, self.height),
+                                       self.MeleeSlashSheet.get_sprite(64, 192, self.width, self.height),
+                                       self.MeleeSlashSheet.get_sprite(128, 192, self.width, self.height),
+                                       self.MeleeSlashSheet.get_sprite(192, 192, self.width, self.height),
+                                       self.MeleeSlashSheet.get_sprite(256, 192, self.width, self.height),
+                                       self.MeleeSlashSheet.get_sprite(320, 192, self.width, self.height),
+                                       self.MeleeSlashSheet.get_sprite(384, 192, self.width, self.height)]
+
+        self.weapon_sword_animations = [self.SwordSlashSheet.get_sprite(0, 192, self.width, self.height),
+                                        self.SwordSlashSheet.get_sprite(64, 192, self.width, self.height),
+                                        self.SwordSlashSheet.get_sprite(128, 192, self.width, self.height),
+                                        self.SwordSlashSheet.get_sprite(192, 192, self.width, self.height),
+                                        self.SwordSlashSheet.get_sprite(256, 192, self.width, self.height),
+                                        self.SwordSlashSheet.get_sprite(320, 192, self.width, self.height),
+                                        self.SwordSlashSheet.get_sprite(384, 192, self.width, self.height)]
+
         self.milliseconds_delay = 3000  # 1 seconds
         self.timer_event = pygame.USEREVENT + 1
-        pygame.time.set_timer(self.timer_event, self.milliseconds_delay)
+        # pygame.time.set_timer(self.timer_event, self.milliseconds_delay)
 
     def update(self):
         self.checkForLevelUp()
@@ -274,13 +293,22 @@ class Character(pygame.sprite.Sprite):
                 self.game.all_sprites.change_layer(self, self.collision_rect.bottom)
         elif self.moveTowardsEnemy:
             if self.monsterToAttack.rect.left - self.rect.right >= 15:
-                self.x_change += 5 * math.cos(self.direction)
-                self.y_change += 5 * math.sin(self.direction)
-                self.movement_loop += 5
+                dx, dy = (self.monsterToAttack.rect.x - self.rect.right), (self.monsterToAttack.rect.y - self.rect.y)
+                rads = math.atan2(dy, dx)
+                self.monster_direction = rads
+                self.x_change += math.cos(self.monster_direction) * 5
+                self.y_change += math.sin(self.monster_direction) * 5
+
+                # self.x_change += FPS * self.monster_direction
+                # self.y_change += FPS * self.monster_direction
+                # print(self.x_change, self.y_change)
+                self.movement_loop += PLAYER_SPEED
                 # print(self.movement_loop, -self.max_travel, (self.rect.left - self.game.player.rect.right))
                 if self.movement_loop >= self.max_travel or self.monsterToAttack.rect.left - self.rect.right <= 15:
                     self.moveTowardsEnemy = False
                     self.movement_loop = 0
+                    # print('MonsterX,Y After:', self.monsterToAttack.rect.x, self.monsterToAttack.rect.y)
+                    # print('PlayerX,Y After:', self.rect.x, self.rect.y)
                     if self.game.player.hp > 0 and self.Enemy.hp > 0:
                         pygame.time.set_timer(self.game.EnemyAttackTimer, self.game.milliseconds_delay)
             else:
@@ -330,9 +358,17 @@ class Character(pygame.sprite.Sprite):
                     # self.image = self.SpellCastSheet.get_sprite(0, 200, self.width, self.height)
                 else:
                     self.image = self.right_animations[math.floor(self.animation_loop)]
-                    self.animation_loop += self.animation_loop_speed
-                    if self.animation_loop >= 8:
+                    self.animation_loop += len(self.right_animations) / FPS
+                    if self.animation_loop >= len(self.right_animations) - 1:
                         self.animation_loop = 0
+        if self.MeleeAttack_Anim:
+            self.image = self.melee_attack_animation[math.floor(self.animation_loop)]
+            # self.screen.blit(self.weapon_sword_animations[math.floor(self.animation_loop)], (self.rect.x, self.rect.y))
+            self.animation_loop += len(self.melee_attack_animation) / FPS
+            if self.animation_loop >= len(self.melee_attack_animation) - 1:
+                self.MeleeAttack_Anim = False
+                self.animation_loop = 0
+                self.MeleeAttack()
 
     def collide_terrain(self, direction):
 
@@ -414,34 +450,51 @@ class Character(pygame.sprite.Sprite):
     def AttackMonster(self):
         self.Enemy = self.monsterToAttack
         if self.Enemy.rect.left - self.rect.right > 15:
-            self.direction = math.atan2((self.monsterToAttack.y - self.monsterToAttack.height / 3 - self.rect.y),
-                                        (self.monsterToAttack.x - self.rect.right))
+            # print('MonsterX,Y Before:', self.Enemy.rect.x,self.Enemy.rect.y)
+            # print('PlayerX,Y Before:', self.rect.x, self.rect.y)
+            # print(self.monsterToAttack.rect.y, self.rect.y, (self.monsterToAttack.rect.y - self.rect.y))
+            # print(self.monsterToAttack.rect.x, self.rect.x, (self.monsterToAttack.rect.x - self.rect.right))
+            # self.monster_direction = pygame.Vector2(self.monsterToAttack.y - self.rect.y,
+            #                                 (self.monsterToAttack.x - self.rect.right))
+            #
+            # print(self.monster_direction)
+            # print(math.cos(self.monster_direction)*5,math.sin(self.monster_direction)*5)
+
+            # print(math.cos(self.monster_direction))
+            # print(math.sin(self.monster_direction))
+            # # self.monster_direction = math.atan2(self.monsterToAttack.rect.y - self.rect.y,
+            # #                             (self.monsterToAttack.rect.x - self.rect.right))
+            # print(self.monster_direction)
             self.max_travel = random.randint(WIN_WIDTH / 5, WIN_WIDTH / 4)
             self.movement_loop = 0
             self.moveTowardsEnemy = True
-
         else:
-            self.attackDamage = random.randint(1 + self.CharacterStrength, 5 + self.CharacterStrength)
-            if self.attackDamage > self.Enemy.hp:
-                self.attackDamage = self.Enemy.hp
-            self.Enemy.hp -= self.attackDamage
+            self.animation_loop = 0
+            self.MeleeAttack_Anim = True
 
-            self.game.console_print(
-                ('You attacked the ' + self.Enemy.EnemyName + ' for ' + str(self.attackDamage) + ' damage'))
-            # print(str(EnemyObject.EnemyName) + ' ' + str(EnemyObject.hp) + '/' + str(EnemyObject.max_hp))
-            if self.Enemy.hp > 0:
-                self.game.enemyHPBar = pygame.transform.scale(self.game.enemyHPBar, (
-                    math.floor((self.Enemy.hp / self.Enemy.max_hp) * (WIN_WIDTH / 3)), 50))
+    def MeleeAttack(self):
+        self.attackDamage = random.randint(1 + self.CharacterStrength, 5 + self.CharacterStrength)
+        if self.attackDamage > self.Enemy.hp:
+            self.attackDamage = self.Enemy.hp
+        self.Enemy.hp -= self.attackDamage
 
-                self.font = pygame.font.Font('assets/BKANT.TTF', 20)
-                self.Enemy.HPBarText = str(round(self.Enemy.hp)) + "/" + str(round(self.Enemy.max_hp))
-                self.Enemy.HPText = self.font.render(str(self.Enemy.HPBarText), True, BLACK, None)
+        self.game.console_print(
+            ('You attacked the ' + self.Enemy.EnemyName + ' for ' + str(self.attackDamage) + ' damage'))
+        # print(str(EnemyObject.EnemyName) + ' ' + str(EnemyObject.hp) + '/' + str(EnemyObject.max_hp))
+        if self.Enemy.hp > 0:
+            self.game.enemyHPBar = pygame.transform.scale(self.game.enemyHPBar, (
+                math.floor((self.Enemy.hp / self.Enemy.max_hp) * (WIN_WIDTH / 3)), 50))
 
-            if self.Enemy.hp <= 0:
-                self.Enemy.CheckForDeath()
+            self.font = pygame.font.Font('assets/BKANT.TTF', 20)
+            self.Enemy.HPBarText = str(round(self.Enemy.hp)) + "/" + str(round(self.Enemy.max_hp))
+            self.Enemy.HPText = self.font.render(str(self.Enemy.HPBarText), True, BLACK, None)
 
-            if self.game.player.hp > 0 and self.Enemy.hp > 0:
-                pygame.time.set_timer(self.game.EnemyAttackTimer, self.game.milliseconds_delay)
+        if self.Enemy.hp <= 0:
+            self.Enemy.hp = 0
+            self.Enemy.CheckForDeath()
+
+        if self.game.player.hp > 0 and self.Enemy.hp > 0:
+            pygame.time.set_timer(self.game.EnemyAttackTimer, self.game.milliseconds_delay)
 
     def tempAttack(self, EnemyObject, EnemyName):
         EnemyObject = EnemyObject
@@ -481,6 +534,7 @@ class Character(pygame.sprite.Sprite):
                     #                                                50))
                     self.tempAttack(object, object.EnemyName)
                     self.templist.append(object)
+                    print('MonsterX:',object.rect.x, 'MonsterY:', object.rect.y)
 
             # if len(templist) > 0:
             #     for item in templist:
