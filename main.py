@@ -252,7 +252,7 @@ class Game:
         self.EXPYellowBar = pygame.image.load(self.resource_path('assets/XPBarInside.png'))
         self.MPBlueBar = pygame.image.load(self.resource_path('assets/MPBarInside.png'))
         # EnemyHPBarBG(self, WIN_WIDTH / 2, 10, self.enemyHPBarBG)
-        # EnemyHPBar(self, WIN_WIDTH / 2, 10, self.enemyHPBar)
+        # EnemyHPBar(self, WIN_WIDTH / 2, 10, self.enemyHPBar)Q
         # EnemyHPBarFG(self, WIN_WIDTH / 2, 10, self.enemyHPBarFGSilver)
 
     def console_print(self, message):
