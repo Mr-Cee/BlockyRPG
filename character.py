@@ -368,38 +368,43 @@ class Character(pygame.sprite.Sprite):
     def CastSpell(self):
         EnemyObject = self.monsterToAttack
         if self.SpellName == 'Fireball':
-            if self.mp >= 25:
-                spell_image = self.FireballImage
-                self.mp -= 25
-                Projectile(self.game, self.pos, self.direction, self.SpellName, spell_image, EnemyObject,
+            spell_image = self.FireballImage
+            Projectile(self.game, self.pos, self.direction, self.SpellName, spell_image, EnemyObject,
                            self.attackDamage)
-                _, angle = (self.monsterToAttack.pos - self.pos).as_polar()
-            else:
-                self.game.console_print('Need at least 25 mana to cast Fireball')
+            _, angle = (self.monsterToAttack.pos - self.pos).as_polar()
         elif self.SpellName == 'Acid':
-            if self.mp >= 50:
-                spell_image = self.AcidImage
-                self.mp -= 50
-                Projectile(self.game, self.pos, self.direction, self.SpellName, spell_image, EnemyObject,
+            spell_image = self.AcidImage
+
+            Projectile(self.game, self.pos, self.direction, self.SpellName, spell_image, EnemyObject,
                            self.attackDamage)
-                _, angle = (self.monsterToAttack.pos - self.pos).as_polar()
-            else:
-                self.game.console_print('Need at least 50 mana to cast Acid')
+            _, angle = (self.monsterToAttack.pos - self.pos).as_polar()
+
         else:
             spell_image = self.FireballImage
 
     def CastSpellFromBar(self):
         if self.SpellName == 'Fireball':
-            self.attackDamage = random.randint(self.FireballDamage, 5 + self.FireballDamage)
+            if self.mp >= 25:
+                self.changeMana(-25)
+                self.attackDamage = random.randint(self.FireballDamage, 5 + self.FireballDamage)
+                self.CastSpellStart = True
+            else:
+                self.game.console_print('Need at least 25 mana to cast Fireball')
+
         elif self.SpellName == 'Acid':
-            self.attackDamage = random.randint(self.AcidDamage, 5 + self.AcidDamage)
+            if self.mp >= 50:
+                self.changeMana(-50)
+                self.attackDamage = random.randint(self.AcidDamage, 5 + self.AcidDamage)
+                self.CastSpellStart = True
+            else:
+                self.game.console_print('Need at least 50 mana to cast Acid')
         else:
             self.attackDamage = random.randint(self.CharacterStrength, 5 + self.CharacterStrength)
         if self.attackDamage > self.monsterToAttack.hp:
             self.attackDamage = self.monsterToAttack.hp
         self.direction = math.atan2((self.monsterToAttack.y-self.monsterToAttack.height/3 - self.rect.y), (self.monsterToAttack.x - self.rect.x))
-        self.animation_loop = 0
-        self.CastSpellStart = True
+        # self.animation_loop = 0
+
 
     def AttackMonster(self):
         self.Enemy = self.monsterToAttack

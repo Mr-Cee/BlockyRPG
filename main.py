@@ -248,7 +248,7 @@ class Game:
         MPBarInterior(self, 193, WIN_HEIGHT + 65)
         self.EXPYellowBar = pygame.image.load(self.resource_path('assets/XPBarInside.png'))
         # EnemyHPBarBG(self, WIN_WIDTH / 2, 10, self.enemyHPBarBG)
-        # EnemyHPBar(self, WIN_WIDTH / 2, 10, self.enemyHPBar)
+        # EnemyHPBar(self, WIN_WIDTH / 2, 10, self.enemyHPBar)Q
         # EnemyHPBarFG(self, WIN_WIDTH / 2, 10, self.enemyHPBarFGSilver)
 
     def console_print(self, message):
