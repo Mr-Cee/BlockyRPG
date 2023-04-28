@@ -52,12 +52,12 @@ class HPBarInterior(pygame.sprite.Sprite):
         self.x = x
         self.y = y
 
-        self.image = pygame.image.load('assets/HPBarInside.png')
+        self.orig_image = pygame.image.load('assets/HPBarInside.png')
 
-        self.width = self.image.get_width()
-        self.height = self.image.get_height()
+        self.width = self.orig_image.get_width()
+        self.height = self.orig_image.get_height()
 
-        self.rect = self.image.get_rect()
+        self.rect = self.orig_image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
         self.collision_rect = pygame.Rect(self.x, self.y, self.width, self.height)
@@ -69,7 +69,14 @@ class HPBarInterior(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self, self.game.all_sprites, self.game.UI_Sprites)
 
     def update(self):
-        self.image = pygame.transform.scale(self.image, (round((self.player.hp / self.player.max_hp) * 164, 2), 28))
+
+        if self.player.hp <= 0:
+            self.image = pygame.transform.scale(self.orig_image, (0, 28))
+        else:
+            self.image = pygame.transform.scale(self.orig_image,
+                                                    (round((self.player.hp / self.player.max_hp) * 164, 2), 28))
+
+
 
 
 class MPBarInterior(pygame.sprite.Sprite):
@@ -81,12 +88,12 @@ class MPBarInterior(pygame.sprite.Sprite):
         self.x = x
         self.y = y
 
-        self.image = pygame.image.load('assets/MPBarInside.png')
+        self.orig_image = pygame.image.load('assets/MPBarInside.png')
 
-        self.width = self.image.get_width()
-        self.height = self.image.get_height()
+        self.width = self.orig_image.get_width()
+        self.height = self.orig_image.get_height()
 
-        self.rect = self.image.get_rect()
+        self.rect = self.orig_image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
         self.collision_rect = pygame.Rect(self.x, self.y, self.width, self.height)
@@ -99,7 +106,10 @@ class MPBarInterior(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self, self.game.all_sprites, self.game.UI_Sprites)
 
     def update(self):
-        self.image = pygame.transform.scale(self.image, (round((self.player.mp / self.player.max_mp) * 164, 2), 28))
+        if self.player.mp <= 0:
+            self.image = pygame.transform.scale(self.orig_image, (0, 28))
+        else:
+            self.image = pygame.transform.scale(self.orig_image, (round((self.player.mp / self.player.max_mp) * 164, 2), 28))
 
 
 class EnemyHPBarBG(pygame.sprite.Sprite):
@@ -207,14 +217,14 @@ class EXPBarInterior(pygame.sprite.Sprite):
         self.UI_Sprites = self.game.UI_Sprites
         self.all_sprites = self.game.all_sprites
 
-        self.image = pygame.image.load('assets/XPBarInside.png')
+        self.orig_image = pygame.image.load('assets/XPBarInside.png')
 
         self.x = x
         self.y = y
-        self.width = self.image.get_width()
-        self.height = self.image.get_height()
+        self.width = self.orig_image.get_width()
+        self.height = self.orig_image.get_height()
 
-        self.rect = self.image.get_rect()
+        self.rect = self.orig_image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
         self.collision_rect = pygame.Rect(self.x, self.y, self.width, self.height)
@@ -225,16 +235,13 @@ class EXPBarInterior(pygame.sprite.Sprite):
 
         pygame.sprite.Sprite.__init__(self, self.game.all_sprites, self.game.UI_Sprites)
 
-    # def update(self):
-    #     self.image = pygame.transform.scale(self.image, (((self.player.exp / self.player.exp_to_level) * 164), 28))
+    def update(self):
+        if self.player.exp <= 0:
+            self.image = pygame.transform.scale(self.orig_image, (0, 28))
+        else:
+            self.image = pygame.transform.scale(self.orig_image,
+                                                (round((self.player.exp / self.player.exp_to_level) * 164, 2), 28))
 
-    def draw(self, screen):
-        # Draw everyone on this level
-        self.screen = screen
-
-        # Draw all the sprite lists we have
-        self.UI_Sprites.draw(self.screen)
-        self.all_sprites.draw(self.screen)
 
 
 class HUDMAIN(pygame.sprite.Sprite):

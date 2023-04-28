@@ -512,7 +512,7 @@ class Character(pygame.sprite.Sprite):
     def checkForDeath(self):
         # Check for Death
         if self.hp <= 0:
-            self.game.console_print('You died! You have lost ' + str(self.exp/10) + ' exp!')
+            self.game.console_print('You died! You have lost ' + str(math.ceil(self.exp / 10)) + ' exp!')
             self.game.DeathReset()
             # pass
 

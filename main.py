@@ -216,14 +216,12 @@ class Game:
         self.console_print('You are in town')
 
     def DeathReset(self):
-        print("Death Reset")
         self.player.hp = self.player.max_hp
         self.player.mp = self.player.max_mp
         if self.player.exp > 0:
             self.player.exp = floor(self.player.exp * .9)
 
         if not self.player.isAttackable:
-            print('resetting level')
             self.RemoveAttackLevel()
             self.goToTown()
         else:
@@ -242,7 +240,6 @@ class Game:
         self.player.collision_rect.y = self.player.rect.bottom - 5
 
         for sprite in self.background_sprites:
-            "killing sprite"
             sprite.kill()
         if len(self.combat_background_sprites) > 0:
             for sprite in self.combat_background_sprites:
@@ -254,8 +251,6 @@ class Game:
             for sprite in self.combat_enemy_sprites:
                 sprite.kill()
 
-
-        print(self.current_level)
         self.current_level.GenerateEnemies(None)
         self.current_level.terrainGen()
 
@@ -271,13 +266,9 @@ class Game:
         UIPanel(self, 0, WIN_HEIGHT, self.BottomPanel_IMG)  # Background Panel
         HUDMAIN(self, 10, WIN_HEIGHT + 10)  # HP/MP/XP HUD BARS
 
-        self.RedHPBar = HPBarInterior(self, 193, WIN_HEIGHT + 22)  # HP RED BAR
-        # MPBarInterior(self, 193, WIN_HEIGHT + 65)
-        self.EXPYellowBar = pygame.image.load(self.resource_path('assets/XPBarInside.png'))
-        self.MPBlueBar = pygame.image.load(self.resource_path('assets/MPBarInside.png'))
-        # EnemyHPBarBG(self, WIN_WIDTH / 2, 10, self.enemyHPBarBG)
-        # EnemyHPBar(self, WIN_WIDTH / 2, 10, self.enemyHPBar)Q
-        # EnemyHPBarFG(self, WIN_WIDTH / 2, 10, self.enemyHPBarFGSilver)
+        HPBarInterior(self, 193, WIN_HEIGHT + 22)  # HP RED BAR
+        MPBarInterior(self, 193, WIN_HEIGHT + 65)
+        EXPBarInterior(self, 193, WIN_HEIGHT + 109)
 
     def console_print(self, message):
         # self.message_log.append(message)
@@ -364,7 +355,6 @@ class Game:
                     if self.player.isAttackable:
                         if self.current_level_no == 0:
                             self.console_print('Already in Town!')
-                            self.console_print('Already in Town One Two Three Four Five Six Seven Eight Nine Ten!')
                         else:
                             self.goToTown()
                     else:
@@ -372,15 +362,9 @@ class Game:
                 if event.key == pygame.K_d:
                     self.DEBUGGING = not self.DEBUGGING
                     self.DebugSettings()
-
-            # if event.type == self.CharacterAttackTimer:
-            #     self.player.canAttack = True
             if event.type == self.EnemyAttackTimer:
                 self.current_level.Monster1.AttackCharacter(self)
                 pygame.time.set_timer(self.EnemyAttackTimer, 0)
-            # if event.type == pygame.MOUSEBUTTONDOWN:
-            #     if self.player.AttackChoice:
-            #         self.player.Loot()
 
     def update(self):
         self.all_sprites.update()
@@ -390,24 +374,9 @@ class Game:
     def draw(self):
         if not self.player.isAttackable:
             self.screen.blit(WIN_Attack_BG, (0, 0))
-
-            # self.screen.blit(self.enemyHPBarBG, (WIN_HEIGHT/3, 10))
-            # self.screen.blit(self.enemyHPBar, (WIN_HEIGHT / 3, 10))
-            # self.screen.blit(self.enemyHPBarFGSilver, (WIN_HEIGHT / 3, 10))
-
         self.current_level.draw(self.screen)
 
         self.screen.blit(self.player.LevelText, self.player.LevelTextRect)
-        if self.player.exp > self.player.exp_to_level:
-            self.screen.blit(
-                pygame.transform.scale(self.EXPYellowBar, (164, 28)), (193, WIN_HEIGHT + 109))
-        else:
-            self.screen.blit(
-                pygame.transform.scale(self.EXPYellowBar, (((self.player.exp / self.player.exp_to_level) * 164), 28)),
-                (193, WIN_HEIGHT + 109))
-
-        self.screen.blit(pygame.transform.scale(self.MPBlueBar, (((self.player.mp / self.player.max_mp) * 164), 28)),
-                         (193, WIN_HEIGHT + 65))
 
         self.screen.blit(self.player.HPText, self.player.HPBarTextRect)
         self.screen.blit(self.player.MPText, self.player.MPBarTextRect)
