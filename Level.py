@@ -7,7 +7,6 @@ class Level:
     Create a child class for each level with level specific info
     """
 
-
     def __init__(self, game, player):
         self.game = game
         self.player = player
@@ -178,14 +177,14 @@ class Level:
                            EnemyHealth * 2 * self.DEBUGMODHP, EnemyEXPGain * 2 * self.DEBUGMODEXP)
                 if RandChoice == 'Red Imp':
                     Red_Imp(self, random.randint(BORDER_TILESIZE * 2, WIN_WIDTH - BORDER_TILESIZE * 2),
-                           random.randint(BORDER_TILESIZE * 2, WIN_HEIGHT - (BORDER_TILESIZE * 2)),
-                           EnemyStrength * 3 * self.DEBUGMODSTR,
-                           EnemyHealth * 3 * self.DEBUGMODHP, EnemyEXPGain * 3 * self.DEBUGMODEXP)
+                            random.randint(BORDER_TILESIZE * 2, WIN_HEIGHT - (BORDER_TILESIZE * 2)),
+                            EnemyStrength * 3 * self.DEBUGMODSTR,
+                            EnemyHealth * 3 * self.DEBUGMODHP, EnemyEXPGain * 3 * self.DEBUGMODEXP)
                 if RandChoice == 'Gray Spider':
                     Gray_Spider(self, random.randint(BORDER_TILESIZE * 2, WIN_WIDTH - BORDER_TILESIZE * 2),
-                           random.randint(BORDER_TILESIZE * 2, WIN_HEIGHT - (BORDER_TILESIZE * 2)),
-                           EnemyStrength * self.DEBUGMODSTR,
-                           EnemyHealth * self.DEBUGMODHP, EnemyEXPGain * self.DEBUGMODEXP)
+                                random.randint(BORDER_TILESIZE * 2, WIN_HEIGHT - (BORDER_TILESIZE * 2)),
+                                EnemyStrength * self.DEBUGMODSTR,
+                                EnemyHealth * self.DEBUGMODHP, EnemyEXPGain * self.DEBUGMODEXP)
 
         else:
             if EnemyName == 'Wolf':
@@ -198,12 +197,12 @@ class Level:
                                        EnemyHealth * 2 * self.DEBUGMODHP, EnemyEXPGain * 2 * self.DEBUGMODEXP)
             if EnemyName == 'Red Imp':
                 self.Monster1 = Red_Imp(self, WIN_WIDTH - BORDER_TILESIZE * 4, WIN_HEIGHT / 2,
-                                       EnemyStrength * 3 * self.DEBUGMODSTR,
-                                       EnemyHealth * 3 * self.DEBUGMODHP, EnemyEXPGain * 3 * self.DEBUGMODEXP)
+                                        EnemyStrength * 3 * self.DEBUGMODSTR,
+                                        EnemyHealth * 3 * self.DEBUGMODHP, EnemyEXPGain * 3 * self.DEBUGMODEXP)
             if EnemyName == 'Gray Spider':
                 self.Monster1 = Gray_Spider(self, WIN_WIDTH - BORDER_TILESIZE * 4, WIN_HEIGHT / 2,
-                                       EnemyStrength * self.DEBUGMODSTR,
-                                       EnemyHealth * self.DEBUGMODHP, EnemyEXPGain * self.DEBUGMODEXP)
+                                            EnemyStrength * self.DEBUGMODSTR,
+                                            EnemyHealth * self.DEBUGMODHP, EnemyEXPGain * self.DEBUGMODEXP)
 
     # Update everything on this level
     def update(self):
@@ -240,39 +239,40 @@ class Level:
 
             if self.player.canAttack:
                 self.screen.blit(self.AttackSelectionBG, (WIN_WIDTH / 5, WIN_HEIGHT - 50))
-                if button.Button(self.game, self.screen, WIN_WIDTH / 5 + 35, WIN_HEIGHT - 48, self.Fireball_img, 40, 40,
-                                 "Fireball",
-                                 'Launches a fireball at the target. ',
-                                 'Deals ' + (str(self.player.FireballDamage) + "-" + str( self.player.FireballDamage + 10) + " damage."),
-                                 'Cost: ' + str(self.game.player.FireballCost) + " mp.").draw() and self.player.canAttack:
-                    self.game.player.SpellName = 'Fireball'
-                    if self.player.mp >= self.player.FireballCost:
-                        self.player.canAttack = False
-                        self.player.monsterToAttack = self.game.current_level.Monster1
-                        self.player.CastSpellFromBar()
-                    else:
-                        self.game.console_print(
-                            'Need at least ' + str(self.player.FireballCost) + ' mana to cast ' + self.player.SpellName)
 
-                if button.Button(self.game, self.screen, WIN_WIDTH / 5 + 110, WIN_HEIGHT - 48, self.Acid_img, 40, 40,
-                                 'Acid',
-                                 'Casts an Acid Ball at the target ',
-                                 'Deals ' + (str(self.player.AcidDamage) + "-" + str(self.player.AcidDamage + 10) + " damage."),
-                                 "Cost: " + str(self.game.player.AcidCost) + " mp.").draw() and self.player.canAttack:
-                    self.player.SpellName = 'Acid'
-                    if self.player.mp >= self.player.AcidCost:
-                        self.player.canAttack = False
-                        self.player.monsterToAttack = self.game.current_level.Monster1
-                        self.player.CastSpellFromBar()
-                    else:
-                        self.game.console_print(
-                            'Need at least ' + str(self.player.AcidCost) + ' mana to cast ' + self.player.SpellName)
+                # Attack Button
+                if button.Button(self.game, self.screen, WIN_WIDTH / 5 + 35, WIN_HEIGHT - 125,
+                                 pygame.image.load(self.game.resource_path('assets/button_attack.png')), 195,
+                                 50,
+                                 ' Melee Attack ',
+                                 ' Punches Target ',
+                                 ' Deals ' + (str(self.player.CharacterStrength) + "-" + str(
+                                     self.player.CharacterStrength + 10) + " damage. "),
+                                 ' Cost: 0 mp ').draw() and self.player.canAttack:
+                    self.player.canAttack = False
+                    # pygame.time.set_timer(self.CharacterAttackTimer, self.milliseconds_delay)
+                    # self.player.Loot()
+                    self.player.monsterToAttack = self.game.current_level.Monster1
+                    self.player.canAttack = False
+                    self.player.AttackMonster()
 
-                if button.Button(self.game, self.screen, WIN_WIDTH / 5 + 185, WIN_HEIGHT - 48, self.Icebolt_img, 40, 40,
-                                 'Ice Bolt',
-                                 'Casts an Ice Bolt at the target ',
-                                 'Deals ' + (str(self.player.IceBoltDamage) + "-" + str(self.player.IceBoltDamage + 10) + " damage."),
-                                 "Cost: " + str(self.game.player.IceBoltCost) + " mp.").draw() and self.player.canAttack:
+                #  Flee Button
+                if button.Button(self.game, self.screen, WIN_WIDTH / 5 + 240, WIN_HEIGHT - 125,
+                                 pygame.image.load(self.game.resource_path('assets/button_flee.png')), 195, 50,
+                                 ' Flee ',
+                                 ' Runs away from Battle ',
+                                 ' Lose 20 hp ',
+                                 ' Cost: 0 mp ').draw():
+                    self.player.Flee()
+
+                # Ice Bolt Button
+                if button.Button(self.game, self.screen, WIN_WIDTH / 5 + 35, WIN_HEIGHT - 48, self.Icebolt_img, 40, 40,
+                                 ' Ice Bolt ',
+                                 ' Casts an Ice Bolt at the target ',
+                                 ' Deals ' + (str(self.player.IceBoltDamage) + "-" + str(
+                                     self.player.IceBoltDamage + 10) + " damage. "),
+                                 " Cost: " + str(
+                                     self.game.player.IceBoltCost) + " mp. ").draw() and self.player.canAttack:
                     self.player.SpellName = 'Ice Bolt'
                     if self.player.mp >= self.player.IceBoltCost:
                         self.player.canAttack = False
@@ -282,29 +282,43 @@ class Level:
                         self.game.console_print(
                             'Need at least ' + str(self.player.IceBoltCost) + ' mana to cast ' + self.player.SpellName)
 
-                if button.Button(self.game, self.screen, WIN_WIDTH / 2 - 97, WIN_HEIGHT / 2,
-                                 pygame.image.load(self.game.resource_path('assets/button_attack.png')), 195,
-                                 50,
-                                 'Melee Attack',
-                                 'Punches Target',
-                                 'Deals ' + (str(self.player.CharacterStrength) + "-" + str(self.player.CharacterStrength + 10) + " damage."),
-                                 'Cost: 0 mp').draw() and self.player.canAttack:
-                    self.player.canAttack = False
-                    # pygame.time.set_timer(self.CharacterAttackTimer, self.milliseconds_delay)
-                    # self.player.Loot()
-                    self.player.monsterToAttack = self.game.current_level.Monster1
-                    self.player.canAttack = False
-                    self.player.AttackMonster()
-                if button.Button(self.game, self.screen, WIN_WIDTH / 2 - 97, WIN_HEIGHT / 2 + 60,
-                                 pygame.image.load(self.game.resource_path('assets/button_flee.png')), 195, 50,
-                                 'Flee',
-                                 'Runs away from Battle',
-                                 'Lose 20 hp',
-                                 'Cost: 0 mp').draw():
-                    self.player.Flee()
+                # Fireball Button
+                if button.Button(self.game, self.screen, WIN_WIDTH / 5 + 110, WIN_HEIGHT - 48, self.Fireball_img,
+                                 40, 40,
+                                 " Fireball ",
+                                 ' Launches a fireball at the target. ',
+                                 ' Deals ' + (str(self.player.FireballDamage) + "-" + str(
+                                     self.player.FireballDamage + 10) + " damage. "),
+                                 ' Cost: ' + str(
+                                     self.game.player.FireballCost) + " mp. ").draw() and self.player.canAttack:
+                    self.game.player.SpellName = 'Fireball'
+                    if self.player.mp >= self.player.FireballCost:
+                        self.player.canAttack = False
+                        self.player.monsterToAttack = self.game.current_level.Monster1
+                        self.player.CastSpellFromBar()
+                    else:
+                        self.game.console_print(
+                            'Need at least ' + str(
+                                self.player.FireballCost) + ' mana to cast ' + self.player.SpellName)
 
-
-
+                # Acid Button
+                if button.Button(self.game, self.screen, WIN_WIDTH / 5 + 185, WIN_HEIGHT - 48, self.Acid_img,
+                                 40, 40,
+                                 ' Acid ',
+                                 ' Casts an Acid Ball at the target ',
+                                 ' Deals ' + (str(self.player.AcidDamage) + "-" + str(
+                                     self.player.AcidDamage + 10) + " damage. "),
+                                 " Cost: " + str(
+                                     self.game.player.AcidCost) + " mp. ").draw() and self.player.canAttack:
+                    self.player.SpellName = 'Acid'
+                    if self.player.mp >= self.player.AcidCost:
+                        self.player.canAttack = False
+                        self.player.monsterToAttack = self.game.current_level.Monster1
+                        self.player.CastSpellFromBar()
+                    else:
+                        self.game.console_print(
+                            'Need at least ' + str(
+                                self.player.AcidCost) + ' mana to cast ' + self.player.SpellName)
 
         else:
             # Draw the Background
