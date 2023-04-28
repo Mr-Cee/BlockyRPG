@@ -344,7 +344,10 @@ class Game:
                 if event.key == pygame.K_KP_MINUS:
                     self.player.changeHealth(-10)
                 if event.key == pygame.K_t:
-                    self.goToTown()
+                    if self.player.isAttackable:
+                        self.goToTown()
+                    else:
+                        self.console_print('Not while in combat')
                 if event.key == pygame.K_d:
                     self.DEBUGGING = not self.DEBUGGING
                     self.DebugSettings()
