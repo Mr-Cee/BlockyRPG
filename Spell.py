@@ -101,3 +101,16 @@ class Acidball(SpellTemplate):
         self.rect = self.image.get_rect()
         self.rect.x = self.player.rect.left
         self.rect.y = self.player.rect.y + self.player.rect.height/2
+
+class Icebolt(SpellTemplate):
+    def __init__(self, game, Enemy, Player, Damage, Cost):
+        SpellTemplate.__init__(self, game, Enemy, Player, Damage, Cost)
+
+        self.AttackDamage = self.CalculateDamage(Damage)
+        self.ManaCost = Cost
+        self.SpellName = 'Ice Bolt'
+        self.image = self.game.WeaponsAndMagicSpritesheet.get_sprite(75, 224, 16, 8)
+        self.image = pygame.transform.scale(self.image, (24, 12))
+        self.rect = self.image.get_rect()
+        self.rect.x = self.player.rect.left
+        self.rect.y = self.player.rect.y + self.player.rect.height/2

@@ -342,6 +342,7 @@ class Game:
                     self.player.changeMana(25)
                 if event.key == pygame.K_KP_MINUS:
                     self.player.changeHealth(-10)
+                    self.player.changeMana(-50)
                 if event.key == pygame.K_t:
                     if self.player.isAttackable:
                         self.goToTown()

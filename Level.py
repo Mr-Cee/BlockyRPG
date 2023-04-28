@@ -53,6 +53,8 @@ class Level:
         self.Fireball_img = pygame.transform.scale(self.Fireball_img, (40, 40))
         self.Acid_img = pygame.image.load(self.game.resource_path('assets/acid-bolt.png'))
         self.Acid_img = pygame.transform.scale(self.Acid_img, (40, 40))
+        self.Icebolt_img = pygame.image.load(self.game.resource_path('assets/ice-bolt.png'))
+        self.Icebolt_img = pygame.transform.scale(self.Icebolt_img, (40, 40))
 
         self.milliseconds_delay = 2000  # 1 seconds
         self.CharacterAttackTimer = pygame.USEREVENT + 1
@@ -240,23 +242,45 @@ class Level:
                 self.screen.blit(self.AttackSelectionBG, (WIN_WIDTH / 5, WIN_HEIGHT - 50))
                 if button.Button(self.game, self.screen, WIN_WIDTH / 5 + 35, WIN_HEIGHT - 48, self.Fireball_img, 40, 40,
                                  "Fireball",
-                                 'Launch a fireball at the target. ',
+                                 'Launches a fireball at the target. ',
                                  'Deals ' + (str(self.player.FireballDamage) + "-" + str( self.player.FireballDamage + 10) + " damage."),
                                  'Cost: ' + str(self.game.player.FireballCost) + " mp.").draw() and self.player.canAttack:
                     self.game.player.SpellName = 'Fireball'
-                    self.player.canAttack = False
-                    self.player.monsterToAttack = self.game.current_level.Monster1
-                    self.player.CastSpellFromBar()
+                    if self.player.mp >= self.player.FireballCost:
+                        self.player.canAttack = False
+                        self.player.monsterToAttack = self.game.current_level.Monster1
+                        self.player.CastSpellFromBar()
+                    else:
+                        self.game.console_print(
+                            'Need at least ' + str(self.player.FireballCost) + ' mana to cast ' + self.player.SpellName)
 
                 if button.Button(self.game, self.screen, WIN_WIDTH / 5 + 110, WIN_HEIGHT - 48, self.Acid_img, 40, 40,
                                  'Acid',
-                                 'Cast an Acid ball at the target ',
+                                 'Casts an Acid Ball at the target ',
                                  'Deals ' + (str(self.player.AcidDamage) + "-" + str(self.player.AcidDamage + 10) + " damage."),
                                  "Cost: " + str(self.game.player.AcidCost) + " mp.").draw() and self.player.canAttack:
-                    self.game.player.SpellName = 'Acid'
-                    self.player.canAttack = False
-                    self.player.monsterToAttack = self.game.current_level.Monster1
-                    self.player.CastSpellFromBar()
+                    self.player.SpellName = 'Acid'
+                    if self.player.mp >= self.player.AcidCost:
+                        self.player.canAttack = False
+                        self.player.monsterToAttack = self.game.current_level.Monster1
+                        self.player.CastSpellFromBar()
+                    else:
+                        self.game.console_print(
+                            'Need at least ' + str(self.player.AcidCost) + ' mana to cast ' + self.player.SpellName)
+
+                if button.Button(self.game, self.screen, WIN_WIDTH / 5 + 185, WIN_HEIGHT - 48, self.Icebolt_img, 40, 40,
+                                 'Ice Bolt',
+                                 'Casts an Ice Bolt at the target ',
+                                 'Deals ' + (str(self.player.IceBoltDamage) + "-" + str(self.player.IceBoltDamage + 10) + " damage."),
+                                 "Cost: " + str(self.game.player.IceBoltCost) + " mp.").draw() and self.player.canAttack:
+                    self.player.SpellName = 'Ice Bolt'
+                    if self.player.mp >= self.player.IceBoltCost:
+                        self.player.canAttack = False
+                        self.player.monsterToAttack = self.game.current_level.Monster1
+                        self.player.CastSpellFromBar()
+                    else:
+                        self.game.console_print(
+                            'Need at least ' + str(self.player.IceBoltCost) + ' mana to cast ' + self.player.SpellName)
 
                 if button.Button(self.game, self.screen, WIN_WIDTH / 2 - 97, WIN_HEIGHT / 2,
                                  pygame.image.load(self.game.resource_path('assets/button_attack.png')), 195,

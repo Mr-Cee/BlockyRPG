@@ -31,11 +31,15 @@ class Character(pygame.sprite.Sprite):
         self.CharacterStrength = 5
         self.CritChance = 90
 
-        self.FireballDamage = 10
+        self.IceBoltDamage = 10
+        self.IceBoltCost = 10
+        self.FireballDamage = 30
         self.FireballCost = 25
+        self.AcidDamage = 75
+        self.AcidCost = 50
 
-        self.AcidDamage = 150
-        self.AcidCost = 25
+
+
 
         self.font = pygame.font.Font('assets/BKANT.TTF', 40)
         self.LevelText = self.font.render(str(self.playerLevel), True, BLACK, None)
@@ -409,29 +413,26 @@ class Character(pygame.sprite.Sprite):
                 Fireball(self.game, EnemyObject, self, self.FireballDamage, self.FireballCost)
                 self.changeMana(-self.FireballCost)
             else:
-                self.game.console_print('Need at least ' + str(self.FireballCost) + '  mana to cast Fireball')
+                self.game.console_print('Need at least ' + str(self.FireballCost) + '  mana to cast ' + self.SpellName)
                 self.canAttack = True
         elif self.SpellName == 'Acid':
             if self.mp >= self.AcidCost:
                 Acidball(self.game, EnemyObject, self, self.AcidDamage, self.AcidCost)
                 self.changeMana(-self.AcidCost)
             else:
-                self.game.console_print('Need at least ' + str(self.AcidCost) + ' mana to cast Acid')
+                self.game.console_print('Need at least ' + str(self.AcidCost) + ' mana to cast ' + self.SpellName)
+                self.canAttack = True
+        elif self.SpellName == 'Ice Bolt':
+            if self.mp >= self.IceBoltCost:
+                Icebolt(self.game, EnemyObject, self, self.IceBoltDamage, self.IceBoltCost)
+                self.changeMana(-self.IceBoltCost)
+            else:
+                self.game.console_print('Need at least ' + str(self.IceBoltCost) + ' mana to cast ' + self.SpellName)
                 self.canAttack = True
         else:
             spell_image = self.FireballImage
 
     def CastSpellFromBar(self):
-        if self.SpellName == 'Fireball':
-            self.attackDamage = random.randint(self.FireballDamage, 5 + self.FireballDamage)
-        elif self.SpellName == 'Acid':
-            self.attackDamage = random.randint(self.AcidDamage, 5 + self.AcidDamage)
-        else:
-            self.attackDamage = random.randint(self.CharacterStrength, 5 + self.CharacterStrength)
-        if self.attackDamage > self.monsterToAttack.hp:
-            self.attackDamage = self.monsterToAttack.hp
-        self.direction = math.atan2((self.monsterToAttack.y - self.monsterToAttack.height / 3 - self.rect.y),
-                                    (self.monsterToAttack.x - self.rect.x))
         self.animation_loop = 0
         self.CastSpellStart = True
 
