@@ -291,7 +291,6 @@ class Character(pygame.sprite.Sprite):
                 self.y_change += PLAYER_SPEED
                 self.facing = 'down'
             if any((keys[pygame.K_UP], keys[pygame.K_DOWN])):
-                # self.game.all_sprites.change_layer(self, self.collision_rect.bottom)
                 self.game.all_sprites.change_layer(self, self.collision_rect.bottom)
         elif self.moveTowardsEnemy:
             if self.monsterToAttack.rect.left - self.rect.right >= 15:
@@ -300,17 +299,11 @@ class Character(pygame.sprite.Sprite):
                 self.monster_direction = rads
                 self.x_change += math.cos(self.monster_direction) * 5
                 self.y_change += math.sin(self.monster_direction) * 5
-
-                # self.x_change += FPS * self.monster_direction
-                # self.y_change += FPS * self.monster_direction
-                # print(self.x_change, self.y_change)
                 self.movement_loop += PLAYER_SPEED
-                # print(self.movement_loop, -self.max_travel, (self.rect.left - self.game.player.rect.right))
+
                 if self.movement_loop >= self.max_travel or self.monsterToAttack.rect.left - self.rect.right <= 15:
                     self.moveTowardsEnemy = False
                     self.movement_loop = 0
-                    # print('MonsterX,Y After:', self.monsterToAttack.rect.x, self.monsterToAttack.rect.y)
-                    # print('PlayerX,Y After:', self.rect.x, self.rect.y)
                     if self.game.player.hp > 0 and self.Enemy.hp > 0:
                         pygame.time.set_timer(self.game.EnemyAttackTimer, self.game.milliseconds_delay)
             else:
@@ -319,7 +312,6 @@ class Character(pygame.sprite.Sprite):
                 if self.game.player.hp > 0 and self.Enemy.hp > 0:
                     pygame.time.set_timer(self.game.EnemyAttackTimer, self.game.milliseconds_delay)
 
-                    # self.game.player.canAttack = True
 
     def animate(self):
         if self.facing == 'down':
@@ -416,10 +408,6 @@ class Character(pygame.sprite.Sprite):
             if self.mp >= self.FireballCost:
                 Fireball(self.game, EnemyObject, self, self.FireballDamage, self.FireballCost)
                 self.changeMana(-self.FireballCost)
-                # spell_image = self.FireballImage
-                # Projectile(self.game, self.pos, self.direction, self.SpellName, spell_image, EnemyObject,
-                #            self.attackDamage)
-                # _, angle = (self.monsterToAttack.pos - self.pos).as_polar()
             else:
                 self.game.console_print('Need at least ' + str(self.FireballCost) + '  mana to cast Fireball')
                 self.canAttack = True
@@ -427,11 +415,6 @@ class Character(pygame.sprite.Sprite):
             if self.mp >= self.AcidCost:
                 Acidball(self.game, EnemyObject, self, self.AcidDamage, self.AcidCost)
                 self.changeMana(-self.AcidCost)
-                # spell_image = self.AcidImage
-                # self.changeMana(-self.AcidCost)
-                # Projectile(self.game, self.pos, self.direction, self.SpellName, spell_image, EnemyObject,
-                #            self.attackDamage)
-                # _, angle = (self.monsterToAttack.pos - self.pos).as_polar()
             else:
                 self.game.console_print('Need at least ' + str(self.AcidCost) + ' mana to cast Acid')
                 self.canAttack = True
@@ -470,7 +453,6 @@ class Character(pygame.sprite.Sprite):
 
         self.game.console_print(
             ('You attacked the ' + self.Enemy.EnemyName + ' for ' + str(self.attackDamage) + ' damage'))
-        # print(str(EnemyObject.EnemyName) + ' ' + str(EnemyObject.hp) + '/' + str(EnemyObject.max_hp))
         if self.Enemy.hp > 0:
             self.game.enemyHPBar = pygame.transform.scale(self.game.enemyHPBar, (
                 math.floor((self.Enemy.hp / self.Enemy.max_hp) * (WIN_WIDTH / 3)), 50))

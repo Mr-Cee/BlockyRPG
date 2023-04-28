@@ -38,6 +38,7 @@ class EnemyTemplate(pygame.sprite.Sprite):
         self.animation_loop = 1
         self.movement_loop = 0
         self.max_travel = 25
+        self.collision_count = 0
 
         if self.game.player.isAttackable:
             self.inCombat = False
@@ -110,28 +111,32 @@ class EnemyTemplate(pygame.sprite.Sprite):
                 if self.movement_loop <= -self.max_travel:
                     self.facing = random.choice(self.facing_list)
                     self.movement_loop = 0
-                    self.max_travel = random.randint(10, 30)
+                    self.max_travel = random.randint(WIN_WIDTH/10, WIN_WIDTH/8)
+
             if self.facing == 'right':
                 self.x_change += ENEMY_SPEED
                 self.movement_loop += 1
                 if self.movement_loop >= self.max_travel:
                     self.facing = random.choice(self.facing_list)
                     self.movement_loop = 0
-                    self.max_travel = random.randint(10, 30)
+                    self.max_travel = random.randint(WIN_WIDTH/10, WIN_WIDTH/8)
+
             if self.facing == 'up':
                 self.y_change -= ENEMY_SPEED
                 self.movement_loop -= 1
                 if self.movement_loop <= -self.max_travel:
                     self.facing = random.choice(self.facing_list)
                     self.movement_loop = 0
-                    self.max_travel = random.randint(10, 30)
+                    self.max_travel = random.randint(WIN_WIDTH/10, WIN_WIDTH/8)
+
             if self.facing == 'down':
                 self.y_change += ENEMY_SPEED
                 self.movement_loop += 1
                 if self.movement_loop >= self.max_travel:
                     self.facing = random.choice(self.facing_list)
                     self.movement_loop = 0
-                    self.max_travel = random.randint(10, 30)
+                    self.max_travel = random.randint(WIN_WIDTH/10, WIN_WIDTH/8)
+
         else:
             self.facing = 'left'
             if self.AttackingMovement:
@@ -222,40 +227,62 @@ class EnemyTemplate(pygame.sprite.Sprite):
             for object in self.game.background_sprites:
                 collide = pygame.Rect.colliderect(self.rect, object.collision_rect)
                 if collide:
+                    self.collision_count += 1
                     if self.x_change > 0:  # Moving Right
                         self.rect.right = object.collision_rect.x
-                        for _ in range(10):
-                            self.rect.x -= 1
+                        # for _ in range(10):
+                        #     self.rect.x -= 1
                         self.facing = 'left'
                         self.movement_loop = 0
-                        self.max_travel = random.randint(10, 30)
+                        self.max_travel = random.randint(WIN_WIDTH/10, WIN_WIDTH/8)
+                        if self.collision_count >= 3:
+                            self.collision_count = 0
+                            self.facing = 'up'
+                            self.movement_loop = 0
+                            self.max_travel = random.randint(WIN_WIDTH / 10, WIN_WIDTH / 8)
 
                     if self.x_change < 0:  # Moving Left
                         self.rect.x = object.collision_rect.right
-                        for _ in range(10):
-                            self.rect.x += 1
+                        # for _ in range(10):
+                        #     self.rect.x += 1
                         self.facing = 'right'
                         self.movement_loop = 0
-                        self.max_travel = random.randint(10, 30)
+                        self.max_travel = random.randint(WIN_WIDTH/10, WIN_WIDTH/8)
+                        if self.collision_count >= 3:
+                            self.collision_count = 0
+                            self.facing = 'down'
+                            self.movement_loop = 0
+                            self.max_travel = random.randint(WIN_WIDTH / 10, WIN_WIDTH / 8)
 
         if direction == 'y':
             for object in self.game.background_sprites:
                 collide = pygame.Rect.colliderect(self.rect, object.collision_rect)
                 if collide:
+                    self.collision_count += 1
                     if self.y_change > 0:  # Moving Down
                         self.rect.bottom = object.collision_rect.y
-                        for _ in range(10):
-                            self.rect.y -= 1
+                        # for _ in range(10):
+                        #     self.rect.y -= 1
                         self.facing = 'up'
                         self.movement_loop = 0
-                        self.max_travel = random.randint(10, 30)
+                        self.max_travel = random.randint(WIN_WIDTH/10, WIN_WIDTH/8)
+                        if self.collision_count >= 3:
+                            self.collision_count = 0
+                            self.facing = 'right'
+                            self.movement_loop = 0
+                            self.max_travel = random.randint(WIN_WIDTH / 10, WIN_WIDTH / 8)
                     if self.y_change < 0:  # Moving Up
                         self.rect.top = object.collision_rect.bottom
-                        for _ in range(10):
-                            self.rect.x += 1
+                        # for _ in range(10):
+                        #     self.rect.x += 1
                         self.facing = 'down'
                         self.movement_loop = 0
-                        self.max_travel = random.randint(10, 30)
+                        self.max_travel = random.randint(WIN_WIDTH/10, WIN_WIDTH/8)
+                        if self.collision_count >= 3:
+                            self.collision_count = 0
+                            self.facing = 'left'
+                            self.movement_loop = 0
+                            self.max_travel = random.randint(WIN_WIDTH / 10, WIN_WIDTH / 8)
 
     def collide_enemy(self):
         pass
