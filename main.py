@@ -280,41 +280,38 @@ class Game:
         # EnemyHPBarFG(self, WIN_WIDTH / 2, 10, self.enemyHPBarFGSilver)
 
     def console_print(self, message):
-        self.message_log.append(message)
+        # self.message_log.append(message)
+
+        while message:
+            i = 0
+            while self.the_font.size(message[:i])[0] < (WIN_WIDTH/2-10) and i < len(message):
+                i += 1
+            if i < len(message):
+                i = message.rfind(" ", 0, i) + 1
+
+            self.message_log.insert(0, message[:i])
+            message = message[i:]
 
     def update_log(self):
         # create a surface for the log:
-        # This one the same width as the RESOLUTION and 1/3 the height
         self.log_surf = pygame.Surface((WIN_WIDTH / 2, 160))
         self.log_surf.blit(self.textboxIMG, (0, 0, WIN_WIDTH / 2, 160))
-        # Populate it with, say, the last three messages:
-        # Note: You could do this in a more elegant loop if you wanted to.
-        #       You would probably be served by checking to see if you have any messages at all before
-        #       searching through the message log, to avoid looking for elements that aren't in the list.
-        #       for this example I added 3 placeholder messages at the start of the main function
-        #       to avoid that problem here.
+
         if len(self.message_log) > 0:
             new_log = []
-            m1 = self.message_log[-1]
-            m2 = self.message_log[-2]
-            m3 = self.message_log[-3]
-            m4 = self.message_log[-4]
-            m5 = self.message_log[-5]
-            m6 = self.message_log[-6]
-            new_log.append(m1)
-            new_log.append(m2)
-            new_log.append(m3)
-            new_log.append(m4)
-            new_log.append(m5)
-            new_log.append(m6)
+            m = len(self.message_log)
+            n = 0
+            for _ in range(m):
+                new_log.insert(0, self.message_log[n])
+                n += 1
+                if n == 7:
+                    break
+
             font_y = 10
             for m in new_log:
                 message = self.the_font.render(m, True, BLACK)
                 self.log_surf.blit(message, (15, font_y))
-                font_y += 20  # gives a little padding for the next message
-        # blit it to the main surface in a spot where it'll fit snugly:
-        # sorry for the magic numbers, ideally you would pre-define these positions
-        # as variables
+                font_y += 20
 
         self.screen.blit(self.log_surf, (WIN_WIDTH / 2, WIN_HEIGHT))
 
@@ -367,6 +364,7 @@ class Game:
                     if self.player.isAttackable:
                         if self.current_level_no == 0:
                             self.console_print('Already in Town!')
+                            self.console_print('Already in Town One Two Three Four Five Six Seven Eight Nine Ten!')
                         else:
                             self.goToTown()
                     else:

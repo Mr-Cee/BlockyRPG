@@ -22,6 +22,7 @@ class SpellTemplate(pygame.sprite.Sprite):
         self.AttackDamage = self.CalculateDamage(Damage)
         self.ManaCost = Cost
         self.SpellName = 'Change Me'
+        self.SpellDidCrit = False
         self.image = pygame.image.load('assets/flame_icon.png')
 
         #  Adjusting sprite location
@@ -53,9 +54,15 @@ class SpellTemplate(pygame.sprite.Sprite):
         if collide:
             self.kill()
             self.Enemy.TakeDamage(self.AttackDamage)
-            self.game.console_print(
-                ('You cast ' + self.SpellName + ' and hit the ' + self.Enemy.EnemyName + ' for ' + str(
-                    self.AttackDamage) + ' damage'))
+            if self.SpellDidCrit:
+                self.game.console_print(
+                    ('You cast ' + self.SpellName + ' and hit the ' + self.Enemy.EnemyName + ' for ' + str(
+                        self.AttackDamage) + ' CRITICAL damage'))
+                self.SpellDidCrit = False
+            else:
+                self.game.console_print(
+                    ('You cast ' + self.SpellName + ' and hit the ' + self.Enemy.EnemyName + ' for ' + str(
+                        self.AttackDamage) + ' damage'))
             if self.Enemy.hp > 0:
                 self.game.enemyHPBar = pygame.transform.scale(self.game.enemyHPBar, (
                     math.floor((self.Enemy.hp / self.Enemy.max_hp) * (WIN_WIDTH / 3)), 50))
@@ -72,6 +79,10 @@ class SpellTemplate(pygame.sprite.Sprite):
 
     def CalculateDamage(self, damage):
         Attack = random.randint(damage, damage+10)
+        CriticalChance = random.randint(1, 101)
+        if CriticalChance <= self.player.CritChance:
+            Attack = Attack * self.player.CritBonus
+            self.SpellDidCrit = True
         if Attack > self.Enemy.hp:
             Attack = self.Enemy.hp
         return Attack

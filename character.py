@@ -30,6 +30,7 @@ class Character(pygame.sprite.Sprite):
 
         self.CharacterStrength = 5
         self.CritChance = 90
+        self.CritBonus = 1.5
 
         self.IceBoltDamage = 10
         self.IceBoltCost = 10
