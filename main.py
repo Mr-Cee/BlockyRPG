@@ -13,7 +13,6 @@ from Level import *
 from UI import *
 
 
-
 class Game:
     def __init__(self):
         pygame.init()
@@ -217,25 +216,46 @@ class Game:
         self.console_print('You are in town')
 
     def DeathReset(self):
+        print("Death Reset")
         self.player.hp = self.player.max_hp
+        self.player.mp = self.player.max_mp
         if self.player.exp > 0:
             self.player.exp = floor(self.player.exp * .9)
+
+        if not self.player.isAttackable:
+            print('resetting level')
+            self.RemoveAttackLevel()
+            self.goToTown()
+        else:
+            self.current_level_no = 0
+            self.current_level = self.level_list[self.current_level_no]
+            self.level = self.current_level
+            self.goToTown()
+
+        self.player.isAttackable = True
+        self.player.AttackChoice = False
+        self.player.canAttack = True
 
         self.player.rect.x = WIN_WIDTH / 2
         self.player.rect.y = WIN_HEIGHT / 2
         self.player.collision_rect.x = self.player.rect.x + 22
         self.player.collision_rect.y = self.player.rect.bottom - 5
 
-        self.current_level_no = 0
-        self.current_level = self.level_list[self.current_level_no]
-        self.level = self.current_level
-
         for sprite in self.background_sprites:
+            "killing sprite"
             sprite.kill()
+        if len(self.combat_background_sprites) > 0:
+            for sprite in self.combat_background_sprites:
+                sprite.kill()
         if len(self.enemy_sprites) > 0:
             for sprite in self.enemy_sprites:
                 sprite.kill()
+        if len(self.combat_enemy_sprites) > 0:
+            for sprite in self.combat_enemy_sprites:
+                sprite.kill()
 
+
+        print(self.current_level)
         self.current_level.GenerateEnemies(None)
         self.current_level.terrainGen()
 
@@ -345,7 +365,10 @@ class Game:
                     self.player.changeMana(-50)
                 if event.key == pygame.K_t:
                     if self.player.isAttackable:
-                        self.goToTown()
+                        if self.current_level_no == 0:
+                            self.console_print('Already in Town!')
+                        else:
+                            self.goToTown()
                     else:
                         self.console_print('Not while in combat')
                 if event.key == pygame.K_d:
@@ -381,8 +404,12 @@ class Game:
             self.screen.blit(
                 pygame.transform.scale(self.EXPYellowBar, (164, 28)), (193, WIN_HEIGHT + 109))
         else:
-            self.screen.blit(pygame.transform.scale(self.EXPYellowBar, (((self.player.exp / self.player.exp_to_level) * 164), 28)), (193, WIN_HEIGHT + 109))
-        self.screen.blit(pygame.transform.scale(self.MPBlueBar, (((self.player.mp / self.player.max_mp) * 164), 28)), (193, WIN_HEIGHT + 65))
+            self.screen.blit(
+                pygame.transform.scale(self.EXPYellowBar, (((self.player.exp / self.player.exp_to_level) * 164), 28)),
+                (193, WIN_HEIGHT + 109))
+
+        self.screen.blit(pygame.transform.scale(self.MPBlueBar, (((self.player.mp / self.player.max_mp) * 164), 28)),
+                         (193, WIN_HEIGHT + 65))
 
         self.screen.blit(self.player.HPText, self.player.HPBarTextRect)
         self.screen.blit(self.player.MPText, self.player.MPBarTextRect)

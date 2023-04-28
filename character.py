@@ -212,12 +212,13 @@ class Character(pygame.sprite.Sprite):
         # print('Player', self._layer)
 
     def Loot(self, EXPGain, EnemyObject):
-        self.game.console_print(
-            ('You killed the ' + EnemyObject.EnemyName + ' and gained ' + str(EXPGain) + ' experience'))
         self.changeEXP(EXPGain * self.game.DEBUGMOD)
         self.isAttackable = True
         self.AttackChoice = False
         self.canAttack = True
+
+        self.game.console_print(
+            ('You killed the ' + EnemyObject.EnemyName + ' and gained ' + str(EXPGain) + ' experience'))
 
         if len(self.templist) > 0:
             for item in self.templist:
@@ -226,7 +227,6 @@ class Character(pygame.sprite.Sprite):
         self.game.RemoveAttackLevel()
 
         self.rect.x, self.rect.y = self.previousPOS
-        # self.collision_rect = pygame.Rect(self.x + 22, self.y - 5, 35, 10)
         self.collision_rect.x = self.rect.x + 22
         self.collision_rect.y = self.rect.bottom - 5
 
@@ -234,13 +234,17 @@ class Character(pygame.sprite.Sprite):
         self.changeHealth(-20)
         self.isAttackable = True
         self.AttackChoice = False
+        self.canAttack = True
+
         self.game.console_print('You fled the battle!')
+
         if len(self.templist) > 0:
             for item in self.templist:
                 item.kill()
+
         self.game.RemoveAttackLevel()
-        self.rect.x, self.rect.y = self.pos
-        # self.collision_rect = pygame.Rect(self.x + 22, self.y - 5, 35, 10)
+
+        self.rect.x, self.rect.y = self.previousPOS
         self.collision_rect.x = self.rect.x + 22
         self.collision_rect.y = self.rect.bottom - 5
 
@@ -275,7 +279,7 @@ class Character(pygame.sprite.Sprite):
     def checkForDeath(self):
         # Check for Death
         if self.hp <= 0:
-            pyautogui.alert("You Have Died")
+            self.game.console_print('You died! You have lost ' + str(self.exp/10) + ' exp!')
             self.game.DeathReset()
             # pass
 
@@ -524,10 +528,15 @@ class Character(pygame.sprite.Sprite):
         self.checkForDeath()
 
     def changeMana(self, mpAmount):
+
+        if self.mp + mpAmount < 0:
+            self.mp = 0
+
         if self.mp + mpAmount < self.max_mp:
             self.mp += mpAmount
         else:
             self.mp = self.max_mp
+
         self.font = pygame.font.Font('assets/BKANT.TTF', 20)
         self.MPBarText = str(round(self.mp)) + "/" + str(round(self.max_mp))
         self.MPText = self.font.render(str(self.MPBarText), True, BLACK, None)
@@ -540,67 +549,67 @@ class Character(pygame.sprite.Sprite):
         self.checkForLevelUp()
 
 
-class Projectile(pygame.sprite.Sprite):
-    def __init__(self, game, pos, direction, SpellName, image, Enemy, AttackDamage):
-        self.game = game
-        self.Enemy = Enemy
-        self.AttackDamage = AttackDamage
-        self.SpellName = SpellName
-
-        # self.x = x
-        # self.y = y
-        self.screen = self.game.screen
-        self.image = image
-        pygame.sprite.Sprite.__init__(self, self.game.all_sprites, self.game.combat_attack_sprites)
-
-        self.rect = self.image.get_rect(center=pos)
-        self.rect.x = self.game.player.rect.left
-        self.direction = direction
-        # self.pos = pygame.math.Vector2(self.rect.center)
-
-        self.dt = self.game.clock.tick(FPS * 5)
-        # self.speed = pygame.math.Vector2(x=run, y=rise)
-
-    def update(self):
-        # self.rect.x += 10
-        # print(self.pos.x, self.pos.y)
-        # self.pos += self.direction
-        self.rect.x += self.dt * math.cos(self.direction)
-        self.rect.y += self.dt * math.sin(self.direction)
-
-        # self.pos += self.direction * self.dt
-        # self.rect.center = self.pos
-        self.collide_with_enemy()
-        if not pygame.display.get_surface().get_rect().contains(self.rect):
-            self.kill()
-
-    def collide_with_enemy(self):
-
-        collide = pygame.Rect.colliderect(self.rect, self.Enemy.rect)
-
-        if collide:
-            self.kill()
-            self.Enemy.hp -= self.AttackDamage
-            self.game.console_print(
-                ('You cast ' + self.SpellName + ' and hit the ' + self.Enemy.EnemyName + ' for ' + str(
-                    self.AttackDamage) + ' damage'))
-            # print(str(EnemyObject.EnemyName) + ' ' + str(EnemyObject.hp) + '/' + str(EnemyObject.max_hp))
-            if self.Enemy.hp > 0:
-                self.game.enemyHPBar = pygame.transform.scale(self.game.enemyHPBar, (
-                    math.floor((self.Enemy.hp / self.Enemy.max_hp) * (WIN_WIDTH / 3)), 50))
-
-                self.font = pygame.font.Font('assets/BKANT.TTF', 20)
-                self.Enemy.HPBarText = str(round(self.Enemy.hp)) + "/" + str(round(self.Enemy.max_hp))
-                self.Enemy.HPText = self.font.render(str(self.Enemy.HPBarText), True, BLACK, None)
-
-            if self.Enemy.hp <= 0:
-                # self.game.player.Loot(self.Enemy.EXPGive, self.Enemy)
-                self.Enemy.CheckForDeath()
-
-            if self.game.player.hp > 0 and self.Enemy.hp > 0:
-                pygame.time.set_timer(self.game.EnemyAttackTimer, self.game.milliseconds_delay)
-
-    # def draw(self):
-    #     # pygame.draw.circle(win, self.color, (self.x, self.y), self.radius)
-    #     self.screen.blit(self.image, (self.x, self.y))
-    #     print(self.x, self.y)
+# class Projectile(pygame.sprite.Sprite):
+#     def __init__(self, game, pos, direction, SpellName, image, Enemy, AttackDamage):
+#         self.game = game
+#         self.Enemy = Enemy
+#         self.AttackDamage = AttackDamage
+#         self.SpellName = SpellName
+#
+#         # self.x = x
+#         # self.y = y
+#         self.screen = self.game.screen
+#         self.image = image
+#         pygame.sprite.Sprite.__init__(self, self.game.all_sprites, self.game.combat_attack_sprites)
+#
+#         self.rect = self.image.get_rect(center=pos)
+#         self.rect.x = self.game.player.rect.left
+#         self.direction = direction
+#         # self.pos = pygame.math.Vector2(self.rect.center)
+#
+#         self.dt = self.game.clock.tick(FPS * 5)
+#         # self.speed = pygame.math.Vector2(x=run, y=rise)
+#
+#     def update(self):
+#         # self.rect.x += 10
+#         # print(self.pos.x, self.pos.y)
+#         # self.pos += self.direction
+#         self.rect.x += self.dt * math.cos(self.direction)
+#         self.rect.y += self.dt * math.sin(self.direction)
+#
+#         # self.pos += self.direction * self.dt
+#         # self.rect.center = self.pos
+#         self.collide_with_enemy()
+#         if not pygame.display.get_surface().get_rect().contains(self.rect):
+#             self.kill()
+#
+#     def collide_with_enemy(self):
+#
+#         collide = pygame.Rect.colliderect(self.rect, self.Enemy.rect)
+#
+#         if collide:
+#             self.kill()
+#             self.Enemy.hp -= self.AttackDamage
+#             self.game.console_print(
+#                 ('You cast ' + self.SpellName + ' and hit the ' + self.Enemy.EnemyName + ' for ' + str(
+#                     self.AttackDamage) + ' damage'))
+#             # print(str(EnemyObject.EnemyName) + ' ' + str(EnemyObject.hp) + '/' + str(EnemyObject.max_hp))
+#             if self.Enemy.hp > 0:
+#                 self.game.enemyHPBar = pygame.transform.scale(self.game.enemyHPBar, (
+#                     math.floor((self.Enemy.hp / self.Enemy.max_hp) * (WIN_WIDTH / 3)), 50))
+#
+#                 self.font = pygame.font.Font('assets/BKANT.TTF', 20)
+#                 self.Enemy.HPBarText = str(round(self.Enemy.hp)) + "/" + str(round(self.Enemy.max_hp))
+#                 self.Enemy.HPText = self.font.render(str(self.Enemy.HPBarText), True, BLACK, None)
+#
+#             if self.Enemy.hp <= 0:
+#                 # self.game.player.Loot(self.Enemy.EXPGive, self.Enemy)
+#                 self.Enemy.CheckForDeath()
+#
+#             if self.game.player.hp > 0 and self.Enemy.hp > 0:
+#                 pygame.time.set_timer(self.game.EnemyAttackTimer, self.game.milliseconds_delay)
+#
+#     # def draw(self):
+#     #     # pygame.draw.circle(win, self.color, (self.x, self.y), self.radius)
+#     #     self.screen.blit(self.image, (self.x, self.y))
+#     #     print(self.x, self.y)

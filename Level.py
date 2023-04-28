@@ -284,7 +284,11 @@ class Level:
 
                 if button.Button(self.game, self.screen, WIN_WIDTH / 2 - 97, WIN_HEIGHT / 2,
                                  pygame.image.load(self.game.resource_path('assets/button_attack.png')), 195,
-                                 50, "", "", "", "").draw() and self.player.canAttack:
+                                 50,
+                                 'Melee Attack',
+                                 'Punches Target',
+                                 'Deals ' + (str(self.player.CharacterStrength) + "-" + str(self.player.CharacterStrength + 10) + " damage."),
+                                 'Cost: 0 mp').draw() and self.player.canAttack:
                     self.player.canAttack = False
                     # pygame.time.set_timer(self.CharacterAttackTimer, self.milliseconds_delay)
                     # self.player.Loot()
@@ -292,8 +296,11 @@ class Level:
                     self.player.canAttack = False
                     self.player.AttackMonster()
                 if button.Button(self.game, self.screen, WIN_WIDTH / 2 - 97, WIN_HEIGHT / 2 + 60,
-                                 pygame.image.load(self.game.resource_path('assets/button_flee.png')), 195, 50, "", "",
-                                 "", "").draw():
+                                 pygame.image.load(self.game.resource_path('assets/button_flee.png')), 195, 50,
+                                 'Flee',
+                                 'Runs away from Battle',
+                                 'Lose 20 hp',
+                                 'Cost: 0 mp').draw():
                     self.player.Flee()
 
 
