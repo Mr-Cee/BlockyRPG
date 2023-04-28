@@ -211,116 +211,6 @@ class Character(pygame.sprite.Sprite):
 
         # print('Player', self._layer)
 
-    def Loot(self, EXPGain, EnemyObject):
-        self.changeEXP(EXPGain * self.game.DEBUGMOD)
-        self.isAttackable = True
-        self.AttackChoice = False
-        self.canAttack = True
-
-        self.game.console_print(
-            ('You killed the ' + EnemyObject.EnemyName + ' and gained ' + str(EXPGain) + ' experience'))
-
-        if len(self.templist) > 0:
-            for item in self.templist:
-                item.kill()
-
-        self.game.RemoveAttackLevel()
-
-        self.rect.x, self.rect.y = self.previousPOS
-        self.collision_rect.x = self.rect.x + 22
-        self.collision_rect.y = self.rect.bottom - 5
-
-    def Flee(self):
-        self.changeHealth(-20)
-        self.isAttackable = True
-        self.AttackChoice = False
-        self.canAttack = True
-
-        self.game.console_print('You fled the battle!')
-
-        if len(self.templist) > 0:
-            for item in self.templist:
-                item.kill()
-
-        self.game.RemoveAttackLevel()
-
-        self.rect.x, self.rect.y = self.previousPOS
-        self.collision_rect.x = self.rect.x + 22
-        self.collision_rect.y = self.rect.bottom - 5
-
-    def checkForLevelUp(self):
-        if self.exp >= self.exp_to_level:
-            tempxp = self.exp - self.exp_to_level
-            self.playerLevel += 1
-            self.exp = tempxp
-            self.exp_to_level *= 2
-
-            self.CharacterStrength += 5
-            self.FireballDamage += 10
-            self.AcidDamage += 15
-
-            self.font = pygame.font.Font('assets/BKANT.TTF', 40)
-            self.LevelText = self.font.render(str(self.playerLevel), True, BLACK, None)
-
-            self.font = pygame.font.Font('assets/BKANT.TTF', 20)
-            self.EXPBarText = str(self.exp) + "/" + str(self.exp_to_level)
-            self.EXPText = self.font.render(str(self.EXPBarText), True, BLACK, None)
-            self.EXPBarTextRect = self.EXPText.get_rect()
-            self.EXPBarTextRect.center = (290, WIN_HEIGHT + 123)
-
-            self.max_hp += 20
-            self.hp = self.max_hp
-            self.font = pygame.font.Font('assets/BKANT.TTF', 20)
-            self.HPBarText = str(self.hp) + "/" + str(self.max_hp)
-            self.HPText = self.font.render(str(self.HPBarText), True, BLACK, None)
-
-            self.game.console_print(('You have leveled up to ' + str(self.playerLevel) + '!'))
-
-    def checkForDeath(self):
-        # Check for Death
-        if self.hp <= 0:
-            self.game.console_print('You died! You have lost ' + str(self.exp/10) + ' exp!')
-            self.game.DeathReset()
-            # pass
-
-    def movement(self):
-        if self.isAttackable:
-            keys = pygame.key.get_pressed()
-            if keys[pygame.K_LEFT]:
-                self.x_change -= PLAYER_SPEED
-                self.facing = 'left'
-            if keys[pygame.K_RIGHT]:
-                self.x_change += PLAYER_SPEED
-                self.facing = 'right'
-            if keys[pygame.K_UP]:
-                self.y_change -= PLAYER_SPEED
-                self.facing = 'up'
-            if keys[pygame.K_DOWN]:
-                self.y_change += PLAYER_SPEED
-                self.facing = 'down'
-            if any((keys[pygame.K_UP], keys[pygame.K_DOWN])):
-                self.game.all_sprites.change_layer(self, self.collision_rect.bottom)
-        elif self.moveTowardsEnemy:
-            if self.monsterToAttack.rect.left - self.rect.right >= 15:
-                dx, dy = (self.monsterToAttack.rect.x - self.rect.right), (self.monsterToAttack.rect.y - self.rect.y)
-                rads = math.atan2(dy, dx)
-                self.monster_direction = rads
-                self.x_change += math.cos(self.monster_direction) * 5
-                self.y_change += math.sin(self.monster_direction) * 5
-                self.movement_loop += PLAYER_SPEED
-
-                if self.movement_loop >= self.max_travel or self.monsterToAttack.rect.left - self.rect.right <= 15:
-                    self.moveTowardsEnemy = False
-                    self.movement_loop = 0
-                    if self.game.player.hp > 0 and self.Enemy.hp > 0:
-                        pygame.time.set_timer(self.game.EnemyAttackTimer, self.game.milliseconds_delay)
-            else:
-                self.moveTowardsEnemy = False
-                self.movement_loop = 0
-                if self.game.player.hp > 0 and self.Enemy.hp > 0:
-                    pygame.time.set_timer(self.game.EnemyAttackTimer, self.game.milliseconds_delay)
-
-
     def animate(self):
         if self.facing == 'down':
             if self.y_change == 0:
@@ -372,6 +262,43 @@ class Character(pygame.sprite.Sprite):
                 self.animation_loop = 0
                 self.MeleeAttack()
 
+    def movement(self):
+        if self.isAttackable:
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_LEFT]:
+                self.x_change -= PLAYER_SPEED
+                self.facing = 'left'
+            if keys[pygame.K_RIGHT]:
+                self.x_change += PLAYER_SPEED
+                self.facing = 'right'
+            if keys[pygame.K_UP]:
+                self.y_change -= PLAYER_SPEED
+                self.facing = 'up'
+            if keys[pygame.K_DOWN]:
+                self.y_change += PLAYER_SPEED
+                self.facing = 'down'
+            if any((keys[pygame.K_UP], keys[pygame.K_DOWN])):
+                self.game.all_sprites.change_layer(self, self.collision_rect.bottom)
+        elif self.moveTowardsEnemy:
+            if self.monsterToAttack.rect.left - self.rect.right >= 15:
+                dx, dy = (self.monsterToAttack.rect.x - self.rect.right), (self.monsterToAttack.rect.y - self.rect.y)
+                rads = math.atan2(dy, dx)
+                self.monster_direction = rads
+                self.x_change += math.cos(self.monster_direction) * 5
+                self.y_change += math.sin(self.monster_direction) * 5
+                self.movement_loop += PLAYER_SPEED
+
+                if self.movement_loop >= self.max_travel or self.monsterToAttack.rect.left - self.rect.right <= 15:
+                    self.moveTowardsEnemy = False
+                    self.movement_loop = 0
+                    if self.game.player.hp > 0 and self.Enemy.hp > 0:
+                        pygame.time.set_timer(self.game.EnemyAttackTimer, self.game.milliseconds_delay)
+            else:
+                self.moveTowardsEnemy = False
+                self.movement_loop = 0
+                if self.game.player.hp > 0 and self.Enemy.hp > 0:
+                    pygame.time.set_timer(self.game.EnemyAttackTimer, self.game.milliseconds_delay)
+
     def collide_terrain(self, direction):
 
         if direction == 'x':
@@ -409,6 +336,86 @@ class Character(pygame.sprite.Sprite):
                     #         ('Layer:', self.game.all_sprites.get_layer_of_sprite(self.game.all_sprites.get_sprite(i)), 'Sprite:',
                     #          self.game.all_sprites.get_sprite(i), self.game.all_sprites.get_sprite(i).collision_rect))
                     # logging.info('------------------------------------')
+
+    def collide_enemy(self):
+
+        if self.isAttackable:
+
+            self.templist = []
+            for object in self.game.enemy_sprites:
+                collide = pygame.Rect.colliderect(self.collision_rect, object.rect)
+                if collide:
+                    enemyRedHPBar = EnemyHPBarInterior(self.game, object, WIN_WIDTH / 3 + 11, 16)
+                    enemyHPFG = EnemyHPBarFG(self.game, object, WIN_WIDTH / 3, 10)
+
+                    self.isAttackable = False
+                    self.canAttack = True
+                    object.facing = 'left'
+                    # self.game.enemyHPBar = pygame.transform.scale(self.game.enemyHPBar,
+                    #                                               (round(object.hp / object.max_hp * (WIN_WIDTH / 3)),
+                    #                                                50))
+                    self.tempAttack(object, object.EnemyName)
+                    self.templist.append(object)
+
+            # if len(templist) > 0:
+            #     for item in templist:
+            #         item.kill()
+
+    def Loot(self, EXPGain, EnemyObject):
+        self.changeEXP(EXPGain * self.game.DEBUGMOD)
+        self.isAttackable = True
+        self.AttackChoice = False
+        self.canAttack = True
+
+        self.game.console_print(
+            ('You killed the ' + EnemyObject.EnemyName + ' and gained ' + str(EXPGain) + ' experience'))
+
+        if len(self.templist) > 0:
+            for item in self.templist:
+                item.kill()
+
+        self.game.RemoveAttackLevel()
+
+        self.rect.x, self.rect.y = self.previousPOS
+        self.collision_rect.x = self.rect.x + 22
+        self.collision_rect.y = self.rect.bottom - 5
+
+    def Flee(self):
+        self.changeHealth(-20)
+        self.isAttackable = True
+        self.AttackChoice = False
+        self.canAttack = True
+
+        self.game.console_print('You fled the battle!')
+
+        if len(self.templist) > 0:
+            for item in self.templist:
+                item.kill()
+
+        self.game.RemoveAttackLevel()
+
+        self.rect.x, self.rect.y = self.previousPOS
+        self.collision_rect.x = self.rect.x + 22
+        self.collision_rect.y = self.rect.bottom - 5
+
+    def tempAttack(self, EnemyObject, EnemyName):
+        EnemyObject = EnemyObject
+
+        self.tempAttackPause = 1 * FPS
+        self.AttackChoice = True
+
+        self.previousPOS = (self.rect.x, self.rect.y)
+        self.facing = 'right'
+        self.rect.x = BORDER_TILESIZE + 5
+        self.rect.y = WIN_HEIGHT / 2 - self.height / 3
+        # self.collision_rect = pygame.Rect(self.x + 15, self.y - 5, 35, 10)
+        self.collision_rect.x = self.rect.x + 15
+        self.collision_rect.y = self.y - 5
+
+        self.game.AttackLevelChange(EnemyName)
+
+        # self.button("Test", WIN_WIDTH/2, WIN_HEIGHT/2, 100, 200, TEMPCOLOR, WHITE, self.TempAttackButton())
+        # self.AttackMenu_Rect = pygame.Rect(WIN_WIDTH / 2, WIN_HEIGHT / 2, 100, 200)
 
     def CastSpell(self):
         EnemyObject = self.monsterToAttack
@@ -473,49 +480,40 @@ class Character(pygame.sprite.Sprite):
         if self.game.player.hp > 0 and self.Enemy.hp > 0:
             pygame.time.set_timer(self.game.EnemyAttackTimer, self.game.milliseconds_delay)
 
-    def tempAttack(self, EnemyObject, EnemyName):
-        EnemyObject = EnemyObject
+    def checkForLevelUp(self):
+        if self.exp >= self.exp_to_level:
+            tempxp = self.exp - self.exp_to_level
+            self.playerLevel += 1
+            self.exp = tempxp
+            self.exp_to_level *= 2
 
-        self.tempAttackPause = 1 * FPS
-        self.AttackChoice = True
+            self.CharacterStrength += 5
+            self.FireballDamage += 10
+            self.AcidDamage += 15
 
-        self.previousPOS = (self.rect.x, self.rect.y)
-        self.facing = 'right'
-        self.rect.x = BORDER_TILESIZE + 5
-        self.rect.y = WIN_HEIGHT / 2 - self.height / 3
-        # self.collision_rect = pygame.Rect(self.x + 15, self.y - 5, 35, 10)
-        self.collision_rect.x = self.rect.x + 15
-        self.collision_rect.y = self.y - 5
+            self.font = pygame.font.Font('assets/BKANT.TTF', 40)
+            self.LevelText = self.font.render(str(self.playerLevel), True, BLACK, None)
 
-        self.game.AttackLevelChange(EnemyName)
+            self.font = pygame.font.Font('assets/BKANT.TTF', 20)
+            self.EXPBarText = str(self.exp) + "/" + str(self.exp_to_level)
+            self.EXPText = self.font.render(str(self.EXPBarText), True, BLACK, None)
+            self.EXPBarTextRect = self.EXPText.get_rect()
+            self.EXPBarTextRect.center = (290, WIN_HEIGHT + 123)
 
-        # self.button("Test", WIN_WIDTH/2, WIN_HEIGHT/2, 100, 200, TEMPCOLOR, WHITE, self.TempAttackButton())
-        # self.AttackMenu_Rect = pygame.Rect(WIN_WIDTH / 2, WIN_HEIGHT / 2, 100, 200)
+            self.max_hp += 20
+            self.hp = self.max_hp
+            self.font = pygame.font.Font('assets/BKANT.TTF', 20)
+            self.HPBarText = str(self.hp) + "/" + str(self.max_hp)
+            self.HPText = self.font.render(str(self.HPBarText), True, BLACK, None)
 
-    def collide_enemy(self):
+            self.game.console_print(('You have leveled up to ' + str(self.playerLevel) + '!'))
 
-        if self.isAttackable:
-
-            self.templist = []
-            for object in self.game.enemy_sprites:
-                collide = pygame.Rect.colliderect(self.collision_rect, object.rect)
-                if collide:
-                    enemyRedHPBar = EnemyHPBarInterior(self.game, object, WIN_WIDTH / 3 + 11, 16)
-                    enemyHPFG = EnemyHPBarFG(self.game, object, WIN_WIDTH / 3, 10)
-
-                    self.isAttackable = False
-                    self.canAttack = True
-                    object.facing = 'left'
-                    # self.game.enemyHPBar = pygame.transform.scale(self.game.enemyHPBar,
-                    #                                               (round(object.hp / object.max_hp * (WIN_WIDTH / 3)),
-                    #                                                50))
-                    self.tempAttack(object, object.EnemyName)
-                    self.templist.append(object)
-
-
-            # if len(templist) > 0:
-            #     for item in templist:
-            #         item.kill()
+    def checkForDeath(self):
+        # Check for Death
+        if self.hp <= 0:
+            self.game.console_print('You died! You have lost ' + str(self.exp/10) + ' exp!')
+            self.game.DeathReset()
+            # pass
 
     def changeHealth(self, hpAmount):
         if self.hp + hpAmount < self.max_hp:
@@ -547,69 +545,3 @@ class Character(pygame.sprite.Sprite):
         self.EXPBarText = str(self.exp) + "/" + str(self.exp_to_level)
         self.EXPText = self.font.render(str(self.EXPBarText), True, BLACK, None)
         self.checkForLevelUp()
-
-
-# class Projectile(pygame.sprite.Sprite):
-#     def __init__(self, game, pos, direction, SpellName, image, Enemy, AttackDamage):
-#         self.game = game
-#         self.Enemy = Enemy
-#         self.AttackDamage = AttackDamage
-#         self.SpellName = SpellName
-#
-#         # self.x = x
-#         # self.y = y
-#         self.screen = self.game.screen
-#         self.image = image
-#         pygame.sprite.Sprite.__init__(self, self.game.all_sprites, self.game.combat_attack_sprites)
-#
-#         self.rect = self.image.get_rect(center=pos)
-#         self.rect.x = self.game.player.rect.left
-#         self.direction = direction
-#         # self.pos = pygame.math.Vector2(self.rect.center)
-#
-#         self.dt = self.game.clock.tick(FPS * 5)
-#         # self.speed = pygame.math.Vector2(x=run, y=rise)
-#
-#     def update(self):
-#         # self.rect.x += 10
-#         # print(self.pos.x, self.pos.y)
-#         # self.pos += self.direction
-#         self.rect.x += self.dt * math.cos(self.direction)
-#         self.rect.y += self.dt * math.sin(self.direction)
-#
-#         # self.pos += self.direction * self.dt
-#         # self.rect.center = self.pos
-#         self.collide_with_enemy()
-#         if not pygame.display.get_surface().get_rect().contains(self.rect):
-#             self.kill()
-#
-#     def collide_with_enemy(self):
-#
-#         collide = pygame.Rect.colliderect(self.rect, self.Enemy.rect)
-#
-#         if collide:
-#             self.kill()
-#             self.Enemy.hp -= self.AttackDamage
-#             self.game.console_print(
-#                 ('You cast ' + self.SpellName + ' and hit the ' + self.Enemy.EnemyName + ' for ' + str(
-#                     self.AttackDamage) + ' damage'))
-#             # print(str(EnemyObject.EnemyName) + ' ' + str(EnemyObject.hp) + '/' + str(EnemyObject.max_hp))
-#             if self.Enemy.hp > 0:
-#                 self.game.enemyHPBar = pygame.transform.scale(self.game.enemyHPBar, (
-#                     math.floor((self.Enemy.hp / self.Enemy.max_hp) * (WIN_WIDTH / 3)), 50))
-#
-#                 self.font = pygame.font.Font('assets/BKANT.TTF', 20)
-#                 self.Enemy.HPBarText = str(round(self.Enemy.hp)) + "/" + str(round(self.Enemy.max_hp))
-#                 self.Enemy.HPText = self.font.render(str(self.Enemy.HPBarText), True, BLACK, None)
-#
-#             if self.Enemy.hp <= 0:
-#                 # self.game.player.Loot(self.Enemy.EXPGive, self.Enemy)
-#                 self.Enemy.CheckForDeath()
-#
-#             if self.game.player.hp > 0 and self.Enemy.hp > 0:
-#                 pygame.time.set_timer(self.game.EnemyAttackTimer, self.game.milliseconds_delay)
-#
-#     # def draw(self):
-#     #     # pygame.draw.circle(win, self.color, (self.x, self.y), self.radius)
-#     #     self.screen.blit(self.image, (self.x, self.y))
-#     #     print(self.x, self.y)
