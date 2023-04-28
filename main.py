@@ -124,7 +124,6 @@ class Game:
             sprite.kill()
         self.current_level.terrainGen()
         self.current_level.GenerateEnemies(EnemyName)
-        print('Main:AtKChg:', self.player.rect.x, self.player.rect.y)
 
     def RemoveAttackLevel(self):
         tempNum = len(self.level_list) - 1

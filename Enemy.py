@@ -267,7 +267,6 @@ class EnemyTemplate(pygame.sprite.Sprite):
             game.console_print((self.EnemyName + ' advances towards you.'))
             self.max_travel = random.randint(WIN_WIDTH / 5, WIN_WIDTH / 4)
             self.movement_loop = 0
-            print(self.rect.x, self.rect.y)
             self.AttackingMovement = True
         else:
             self.AttackPlayerAnim = True
@@ -292,6 +291,11 @@ class EnemyTemplate(pygame.sprite.Sprite):
             # self.game.player.Loot(self.EXPGive, self)
             # self.kill()
 
+    def TakeDamage(self, damage):
+        if self.hp - damage > 0:
+            self.hp -= damage
+        else:
+            self.hp = 0
 
 class Goblin(EnemyTemplate):
     def __init__(self, game, x, y, AttackStrength, Health, EXPGain):

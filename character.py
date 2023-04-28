@@ -6,6 +6,7 @@ import pygame
 import math
 from config import *
 from SpriteUtilities import *
+from Spell import *
 
 
 class Character(pygame.sprite.Sprite):
@@ -413,23 +414,26 @@ class Character(pygame.sprite.Sprite):
         EnemyObject = self.monsterToAttack
         if self.SpellName == 'Fireball':
             if self.mp >= self.FireballCost:
-                spell_image = self.FireballImage
+                Fireball(self.game, EnemyObject, self, self.FireballDamage, self.FireballCost)
                 self.changeMana(-self.FireballCost)
-                Projectile(self.game, self.pos, self.direction, self.SpellName, spell_image, EnemyObject,
-                           self.attackDamage)
-                _, angle = (self.monsterToAttack.pos - self.pos).as_polar()
+                # spell_image = self.FireballImage
+                # Projectile(self.game, self.pos, self.direction, self.SpellName, spell_image, EnemyObject,
+                #            self.attackDamage)
+                # _, angle = (self.monsterToAttack.pos - self.pos).as_polar()
             else:
-                self.game.console_print('Need at least 25 mana to cast Fireball')
+                self.game.console_print('Need at least ' + str(self.FireballCost) + '  mana to cast Fireball')
                 self.canAttack = True
         elif self.SpellName == 'Acid':
             if self.mp >= self.AcidCost:
-                spell_image = self.AcidImage
+                Acidball(self.game, EnemyObject, self, self.AcidDamage, self.AcidCost)
                 self.changeMana(-self.AcidCost)
-                Projectile(self.game, self.pos, self.direction, self.SpellName, spell_image, EnemyObject,
-                           self.attackDamage)
-                _, angle = (self.monsterToAttack.pos - self.pos).as_polar()
+                # spell_image = self.AcidImage
+                # self.changeMana(-self.AcidCost)
+                # Projectile(self.game, self.pos, self.direction, self.SpellName, spell_image, EnemyObject,
+                #            self.attackDamage)
+                # _, angle = (self.monsterToAttack.pos - self.pos).as_polar()
             else:
-                self.game.console_print('Need at least 50 mana to cast Acid')
+                self.game.console_print('Need at least ' + str(self.AcidCost) + ' mana to cast Acid')
                 self.canAttack = True
         else:
             spell_image = self.FireballImage
@@ -520,7 +524,7 @@ class Character(pygame.sprite.Sprite):
                     #                                                50))
                     self.tempAttack(object, object.EnemyName)
                     self.templist.append(object)
-                    print('MonsterX:',object.rect.x, 'MonsterY:', object.rect.y)
+
 
             # if len(templist) > 0:
             #     for item in templist:
@@ -569,7 +573,7 @@ class Projectile(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=pos)
         self.rect.x = self.game.player.rect.left
         self.direction = direction
-        self.pos = pygame.math.Vector2(self.rect.center)
+        # self.pos = pygame.math.Vector2(self.rect.center)
 
         self.dt = self.game.clock.tick(FPS * 5)
         # self.speed = pygame.math.Vector2(x=run, y=rise)

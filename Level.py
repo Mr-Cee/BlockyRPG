@@ -239,17 +239,19 @@ class Level:
             if self.player.canAttack:
                 self.screen.blit(self.AttackSelectionBG, (WIN_WIDTH / 5, WIN_HEIGHT - 50))
                 if button.Button(self.game, self.screen, WIN_WIDTH / 5 + 35, WIN_HEIGHT - 48, self.Fireball_img, 40, 40,
-                                 "Fireball", "Cast a fireball for ", (str(self.player.FireballDamage) + "-" + str(
-                                self.player.FireballDamage + 5) + " damage."), "Cost: " + str(
-                                self.game.player.FireballCost) + " mp.").draw() and self.player.canAttack:
+                                 "Fireball",
+                                 'Launch a fireball at the target. ',
+                                 'Deals ' + (str(self.player.FireballDamage) + "-" + str( self.player.FireballDamage + 10) + " damage."),
+                                 'Cost: ' + str(self.game.player.FireballCost) + " mp.").draw() and self.player.canAttack:
                     self.game.player.SpellName = 'Fireball'
                     self.player.canAttack = False
                     self.player.monsterToAttack = self.game.current_level.Monster1
                     self.player.CastSpellFromBar()
 
                 if button.Button(self.game, self.screen, WIN_WIDTH / 5 + 110, WIN_HEIGHT - 48, self.Acid_img, 40, 40,
-                                 "Acid", "Cast an Acid ball for ",
-                                 (str(self.player.AcidDamage) + "-" + str(self.player.AcidDamage + 5) + " damage."),
+                                 'Acid',
+                                 'Cast an Acid ball at the target ',
+                                 'Deals ' + (str(self.player.AcidDamage) + "-" + str(self.player.AcidDamage + 10) + " damage."),
                                  "Cost: " + str(self.game.player.AcidCost) + " mp.").draw() and self.player.canAttack:
                     self.game.player.SpellName = 'Acid'
                     self.player.canAttack = False
