@@ -27,20 +27,16 @@ class UIPanel(pygame.sprite.Sprite):
 
         pygame.sprite.Sprite.__init__(self, self.game.all_sprites, self.game.UI_Sprites)
 
-    def update(self):
-        # self.game.hpbar_inside_img = pygame.transform.scale(self.game.hpbar_inside_img, (round((self.player.hp / self.player.max_hp) * 164, 2), 14))
-        pass
-
-    def draw(self, screen):
-        # Draw everyone on this level
-        self.screen = screen
-
-        # Draw the Background
-        self.screen.fill(self.background)
-
-        # Draw all the sprite lists we have
-        self.UI_Sprites.draw(self.screen)
-        self.all_sprites.draw(self.screen)
+    # def draw(self, screen):
+    #     # Draw everyone on this level
+    #     self.screen = screen
+    #
+    #     # Draw the Background
+    #     self.screen.fill(self.background)
+    #
+    #     # Draw all the sprite lists we have
+    #     self.UI_Sprites.draw(self.screen)
+    #     self.all_sprites.draw(self.screen)
 
 
 class HPBarInterior(pygame.sprite.Sprite):
