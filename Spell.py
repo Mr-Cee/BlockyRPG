@@ -24,6 +24,7 @@ class SpellTemplate(pygame.sprite.Sprite):
         self.SpellName = 'Change Me'
         self.SpellDidCrit = False
         self.image = pygame.image.load('assets/flame_icon.png')
+        self.freezeEnemy = False
 
         #  Adjusting sprite location
         self.rect = self.image.get_rect()
@@ -57,12 +58,18 @@ class SpellTemplate(pygame.sprite.Sprite):
             if self.SpellDidCrit:
                 self.game.console_print(
                     ('You cast ' + self.SpellName + ' and hit the ' + self.Enemy.EnemyName + ' for ' + str(
-                        self.AttackDamage) + ' CRITICAL damage'))
+                        int(self.AttackDamage)) + ' CRITICAL damage'))
                 self.SpellDidCrit = False
             else:
                 self.game.console_print(
                     ('You cast ' + self.SpellName + ' and hit the ' + self.Enemy.EnemyName + ' for ' + str(
-                        self.AttackDamage) + ' damage'))
+                        int(self.AttackDamage)) + ' damage'))
+
+            if self.freezeEnemy:
+                self.Enemy.isFrozen = True
+                self.Enemy.frozenCount = 0
+                self.game.console_print(self.Enemy.EnemyName + ' is slowed for 3 turns.')
+
             if self.Enemy.hp > 0:
                 self.game.enemyHPBar = pygame.transform.scale(self.game.enemyHPBar, (
                     math.floor((self.Enemy.hp / self.Enemy.max_hp) * (WIN_WIDTH / 3)), 50))
@@ -125,3 +132,4 @@ class Icebolt(SpellTemplate):
         self.rect = self.image.get_rect()
         self.rect.x = self.player.rect.left
         self.rect.y = self.player.rect.y + self.player.rect.height/2
+        self.freezeEnemy = True

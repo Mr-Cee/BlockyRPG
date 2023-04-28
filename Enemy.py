@@ -32,6 +32,8 @@ class EnemyTemplate(pygame.sprite.Sprite):
 
         self.x_change = 0
         self.y_change = 0
+        self.isFrozen = False
+        self.frozenCount = 0
 
         self.facing = 'left'
         self.facing_list = ['down', 'up', 'right', 'left']
@@ -144,8 +146,12 @@ class EnemyTemplate(pygame.sprite.Sprite):
                     dx, dy = (self.game.player.rect.x - self.rect.right), (self.game.player.rect.y - self.rect.y)
                     rads = math.atan2(dy, dx)
                     self.player_direction = rads
-                    self.x_change += math.cos(self.player_direction) * 5
-                    self.y_change += math.sin(self.player_direction) * 5
+                    if self.isFrozen:
+                        self.x_change += math.cos(self.player_direction) * 2
+                        self.y_change += math.sin(self.player_direction) * 2
+                    else:
+                        self.x_change += math.cos(self.player_direction) * 5
+                        self.y_change += math.sin(self.player_direction) * 5
                     # self.x_change -= ENEMY_SPEED * 5
                     self.movement_loop -= 5
                     # print(self.movement_loop, -self.max_travel, (self.rect.left - self.game.player.rect.right))
@@ -292,7 +298,13 @@ class EnemyTemplate(pygame.sprite.Sprite):
         MonsterAttack = random.randint(1 + int(self.attackPower), 5 + int(self.attackPower))
         if self.rect.left - self.game.player.rect.right > 15:
             game.console_print((self.EnemyName + ' advances towards you.'))
-            self.max_travel = random.randint(WIN_WIDTH / 5, WIN_WIDTH / 4)
+            if self.isFrozen:
+                self.max_travel = random.randint(math.floor(WIN_WIDTH / 7), math.floor(WIN_WIDTH / 6))
+                self.frozenCount += 1
+                if self.frozenCount == 3:
+                    self.isFrozen = False
+            else:
+                self.max_travel = random.randint(WIN_WIDTH / 5, WIN_WIDTH / 4)
             self.movement_loop = 0
             self.AttackingMovement = True
         else:

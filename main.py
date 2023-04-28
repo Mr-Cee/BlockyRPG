@@ -275,7 +275,7 @@ class Game:
 
         while message:
             i = 0
-            while self.the_font.size(message[:i])[0] < (WIN_WIDTH/2-10) and i < len(message):
+            while self.the_font.size(message[:i])[0] < (WIN_WIDTH/2-15) and i < len(message):
                 i += 1
             if i < len(message):
                 i = message.rfind(" ", 0, i) + 1
