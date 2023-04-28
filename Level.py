@@ -54,6 +54,8 @@ class Level:
         self.Acid_img = pygame.transform.scale(self.Acid_img, (40, 40))
         self.Icebolt_img = pygame.image.load(self.game.resource_path('assets/ice-bolt.png'))
         self.Icebolt_img = pygame.transform.scale(self.Icebolt_img, (40, 40))
+        self.Heal_img = pygame.image.load(self.game.resource_path('assets/health-increase.png'))
+        self.Heal_img = pygame.transform.scale(self.Heal_img, (40, 40))
 
         self.milliseconds_delay = 2000  # 1 seconds
         self.CharacterAttackTimer = pygame.USEREVENT + 1
@@ -319,6 +321,24 @@ class Level:
                         self.game.console_print(
                             'Need at least ' + str(
                                 self.player.AcidCost) + ' mana to cast ' + self.player.SpellName)
+
+                # Heal Button
+                if button.Button(self.game, self.screen, WIN_WIDTH / 5 + 410, WIN_HEIGHT - 48, self.Heal_img,
+                                 40, 40,
+                                 " Heal ",
+                                 ' Heals the player for 20% hp. ',
+                                 ' Heals ' + (str(math.ceil(self.player.max_hp/5)) + " hp. "),
+                                 ' Cost: ' + str(
+                                     self.game.player.HealCost) + " mp. ").draw() and self.player.canAttack:
+                    self.game.player.SpellName = 'Heal'
+                    if self.player.mp >= self.player.HealCost:
+                        self.player.canAttack = False
+                        self.player.monsterToAttack = self.game.current_level.Monster1
+                        self.player.CastSpellFromBar()
+                    else:
+                        self.game.console_print(
+                            'Need at least ' + str(
+                                self.player.HealCost) + ' mana to cast ' + self.player.SpellName)
 
         else:
             # Draw the Background

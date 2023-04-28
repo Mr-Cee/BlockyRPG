@@ -10,6 +10,7 @@ class Button():
         self.clicked = False
         self.surface = surface
         self.game = game
+
         self.text = SpellName
         self.text2 = Description
         self.text3 = DamageText

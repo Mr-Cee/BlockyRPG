@@ -39,6 +39,9 @@ class Character(pygame.sprite.Sprite):
         self.AcidDamage = 75
         self.AcidCost = 50
 
+        self.HealAmount = 25
+        self.HealCost = 25
+
 
 
 
@@ -441,6 +444,14 @@ class Character(pygame.sprite.Sprite):
             else:
                 self.game.console_print('Need at least ' + str(self.IceBoltCost) + ' mana to cast ' + self.SpellName)
                 self.canAttack = True
+        elif self.SpellName == 'Heal':
+            if self.mp >= self.HealCost:
+                self.changeHealth(math.ceil(self.max_hp/5))
+                self.changeMana(-self.HealCost)
+                pygame.time.set_timer(self.game.EnemyAttackTimer, self.game.milliseconds_delay)
+            else:
+                self.game.console_print('Need at least ' + str(self.FireballCost) + '  mana to cast ' + self.SpellName)
+                self.canAttack = True
         else:
             spell_image = self.FireballImage
 
@@ -489,6 +500,7 @@ class Character(pygame.sprite.Sprite):
             self.exp_to_level *= 2
 
             self.CharacterStrength += 5
+            self.IceBoltDamage += 5
             self.FireballDamage += 10
             self.AcidDamage += 15
 
