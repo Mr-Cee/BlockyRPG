@@ -58,12 +58,12 @@ class SpellTemplate(pygame.sprite.Sprite):
             if self.SpellDidCrit:
                 self.game.console_print(
                     ('You cast ' + self.SpellName + ' and hit the ' + self.Enemy.EnemyName + ' for ' + str(
-                        int(self.AttackDamage)) + ' CRITICAL damage'))
+                        math.ceil(self.AttackDamage)) + ' CRITICAL damage'))
                 self.SpellDidCrit = False
             else:
                 self.game.console_print(
                     ('You cast ' + self.SpellName + ' and hit the ' + self.Enemy.EnemyName + ' for ' + str(
-                        int(self.AttackDamage)) + ' damage'))
+                        math.ceil(self.AttackDamage)) + ' damage'))
 
             if self.freezeEnemy:
                 self.Enemy.isFrozen = True

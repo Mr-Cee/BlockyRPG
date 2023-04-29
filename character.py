@@ -29,7 +29,7 @@ class Character(pygame.sprite.Sprite):
         self.exp_to_level = 10
 
         self.CharacterStrength = 5
-        self.CritChance = 90
+        self.CritChance = 99
         self.CritBonus = 1.5
 
         self.IceBoltDamage = 10
@@ -366,13 +366,13 @@ class Character(pygame.sprite.Sprite):
             #         item.kill()
 
     def Loot(self, EXPGain, EnemyObject):
-        self.changeEXP(EXPGain * self.game.DEBUGMOD)
+        self.changeEXP(math.ceil(EXPGain) * self.game.DEBUGMOD)
         self.isAttackable = True
         self.AttackChoice = False
         self.canAttack = True
 
         self.game.console_print(
-            ('You killed the ' + EnemyObject.EnemyName + ' and gained ' + str(EXPGain) + ' experience'))
+            ('You killed the ' + EnemyObject.EnemyName + ' and gained ' + str(math.ceil(EXPGain)) + ' experience'))
 
         if len(self.templist) > 0:
             for item in self.templist:
