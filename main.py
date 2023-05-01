@@ -22,6 +22,7 @@ class Game:
         self.clock = pygame.time.Clock()
         self.running = True
         self.characterList = []
+        self.showInventory = False
 
         self.font = pygame.font.Font(self.resource_path('assets/BKANT.TTF'), 10)
 
@@ -270,6 +271,12 @@ class Game:
         MPBarInterior(self, 193, WIN_HEIGHT + 65)
         EXPBarInterior(self, 193, WIN_HEIGHT + 109)
 
+        # Creates Inventory Screen
+        self.inventoryIMG = pygame.image.load('assets/TestInventory.png')
+        self.inventorySurface = pygame.Surface((500, 500))
+        self.inventorySurface.blit(self.inventoryIMG, (0, 0, 500, 500))
+
+
     def console_print(self, message):
         # self.message_log.append(message)
 
@@ -341,10 +348,9 @@ class Game:
                 self.playing = False
                 self.running = False
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    self.player.exp += 1
-                if event.key == pygame.K_b:
-                    self.player.exp -= 1
+                if event.key == pygame.K_i:
+                    self.showInventory = not self.showInventory
+                    self.player.canAttack = not self.player.canAttack
                 if event.key == pygame.K_KP_PLUS:
                     self.player.changeHealth(10)
                     self.player.changeMana(25)
@@ -381,8 +387,12 @@ class Game:
         self.screen.blit(self.player.HPText, self.player.HPBarTextRect)
         self.screen.blit(self.player.MPText, self.player.MPBarTextRect)
         self.screen.blit(self.player.EXPText, self.player.EXPBarTextRect)
+
+
         if self.DEBUGGING:
             self.screen.blit(self.DEBUGText, self.DEBUGTextRect)
+
+
         ################### Drawing Squares around objects for collisions ##################################
         #
         # for object in self.background_sprites:

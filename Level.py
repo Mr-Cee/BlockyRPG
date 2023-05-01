@@ -343,21 +343,13 @@ class Level:
         else:
             # Draw the Background
             self.screen.blit(self.background, (0, 0))
-            # self.enemy_sprites.draw(self.screen)
-            # self.player_sprite.draw(screen)
-            # self.background_sprites.draw(self.screen)
 
             self.all_sprites.draw(screen)
-            # self.enemy_sprites.draw(self.screen)
-            # self.background_sprites.draw(self.screen)
-        # Draw all the sprite lists we have
-        # self.player_sprite.draw(self.screen)
         self.UI_Sprites.draw(self.screen)
+        if self.game.showInventory:
+            self.screen.blit(self.game.inventorySurface, (((WIN_WIDTH-500)/2), ((WIN_HEIGHT-500)/2)))
         self.screen.blit(self.game.log_surf, (WIN_WIDTH / 2, WIN_HEIGHT))
 
-        # print('--------------------------------------')
-        # print('Player Layer:', self.game.player._layer)
-        # print('--------------------------------------')
 
 
 ## LEVEL MAP ##
