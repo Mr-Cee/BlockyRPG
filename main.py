@@ -381,7 +381,7 @@ class Game:
                                 print('pickup')
                                 self.InventorySelected = self.Inventory.items[pos[0]][pos[1]]
                                 self.Inventory.items[pos[0]][pos[1]] = None
-                                print(self.InventorySelected[0])
+                                # print(self.InventorySelected[0])
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_i:
                     self.showInventory = not self.showInventory
@@ -433,9 +433,9 @@ class Game:
             self.Inventory.draw()
             self.gear_sprites.draw(self.inventorySurface)
             if self.InventorySelected:
-                self.screen.blit(self.InventorySelected[0], (mousex, mousey))
-                obj = self.font.render(str(self.InventorySelected[1]), True, (0, 0, 0))
-                self.screen.blit(obj, (mousex + 15, mousey + 15))
+                self.screen.blit(self.InventorySelected.resize(40), (mousex, mousey))
+                # obj = self.font.render(str(self.InventorySelected[1]), True, (0, 0, 0))
+                # self.screen.blit(obj, (mousex + 15, mousey + 15))
 
         if self.DEBUGGING:
             self.screen.blit(self.DEBUGText, self.DEBUGTextRect)
