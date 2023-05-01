@@ -11,6 +11,8 @@ from terrain import *
 from Enemy import *
 from Level import *
 from UI import *
+from Inventory import *
+from Item import *
 
 
 class Game:
@@ -66,6 +68,19 @@ class Game:
 
         self.player = Character(self, WIN_WIDTH / 2, WIN_HEIGHT / 2)
         self.font = pygame.font.Font(self.resource_path('assets/BKANT.TTF'), 9)
+
+        items = [pygame.Surface((50, 50), pygame.SRCALPHA) for x in range(4)]
+        pygame.draw.circle(items[0], (255, 0, 0), (25, 25), 25)
+        pygame.draw.circle(items[1], (0, 255, 0), (25, 25), 25)
+        pygame.draw.circle(items[2], (255, 255, 0), (25, 25), 25)
+        pygame.draw.circle(items[3], (0, 0, 255), (25, 25), 25)
+
+
+        self.Inventory = Inventory(self)
+        self.InventorySelected = None
+        self.InventoryClickable = True
+
+        # print(self.Inventory.Add(Test))
 
         self.EnemyList = ['Wolf',
                           'Goblin',
@@ -323,6 +338,7 @@ class Game:
         self.console_print('')
         self.console_print('')
         self.console_print('')
+        self.InventorySelected = None
 
     def DebugSettings(self):
         if self.DEBUGGING:
@@ -347,6 +363,25 @@ class Game:
             if event.type == pygame.QUIT:
                 self.playing = False
                 self.running = False
+            if event.type == pygame.MOUSEBUTTONUP:
+                self.InventoryClickable = True
+            if event.type == pygame.MOUSEBUTTONDOWN and self.InventoryClickable:
+                self.InventoryClickable = False
+                if self.showInventory:
+                # If right-clicked, get a random item
+                    if event.button == 3:
+                        self.Inventory.Add(Item(self, 1), self.Inventory.Get_First_Empty())
+                    elif event.button == 1:
+                        pos = self.Inventory.Get_pos()
+                        if self.Inventory.In_grid(pos[0], pos[1]):
+                            if self.InventorySelected:
+                                self.InventorySelected = self.Inventory.Add(self.InventorySelected, pos)
+                                print("put down")
+                            elif self.Inventory.items[pos[0]][pos[1]]:
+                                print('pickup')
+                                self.InventorySelected = self.Inventory.items[pos[0]][pos[1]]
+                                self.Inventory.items[pos[0]][pos[1]] = None
+                                print(self.InventorySelected[0])
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_i:
                     self.showInventory = not self.showInventory
@@ -373,6 +408,10 @@ class Game:
                 pygame.time.set_timer(self.EnemyAttackTimer, 0)
 
     def update(self):
+
+        # if self.showInventory:
+        #     print(self.Inventory.Get_pos())
+
         self.all_sprites.update()
         self.current_level.update()
         self.update_log()
@@ -388,6 +427,15 @@ class Game:
         self.screen.blit(self.player.MPText, self.player.MPBarTextRect)
         self.screen.blit(self.player.EXPText, self.player.EXPBarTextRect)
 
+        if self.showInventory:
+            mousex, mousey = pygame.mouse.get_pos()
+            self.screen.blit(self.inventorySurface, (((WIN_WIDTH-500)/2), ((WIN_HEIGHT-500)/2)))
+            self.Inventory.draw()
+            self.gear_sprites.draw(self.inventorySurface)
+            if self.InventorySelected:
+                self.screen.blit(self.InventorySelected[0], (mousex, mousey))
+                obj = self.font.render(str(self.InventorySelected[1]), True, (0, 0, 0))
+                self.screen.blit(obj, (mousex + 15, mousey + 15))
 
         if self.DEBUGGING:
             self.screen.blit(self.DEBUGText, self.DEBUGTextRect)

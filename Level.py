@@ -346,8 +346,7 @@ class Level:
 
             self.all_sprites.draw(screen)
         self.UI_Sprites.draw(self.screen)
-        if self.game.showInventory:
-            self.screen.blit(self.game.inventorySurface, (((WIN_WIDTH-500)/2), ((WIN_HEIGHT-500)/2)))
+
         self.screen.blit(self.game.log_surf, (WIN_WIDTH / 2, WIN_HEIGHT))
 
 

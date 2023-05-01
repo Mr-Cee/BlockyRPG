@@ -7,6 +7,7 @@ import math
 from config import *
 from SpriteUtilities import *
 from Spell import *
+import numpy as np
 
 
 class Character(pygame.sprite.Sprite):
@@ -29,6 +30,7 @@ class Character(pygame.sprite.Sprite):
         self.exp_to_level = 10
 
         self.CharacterStrength = 5
+        self.CharacterArmor = 0
         self.CritChance = 99
         self.CritBonus = 1.5
 
@@ -41,9 +43,6 @@ class Character(pygame.sprite.Sprite):
 
         self.HealAmount = 25
         self.HealCost = 25
-
-
-
 
         self.font = pygame.font.Font('assets/BKANT.TTF', 40)
         self.LevelText = self.font.render(str(self.playerLevel), True, BLACK, None)
@@ -446,7 +445,7 @@ class Character(pygame.sprite.Sprite):
                 self.canAttack = True
         elif self.SpellName == 'Heal':
             if self.mp >= self.HealCost:
-                self.changeHealth(math.ceil(self.max_hp/5))
+                self.changeHealth(math.ceil(self.max_hp / 5))
                 self.changeMana(-self.HealCost)
                 pygame.time.set_timer(self.game.EnemyAttackTimer, self.game.milliseconds_delay)
             else:
