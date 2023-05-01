@@ -40,7 +40,11 @@ class Inventory:
         for y in range(self.rows):
             for x in range(self.col):
                 if not self.items[x][y]:
+                    self.game.availableInventorySpace = True
                     return (x, y)
+
+                else:
+                    self.game.availableInventorySpace = False
 
     # add an item/s
     def Add(self, Item, xy):

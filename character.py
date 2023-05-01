@@ -7,7 +7,7 @@ import math
 from config import *
 from SpriteUtilities import *
 from Spell import *
-import numpy as np
+
 
 
 class Character(pygame.sprite.Sprite):

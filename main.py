@@ -69,16 +69,10 @@ class Game:
         self.player = Character(self, WIN_WIDTH / 2, WIN_HEIGHT / 2)
         self.font = pygame.font.Font(self.resource_path('assets/BKANT.TTF'), 9)
 
-        items = [pygame.Surface((50, 50), pygame.SRCALPHA) for x in range(4)]
-        pygame.draw.circle(items[0], (255, 0, 0), (25, 25), 25)
-        pygame.draw.circle(items[1], (0, 255, 0), (25, 25), 25)
-        pygame.draw.circle(items[2], (255, 255, 0), (25, 25), 25)
-        pygame.draw.circle(items[3], (0, 0, 255), (25, 25), 25)
-
-
         self.Inventory = Inventory(self)
         self.InventorySelected = None
         self.InventoryClickable = True
+        self.availableInventorySpace = True
 
         # print(self.Inventory.Add(Test))
 
@@ -370,15 +364,17 @@ class Game:
                 if self.showInventory:
                 # If right-clicked, get a random item
                     if event.button == 3:
-                        self.Inventory.Add(Item(self, 1), self.Inventory.Get_First_Empty())
+                        print(self.Inventory.Get_First_Empty())
+                        if self.availableInventorySpace:
+                            self.Inventory.Add(Item(self, 1), self.Inventory.Get_First_Empty())
+                        else:
+                            self.console_print('Inventory Full')
                     elif event.button == 1:
                         pos = self.Inventory.Get_pos()
                         if self.Inventory.In_grid(pos[0], pos[1]):
                             if self.InventorySelected:
                                 self.InventorySelected = self.Inventory.Add(self.InventorySelected, pos)
-                                print("put down")
                             elif self.Inventory.items[pos[0]][pos[1]]:
-                                print('pickup')
                                 self.InventorySelected = self.Inventory.items[pos[0]][pos[1]]
                                 self.Inventory.items[pos[0]][pos[1]] = None
                                 # print(self.InventorySelected[0])
