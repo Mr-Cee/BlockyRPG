@@ -374,10 +374,14 @@ class Game:
                         if self.Inventory.In_grid(pos[0], pos[1]):
                             if self.InventorySelected:
                                 self.InventorySelected = self.Inventory.Add(self.InventorySelected, pos)
+                                print('Set down')
                             elif self.Inventory.items[pos[0]][pos[1]]:
+                                print('Pick Up')
                                 self.InventorySelected = self.Inventory.items[pos[0]][pos[1]]
                                 self.Inventory.items[pos[0]][pos[1]] = None
-                                # print(self.InventorySelected[0])
+                        else:
+                            if self.InventorySelected:
+                                self.InventorySelected = None
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_i:
                     self.showInventory = not self.showInventory
