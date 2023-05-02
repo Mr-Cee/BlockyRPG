@@ -25,15 +25,35 @@ WIN_BG = pygame.transform.scale(WIN_BG, (WIN_WIDTH, WIN_HEIGHT))
 WIN_Attack_BG = pygame.image.load('assets/background_attack.png')
 WIN_Attack_BG = pygame.transform.scale(WIN_Attack_BG, (WIN_WIDTH, WIN_HEIGHT))
 
+EquipedPOS_Dict = {"POS": "Slot#",
+                   (8, 5): 0,
+                   (11, 5): 1,
+                   (9, 0): 2,
+                   (9, 1): 2,
+                   (10, 0): 2,
+                   (10, 1): 2,
+                   }
+
 GEAR_IMG_DICT = {"ID": "Pic",
-                 1: pygame.image.load('assets/Weapon_gladius_IMG.png')}
+                 0: pygame.image.load('assets/Weapon_gladius_IMG.png'),
+                 1: pygame.image.load('assets/cross-shield.png'),
+                 2: pygame.image.load('assets/visored-helm.png')
+                 }
 
 GEAR_DESC_DICT = {"ID": "DESCRIPTION",
-                  1: "A Short Sword"}
+                  0: "A Short Sword",
+                  1: "A Full Shield",
+                  2: "A Common Helmet"}
 
+ITEM_TYPE_DICT = {"ID": "TYPE",
+                  0: "Weapon",
+                  1: "Shield",
+                  2: "Helmet"}
 
 INVENTORY_EQUIPED_REC_DICT = {"ID": "REC",
-                              0: (pygame.Rect(449, 212, 33, 33))
+                              0: (pygame.Rect(449, 212, 33, 33)),
+                              1: (pygame.Rect(557, 212, 33, 33)),
+                              2: (pygame.Rect(503, 42, 33, 33))
                               }
 
 # Colors

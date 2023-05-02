@@ -3,7 +3,7 @@ from config import *
 
 
 class Item:
-    def __init__(self, game, id, Description, AttackDamage, Armor, HP, MP):
+    def __init__(self, game, id, AttackDamage, Armor, HP, MP):
         self.game = game
         self.id = id
         self.image = GEAR_IMG_DICT[self.id].convert_alpha()
@@ -14,8 +14,8 @@ class Item:
         self.rect = self.image.get_rect()
         self.surface = self.image
 
-        self.Description = Description
-        self.Type = 'Weapon'
+        self.Description = GEAR_DESC_DICT[self.id]
+        self.Type = ITEM_TYPE_DICT[self.id]
         self.AttackDamage = AttackDamage
         self.Armor = Armor
         self.HP = HP

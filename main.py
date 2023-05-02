@@ -290,7 +290,7 @@ class Game:
 
         while message:
             i = 0
-            while self.the_font.size(message[:i])[0] < (WIN_WIDTH/2-15) and i < len(message):
+            while self.the_font.size(message[:i])[0] < (WIN_WIDTH / 2 - 15) and i < len(message):
                 i += 1
             if i < len(message):
                 i = message.rfind(" ", 0, i) + 1
@@ -350,8 +350,8 @@ class Game:
         self.player.HPText = self.font.render(str(self.player.HPBarText), True, BLACK, None)
         self.player.HPBarTextRect = self.player.HPText.get_rect()
         self.player.HPBarTextRect.center = (275, WIN_HEIGHT + 36)
-        #TODO dying while fleeing
-        #TODO attack damage is not whole numbers
+        # TODO dying while fleeing
+        # TODO attack damage is not whole numbers
 
     def events(self):
         for event in pygame.event.get():
@@ -363,43 +363,48 @@ class Game:
             if event.type == pygame.MOUSEBUTTONDOWN and self.InventoryClickable:
                 self.InventoryClickable = False
                 if self.showInventory:
-                # If right-clicked, get a random item
+                    # If right-clicked, get a random item
                     if event.button == 3:
-                        print(self.Inventory.Get_First_Empty())
                         if self.availableInventorySpace:
+                            randID = random.randint(0,2)
                             TempDMG = random.randint(1, 10)
+                            TempArmor = random.randint(1, 10)
                             TempHP = random.randint(1, 10)
                             tempMP = random.randint(1, 10)
-                            self.Inventory.Add(Item(self, 1, "A Short Sword", TempDMG, 0, TempHP, tempMP), self.Inventory.Get_First_Empty())
+                            self.Inventory.Add(Item(self, randID, TempDMG, TempArmor, TempHP, tempMP),
+                                               self.Inventory.Get_First_Empty())
                         else:
                             self.console_print('Inventory Full')
 
-                    #Left clicking Item
+                    # Left-clicking Item
                     elif event.button == 1:
                         pos = self.Inventory.Get_pos()
                         equippedPos = self.Inventory.Equipped_pos()
+                        print(equippedPos)
                         # inventory Screen
                         if self.Inventory.In_grid(pos[0], pos[1]):
                             if self.InventorySelected:
+                                # Place Item
                                 self.InventorySelected = self.Inventory.Add(self.InventorySelected, pos)
-                                print('Set down')
                             elif self.Inventory.items[pos[0]][pos[1]]:
-                                print('Pick Up')
+                                # Pickup Item
                                 self.InventorySelected = self.Inventory.items[pos[0]][pos[1]]
                                 self.Inventory.items[pos[0]][pos[1]] = None
 
                         # Equipment Screen
                         elif self.Inventory.In_Equip_Selection(equippedPos[0], equippedPos[1]):
                             if self.InventorySelected:
-                                print('Equipped Item')
-                                self.Inventory.EquipItem(self.InventorySelected)
-                                self.InventorySelected = self.Inventory.Equip(self.InventorySelected, equippedPos)
-
-                            elif self.Inventory.EquipedItems[self.Inventory.EquipedPOS_Dict[equippedPos[0],equippedPos[1]]]:
-                                print('Unequip Item')
-                                self.InventorySelected = self.Inventory.EquipedItems[self.Inventory.EquipedPOS_Dict[equippedPos[0],equippedPos[1]]]
+                                # Place Item
+                                if self.Inventory.CanItemEquipSlot(self.InventorySelected,
+                                                                   EquipedPOS_Dict[equippedPos[0], equippedPos[1]]):
+                                    self.Inventory.EquipItem(self.InventorySelected)
+                                    self.InventorySelected = self.Inventory.Equip(self.InventorySelected, equippedPos)
+                            elif self.Inventory.EquipedItems[EquipedPOS_Dict[equippedPos[0], equippedPos[1]]]:
+                                # Pickup Item
+                                self.InventorySelected = self.Inventory.EquipedItems[
+                                    EquipedPOS_Dict[equippedPos[0], equippedPos[1]]]
                                 self.Inventory.UnequipItem(self.InventorySelected)
-                                self.Inventory.EquipedItems[self.Inventory.EquipedPOS_Dict[equippedPos[0],equippedPos[1]]] = None
+                                self.Inventory.EquipedItems[EquipedPOS_Dict[equippedPos[0], equippedPos[1]]] = None
                         else:
                             if self.InventorySelected:
                                 pass
@@ -408,9 +413,8 @@ class Game:
                 if event.key == pygame.K_i:
                     if self.player.isAttackable:
                         self.showInventory = not self.showInventory
-                if event.key == pygame.K_SPACE:
-                    if self.showInventory:
-                        print(self.Inventory.items[0][0])
+                    if not self.player.isAttackable and self.showInventory:
+                        self.showInventory = False
                 if event.key == pygame.K_KP_PLUS:
                     self.player.changeHealth(10)
                     self.player.changeMana(25)
@@ -454,7 +458,7 @@ class Game:
 
         if self.showInventory:
             mousex, mousey = pygame.mouse.get_pos()
-            self.screen.blit(self.inventorySurface, (((WIN_WIDTH-500)/2), ((WIN_HEIGHT-500)/2)))
+            self.screen.blit(self.inventorySurface, (((WIN_WIDTH - 500) / 2), ((WIN_HEIGHT - 500) / 2)))
             self.Inventory.draw()
             self.gear_sprites.draw(self.inventorySurface)
             if self.InventorySelected:
@@ -464,7 +468,6 @@ class Game:
 
         if self.DEBUGGING:
             self.screen.blit(self.DEBUGText, self.DEBUGTextRect)
-
 
         ################### Drawing Squares around objects for collisions ##################################
         #

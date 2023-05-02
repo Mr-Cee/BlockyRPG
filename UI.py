@@ -279,7 +279,7 @@ class InventoryToolTip:
         self.tiptextsurface = self.font.render(self.item.Description, True, BLACK)
         self.font = pygame.font.Font('assets/BKANT.TTF', 17)
         self.attacksurface = self.font.render(("+"+str(self.item.AttackDamage)+" Damage"), True, BLACK)
-        self.armorsurface = self.font.render(str(self.item.Armor), True, BLACK)
+        self.armorsurface = self.font.render(("+"+str(self.item.Armor)+" Armor"), True, BLACK)
         self.HPsurface = self.font.render(("+"+str(self.item.HP)+" HP"), True, BLACK)
         self.MPsurface = self.font.render("+"+str(self.item.MP)+" MP", True, BLACK)
 
@@ -297,8 +297,10 @@ class InventoryToolTip:
             self.surface.blit(self.tiptextsurface, (self.x, self.y))
             self.surface.blit(self.HPsurface, (self.x, self.y+20))
             self.surface.blit(self.MPsurface, (self.x, self.y+35))
-
-            self.surface.blit(self.attacksurface, (self.x, self.y+50))
+            if self.item.Type == 'Weapon':
+                self.surface.blit(self.attacksurface, (self.x, self.y+50))
+            else:
+                self.surface.blit(self.armorsurface, (self.x, self.y + 50))
 
     def focusCheck(self, mousepos):
         if self.ItemRect.collidepoint(mousepos):

@@ -11,8 +11,7 @@ class Inventory:
 
         #####                Weapon  Shield  Helmet  Chest   Gloves   Legs   Boots   Necklace
         self.EquipedItems = [None, None, None, None, None, None, None, None]
-        self.EquipedPOS_Dict = {"POS": "Slot#",
-                                (8, 5): 0}
+
         self.box_size = 33
         self.x = 25
         self.y = 23
@@ -31,11 +30,9 @@ class Inventory:
 
     # draw everything
     def draw(self):
+        # print(pygame.mouse.get_pos())
 
         # draw background
-        # pygame.draw.rect(self.game.inventorySurface, (100, 100, 100),
-        #                  (self.x, self.y, (self.box_size + self.border) * self.col + self.border,
-        #                   (self.box_size + self.border) * self.rows + self.border))
         self.game.screen.blit(
             self.font.render("HP: " + str(round(self.game.player.hp)) + "/" + str(round(self.game.player.max_hp)), True,
                              BLACK), ((WIN_WIDTH / 2 + 25), 300))
@@ -58,14 +55,34 @@ class Inventory:
 
         # print(self.EquipedItems[0])
 
-        if self.EquipedItems[0] is not None:
-            # pygame.draw.rect(self.game.screen, (180, 180, 180), INVENTORY_EQUIPED_REC_DICT[0])
-            pos = pygame.mouse.get_pos()
-            self.game.screen.blit(self.EquipedItems[0].resize(self.box_size), INVENTORY_EQUIPED_REC_DICT[0])
-            EquippedToolTip = InventoryToolTip(self.game, ((WIN_WIDTH - 500) / 2 + 25), 350, 150, 150,
-                                       self.game.screen, self.EquipedItems[0], INVENTORY_EQUIPED_REC_DICT[0])
-            EquippedToolTip.focusCheck(pos)
-            EquippedToolTip.showTip()
+        for i in range(len(self.EquipedItems)):
+            if self.EquipedItems[i]:
+                pos = pygame.mouse.get_pos()
+                pygame.draw.rect(self.game.screen, (180, 180, 180), INVENTORY_EQUIPED_REC_DICT[i])
+                self.game.screen.blit(self.EquipedItems[i].resize(self.box_size), INVENTORY_EQUIPED_REC_DICT[i])
+                EquippedToolTip = InventoryToolTip(self.game, ((WIN_WIDTH - 500) / 2 + 25), 350, 150, 150,
+                                                   self.game.screen, self.EquipedItems[i], INVENTORY_EQUIPED_REC_DICT[i])
+                EquippedToolTip.focusCheck(pos)
+                EquippedToolTip.showTip()
+
+
+        #
+        # if self.EquipedItems[0] is not None:
+        #     # pygame.draw.rect(self.game.screen, (180, 180, 180), INVENTORY_EQUIPED_REC_DICT[0])
+        #     pos = pygame.mouse.get_pos()
+        #     self.game.screen.blit(self.EquipedItems[0].resize(self.box_size), INVENTORY_EQUIPED_REC_DICT[0])
+        #     EquippedToolTip = InventoryToolTip(self.game, ((WIN_WIDTH - 500) / 2 + 25), 350, 150, 150,
+        #                                self.game.screen, self.EquipedItems[0], INVENTORY_EQUIPED_REC_DICT[0])
+        #     EquippedToolTip.focusCheck(pos)
+        #     EquippedToolTip.showTip()
+        # if self.EquipedItems[1] is not None:
+        #     # pygame.draw.rect(self.game.screen, (180, 180, 180), INVENTORY_EQUIPED_REC_DICT[1])
+        #     pos = pygame.mouse.get_pos()
+        #     self.game.screen.blit(self.EquipedItems[1].resize(self.box_size), INVENTORY_EQUIPED_REC_DICT[1])
+        #     EquippedToolTip = InventoryToolTip(self.game, ((WIN_WIDTH - 500) / 2 + 25), 350, 150, 150,
+        #                                self.game.screen, self.EquipedItems[1], INVENTORY_EQUIPED_REC_DICT[1])
+        #     EquippedToolTip.focusCheck(pos)
+        #     EquippedToolTip.showTip()
 
 
         for x in range(self.col):
@@ -109,7 +126,6 @@ class Inventory:
         y = mouse[1] - self.y - 10
         x = x // (self.box_size + self.border) - 4
         y = y // (self.box_size + self.border)
-        print(x, y)
         return (x, y)
 
     def Get_First_Empty(self):
@@ -137,12 +153,12 @@ class Inventory:
 
     def Equip(self, Item, xy):
         x, y = xy
-        if self.EquipedItems[self.EquipedPOS_Dict[x, y]]:
-            temp = self.EquipedItems[self.EquipedPOS_Dict[x, y]]
-            self.EquipedItems[self.EquipedPOS_Dict[x, y]] = Item
+        if self.EquipedItems[EquipedPOS_Dict[x, y]]:
+            temp = self.EquipedItems[EquipedPOS_Dict[x, y]]
+            self.EquipedItems[EquipedPOS_Dict[x, y]] = Item
             return temp
         else:
-            self.EquipedItems[self.EquipedPOS_Dict[x, y]] = Item
+            self.EquipedItems[EquipedPOS_Dict[x, y]] = Item
 
     def EquipItem(self, Item):
         self.game.player.max_hp += Item.HP
@@ -179,6 +195,11 @@ class Inventory:
         self.font = pygame.font.Font('assets/BKANT.TTF', 15)
 
 
+    def CanItemEquipSlot(self, Item, Slot):
+        if Item.id == Slot:
+            return True
+        else:
+            return False
 
     # check whether the mouse in in the grid
     def In_grid(self, x, y):
@@ -189,8 +210,7 @@ class Inventory:
         return True
 
     def In_Equip_Selection(self, x, y):
-        # Weapon Slot
-        if x == 8 and y == 5:
+        if EquipedPOS_Dict.get((x, y)) is not None:
             return True
         else:
             return False
