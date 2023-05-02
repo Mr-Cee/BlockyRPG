@@ -6,22 +6,34 @@ class Inventory:
         self.rows = 9
         self.col = 5
         self.items = [[None for _ in range(self.rows)] for _ in range(self.col)]
+
+        #####                Weapon  Shield  Helmet  Chest   Gloves   Legs   Boots   Necklace
+        self.EquipedItems = [[None], [None], [None], [None], [None], [None], [None], [None]]
         self.box_size = 33
-        self.x = 26
-        self.y = 22
+        self.x = 25
+        self.y = 23
+
         self.border = 3
         self.game = game
+
+        self.WeaponRect = pygame.Rect(299, 214, self.box_size, self.box_size)
+        self.WeaponSurface = pygame.Surface((self.box_size, self.box_size), pygame.SRCALPHA)
+
 
     # draw everything
     def draw(self):
         # draw background
-        pygame.draw.rect(self.game.inventorySurface, (100, 100, 100),
-                         (self.x, self.y, (self.box_size + self.border) * self.col + self.border,
-                          (self.box_size + self.border) * self.rows + self.border))
+        # pygame.draw.rect(self.game.inventorySurface, (100, 100, 100),
+        #                  (self.x, self.y, (self.box_size + self.border) * self.col + self.border,
+        #                   (self.box_size + self.border) * self.rows + self.border))
+        pygame.draw.rect(self.game.inventorySurface, (180, 180, 180), self.WeaponRect)
         for x in range(self.col):
             for y in range(self.rows):
                 rect = (self.x + (self.box_size + self.border) * x + self.border,
-                        self.x + (self.box_size + self.border) * y + self.border, self.box_size, self.box_size)
+                        self.y + (self.box_size + self.border) * y + self.border, self.box_size, self.box_size)
+                # s = pygame.Surface((self.box_size, self.box_size))
+                # s.set_alpha(1)
+                # self.game.inventorySurface.blit(s, rect)
                 pygame.draw.rect(self.game.inventorySurface, (180, 180, 180), rect)
                 if self.items[x][y]:
                     self.game.inventorySurface.blit(self.items[x][y].resize(self.box_size), rect)
@@ -70,4 +82,3 @@ class Inventory:
         #     return False
         # if 0 > y > self.rows - 1:
         #     return False
-

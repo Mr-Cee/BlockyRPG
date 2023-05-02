@@ -24,6 +24,9 @@ WIN_BG = pygame.transform.scale(WIN_BG, (WIN_WIDTH, WIN_HEIGHT))
 WIN_Attack_BG = pygame.image.load('assets/background_attack.png')
 WIN_Attack_BG = pygame.transform.scale(WIN_Attack_BG, (WIN_WIDTH, WIN_HEIGHT))
 
+INVENTORY_DICT = {"ID": "Pic",
+                  1: pygame.image.load('assets/Weapon_gladius_IMG.png')}
+
 # Colors
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)

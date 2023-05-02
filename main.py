@@ -351,6 +351,8 @@ class Game:
         self.player.HPText = self.font.render(str(self.player.HPBarText), True, BLACK, None)
         self.player.HPBarTextRect = self.player.HPText.get_rect()
         self.player.HPBarTextRect.center = (275, WIN_HEIGHT + 36)
+        #TODO dying while fleeing
+        #TODO attack damage is not whole numbers
 
     def events(self):
         for event in pygame.event.get():
