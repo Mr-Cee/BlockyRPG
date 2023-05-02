@@ -459,6 +459,7 @@ class Character(pygame.sprite.Sprite):
         self.CastSpellStart = True
 
     def AttackMonster(self):
+        print(self.CharacterStrength)
         self.Enemy = self.monsterToAttack
         if self.Enemy.rect.left - self.rect.right > 15:
             self.max_travel = random.randint(WIN_WIDTH / 5, WIN_WIDTH / 4)
@@ -470,6 +471,7 @@ class Character(pygame.sprite.Sprite):
 
     def MeleeAttack(self):
         self.attackDamage = random.randint(1 + self.CharacterStrength, 5 + self.CharacterStrength)
+
         if self.attackDamage > self.Enemy.hp:
             self.attackDamage = self.Enemy.hp
         self.Enemy.hp -= self.attackDamage

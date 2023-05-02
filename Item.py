@@ -3,10 +3,10 @@ from config import *
 
 
 class Item:
-    def __init__(self, game, id):
+    def __init__(self, game, id, Description, AttackDamage, Armor, HP, MP):
         self.game = game
         self.id = id
-        self.image = INVENTORY_DICT[self.id].convert_alpha()
+        self.image = GEAR_IMG_DICT[self.id].convert_alpha()
         self.image.set_colorkey(WHITE)
 
         self.image = pygame.transform.scale(self.image, (32, 32))
@@ -14,7 +14,12 @@ class Item:
         self.rect = self.image.get_rect()
         self.surface = self.image
 
-
+        self.Description = Description
+        self.Type = 'Weapon'
+        self.AttackDamage = AttackDamage
+        self.Armor = Armor
+        self.HP = HP
+        self.MP = MP
 
     def resize(self, size):
-        return pygame.transform.scale(self.surface, (size, size))
+        return pygame.transform.scale(self.surface, (size, size)).convert_alpha()

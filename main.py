@@ -285,7 +285,6 @@ class Game:
         self.inventorySurface = pygame.Surface((500, 500))
         self.inventorySurface.blit(self.inventoryIMG, (0, 0, 500, 500))
 
-
     def console_print(self, message):
         # self.message_log.append(message)
 
@@ -368,11 +367,18 @@ class Game:
                     if event.button == 3:
                         print(self.Inventory.Get_First_Empty())
                         if self.availableInventorySpace:
-                            self.Inventory.Add(Item(self, 1), self.Inventory.Get_First_Empty())
+                            TempDMG = random.randint(1, 10)
+                            TempHP = random.randint(1, 10)
+                            tempMP = random.randint(1, 10)
+                            self.Inventory.Add(Item(self, 1, "A Short Sword", TempDMG, 0, TempHP, tempMP), self.Inventory.Get_First_Empty())
                         else:
                             self.console_print('Inventory Full')
+
+                    #Left clicking Item
                     elif event.button == 1:
                         pos = self.Inventory.Get_pos()
+                        equippedPos = self.Inventory.Equipped_pos()
+                        # inventory Screen
                         if self.Inventory.In_grid(pos[0], pos[1]):
                             if self.InventorySelected:
                                 self.InventorySelected = self.Inventory.Add(self.InventorySelected, pos)
@@ -381,13 +387,30 @@ class Game:
                                 print('Pick Up')
                                 self.InventorySelected = self.Inventory.items[pos[0]][pos[1]]
                                 self.Inventory.items[pos[0]][pos[1]] = None
+
+                        # Equipment Screen
+                        elif self.Inventory.In_Equip_Selection(equippedPos[0], equippedPos[1]):
+                            if self.InventorySelected:
+                                print('Equipped Item')
+                                self.Inventory.EquipItem(self.InventorySelected)
+                                self.InventorySelected = self.Inventory.Equip(self.InventorySelected, equippedPos)
+
+                            elif self.Inventory.EquipedItems[self.Inventory.EquipedPOS_Dict[equippedPos[0],equippedPos[1]]]:
+                                print('Unequip Item')
+                                self.InventorySelected = self.Inventory.EquipedItems[self.Inventory.EquipedPOS_Dict[equippedPos[0],equippedPos[1]]]
+                                self.Inventory.UnequipItem(self.InventorySelected)
+                                self.Inventory.EquipedItems[self.Inventory.EquipedPOS_Dict[equippedPos[0],equippedPos[1]]] = None
                         else:
                             if self.InventorySelected:
-                                self.InventorySelected = None
+                                pass
+                                # self.InventorySelected = None
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_i:
-                    self.showInventory = not self.showInventory
-                    self.player.canAttack = not self.player.canAttack
+                    if self.player.isAttackable:
+                        self.showInventory = not self.showInventory
+                if event.key == pygame.K_SPACE:
+                    if self.showInventory:
+                        print(self.Inventory.items[0][0])
                 if event.key == pygame.K_KP_PLUS:
                     self.player.changeHealth(10)
                     self.player.changeMana(25)

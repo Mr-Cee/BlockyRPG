@@ -2,6 +2,7 @@
 import os
 import sys
 
+import pygame as pygame
 import pygame.image
 
 
@@ -24,8 +25,16 @@ WIN_BG = pygame.transform.scale(WIN_BG, (WIN_WIDTH, WIN_HEIGHT))
 WIN_Attack_BG = pygame.image.load('assets/background_attack.png')
 WIN_Attack_BG = pygame.transform.scale(WIN_Attack_BG, (WIN_WIDTH, WIN_HEIGHT))
 
-INVENTORY_DICT = {"ID": "Pic",
-                  1: pygame.image.load('assets/Weapon_gladius_IMG.png')}
+GEAR_IMG_DICT = {"ID": "Pic",
+                 1: pygame.image.load('assets/Weapon_gladius_IMG.png')}
+
+GEAR_DESC_DICT = {"ID": "DESCRIPTION",
+                  1: "A Short Sword"}
+
+
+INVENTORY_EQUIPED_REC_DICT = {"ID": "REC",
+                              0: (pygame.Rect(449, 212, 33, 33))
+                              }
 
 # Colors
 BLACK = (0, 0, 0)

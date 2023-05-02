@@ -1,4 +1,6 @@
 import pygame
+from config import *
+from UI import *
 
 
 class Inventory:
@@ -8,7 +10,9 @@ class Inventory:
         self.items = [[None for _ in range(self.rows)] for _ in range(self.col)]
 
         #####                Weapon  Shield  Helmet  Chest   Gloves   Legs   Boots   Necklace
-        self.EquipedItems = [[None], [None], [None], [None], [None], [None], [None], [None]]
+        self.EquipedItems = [None, None, None, None, None, None, None, None]
+        self.EquipedPOS_Dict = {"POS": "Slot#",
+                                (8, 5): 0}
         self.box_size = 33
         self.x = 25
         self.y = 23
@@ -16,27 +20,77 @@ class Inventory:
         self.border = 3
         self.game = game
 
+        self.font = pygame.font.Font('assets/BKANT.TTF', 20)
+        self.statsTextHP = self.font.render("HP: " + str(self.game.player.hp) + "/" + (str(self.game.player.max_hp)),
+                                            True, BLACK)
+
         self.WeaponRect = pygame.Rect(299, 214, self.box_size, self.box_size)
         self.WeaponSurface = pygame.Surface((self.box_size, self.box_size), pygame.SRCALPHA)
 
+        self.font = pygame.font.Font('assets/BKANT.TTF', 15)
 
     # draw everything
     def draw(self):
+
         # draw background
         # pygame.draw.rect(self.game.inventorySurface, (100, 100, 100),
         #                  (self.x, self.y, (self.box_size + self.border) * self.col + self.border,
         #                   (self.box_size + self.border) * self.rows + self.border))
-        pygame.draw.rect(self.game.inventorySurface, (180, 180, 180), self.WeaponRect)
+        self.game.screen.blit(
+            self.font.render("HP: " + str(round(self.game.player.hp)) + "/" + str(round(self.game.player.max_hp)), True,
+                             BLACK), ((WIN_WIDTH / 2 + 25), 300))
+        self.game.screen.blit(
+            self.font.render("MP: " + str(round(self.game.player.mp)) + "/" + str(round(self.game.player.max_mp)), True,
+                             BLACK), ((WIN_WIDTH / 2 + 25), 325))
+        self.game.screen.blit(
+            self.font.render("Attack Damage: " + str(round(self.game.player.CharacterStrength)), True, BLACK),
+            ((WIN_WIDTH / 2 + 25), 350))
+        self.game.screen.blit(self.font.render("Armor: " + str(round(self.game.player.CharacterArmor)), True, BLACK),
+                              ((WIN_WIDTH / 2 + 25), 375))
+        self.game.screen.blit(
+            self.font.render("Critical Chance: " + str(round(self.game.player.CritChance)) + "%", True, BLACK),
+            ((WIN_WIDTH / 2 + 25), 400))
+        self.game.screen.blit(
+            self.font.render("Critical Bonus: " + str(round((self.game.player.CritBonus - 1) * 100)) + "%", True,
+                             BLACK), ((WIN_WIDTH / 2 + 25), 425))
+
+        # print(self.Get_pos())
+
+        # print(self.EquipedItems[0])
+
+        if self.EquipedItems[0] is not None:
+            # pygame.draw.rect(self.game.screen, (180, 180, 180), INVENTORY_EQUIPED_REC_DICT[0])
+            pos = pygame.mouse.get_pos()
+            self.game.screen.blit(self.EquipedItems[0].resize(self.box_size), INVENTORY_EQUIPED_REC_DICT[0])
+            EquippedToolTip = InventoryToolTip(self.game, ((WIN_WIDTH - 500) / 2 + 25), 350, 150, 150,
+                                       self.game.screen, self.EquipedItems[0], INVENTORY_EQUIPED_REC_DICT[0])
+            EquippedToolTip.focusCheck(pos)
+            EquippedToolTip.showTip()
+
+
         for x in range(self.col):
             for y in range(self.rows):
-                rect = (self.x + (self.box_size + self.border) * x + self.border,
+                # rect = (self.x + (self.box_size + self.border) * x + self.border,
+                #         self.y + (self.box_size + self.border) * y + self.border, self.box_size, self.box_size)
+                rect = (((WIN_WIDTH-500)/2+25) + (self.box_size + self.border) * x + self.border,
                         self.y + (self.box_size + self.border) * y + self.border, self.box_size, self.box_size)
-                # s = pygame.Surface((self.box_size, self.box_size))
-                # s.set_alpha(1)
+                rect2 = pygame.Rect(rect)
+                # s = pygame.Surface((rect[2], rect2[3]), pygame.SRCALPHA)
+                # s.fill((255, 255, 255, 5))
                 # self.game.inventorySurface.blit(s, rect)
-                pygame.draw.rect(self.game.inventorySurface, (180, 180, 180), rect)
+                # pygame.draw.rect(self.game.inventorySurface, (180, 180, 180), rect)
+
                 if self.items[x][y]:
-                    self.game.inventorySurface.blit(self.items[x][y].resize(self.box_size), rect)
+                    # print(self.items[x][y])
+                    self.game.screen.blit(self.items[x][y].resize(self.box_size), rect)
+                    pos = pygame.mouse.get_pos()
+                    mouserectX = pos[0]#- ((WIN_WIDTH - 500) / 2)
+                    mouserectY = pos[1]
+                    MousePOS = mouserectX, mouserectY
+                    ToolTip = InventoryToolTip(self.game, ((WIN_WIDTH - 500) / 2 + 25), 350, 150, 150,
+                                                    self.game.screen, self.items[x][y], rect2)
+                    ToolTip.focusCheck(MousePOS)
+                    ToolTip.showTip()
 
     # get the square that the mouse is over
     def Get_pos(self):
@@ -46,6 +100,16 @@ class Inventory:
         y = mouse[1] - self.y
         x = x // (self.box_size + self.border) - 4
         y = y // (self.box_size + self.border)
+        return (x, y)
+
+    def Equipped_pos(self):
+        mouse = pygame.mouse.get_pos()
+
+        x = mouse[0] - self.x + 10
+        y = mouse[1] - self.y - 10
+        x = x // (self.box_size + self.border) - 4
+        y = y // (self.box_size + self.border)
+        print(x, y)
         return (x, y)
 
     def Get_First_Empty(self):
@@ -71,6 +135,51 @@ class Inventory:
         else:
             self.items[x][y] = Item
 
+    def Equip(self, Item, xy):
+        x, y = xy
+        if self.EquipedItems[self.EquipedPOS_Dict[x, y]]:
+            temp = self.EquipedItems[self.EquipedPOS_Dict[x, y]]
+            self.EquipedItems[self.EquipedPOS_Dict[x, y]] = Item
+            return temp
+        else:
+            self.EquipedItems[self.EquipedPOS_Dict[x, y]] = Item
+
+    def EquipItem(self, Item):
+        self.game.player.max_hp += Item.HP
+        self.game.player.hp += Item.HP
+        self.font = pygame.font.Font('assets/BKANT.TTF', 20)
+        self.game.player.HPBarText = str(round(self.game.player.hp)) + "/" + str(round(self.game.player.max_hp))
+        self.game.player.HPText = self.font.render(str(self.game.player.HPBarText), True, BLACK, None)
+
+        self.game.player.mp += Item.MP
+        self.game.player.max_mp += Item.MP
+        self.font = pygame.font.Font('assets/BKANT.TTF', 20)
+        self.game.player.MPBarText = str(round(self.game.player.mp)) + "/" + str(round(self.game.player.max_mp))
+        self.game.player.MPText = self.font.render(str(self.game.player.MPBarText), True, BLACK, None)
+
+        self.game.player.CharacterStrength += Item.AttackDamage
+        self.game.player.CharacterArmor += Item.Armor
+        self.font = pygame.font.Font('assets/BKANT.TTF', 15)
+
+    def UnequipItem(self, Item):
+        self.game.player.hp -= Item.HP
+        self.game.player.max_hp -= Item.HP
+        self.font = pygame.font.Font('assets/BKANT.TTF', 20)
+        self.game.player.HPBarText = str(round(self.game.player.hp)) + "/" + str(round(self.game.player.max_hp))
+        self.game.player.HPText = self.font.render(str(self.game.player.HPBarText), True, BLACK, None)
+
+        self.game.player.mp -= Item.MP
+        self.game.player.max_mp -= Item.MP
+        self.font = pygame.font.Font('assets/BKANT.TTF', 20)
+        self.game.player.MPBarText = str(round(self.game.player.mp)) + "/" + str(round(self.game.player.max_mp))
+        self.game.player.MPText = self.font.render(str(self.game.player.MPBarText), True, BLACK, None)
+
+        self.game.player.CharacterStrength -= Item.AttackDamage
+        self.game.player.CharacterArmor -= Item.Armor
+        self.font = pygame.font.Font('assets/BKANT.TTF', 15)
+
+
+
     # check whether the mouse in in the grid
     def In_grid(self, x, y):
         if x < 0 or x > (self.col - 1):
@@ -78,7 +187,10 @@ class Inventory:
         if y < 0 or y > (self.rows - 1):
             return False
         return True
-        # if 0 > x > self.col - 1:
-        #     return False
-        # if 0 > y > self.rows - 1:
-        #     return False
+
+    def In_Equip_Selection(self, x, y):
+        # Weapon Slot
+        if x == 8 and y == 5:
+            return True
+        else:
+            return False
