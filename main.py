@@ -372,7 +372,10 @@ class Game:
                                 TempArmor = random.randint(1, 10)
                                 TempHP = random.randint(1, 10)
                                 tempMP = random.randint(1, 10)
-                                self.Inventory.Add(Item(self, randID, TempDMG, TempArmor, TempHP, tempMP),
+                                tempCC = random.randint(self.player.playerLevel, self.player.playerLevel+1)
+                                tempCB = random.randint(self.player.playerLevel, self.player.playerLevel + 1)
+                                print(randID)
+                                self.Inventory.Add(Item(self, randID, TempDMG, TempArmor, TempHP, tempMP, tempCC, tempCB),
                                                    self.Inventory.Get_First_Empty())
                             else:
                                 self.console_print('Inventory Full')
@@ -399,6 +402,11 @@ class Game:
                                 # Place Item
                                 if self.Inventory.CanItemEquipSlot(self.InventorySelected,
                                                                    EquipedPOS_Dict[equippedPos[0], equippedPos[1]]):
+
+
+                                    if self.Inventory.EquipedItems[EquipedPOS_Dict[equippedPos[0], equippedPos[1]]]:
+                                        self.Inventory.UnequipItem(self.Inventory.EquipedItems[EquipedPOS_Dict[equippedPos[0], equippedPos[1]]])
+
                                     self.Inventory.EquipItem(self.InventorySelected)
                                     self.InventorySelected = self.Inventory.Equip(self.InventorySelected, equippedPos)
                             elif self.Inventory.EquipedItems[EquipedPOS_Dict[equippedPos[0], equippedPos[1]]]:

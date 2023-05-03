@@ -285,6 +285,8 @@ class InventoryToolTip:
         self.armorsurface = self.font.render(("+"+str(self.item.Armor)+" Armor"), True, BLACK)
         self.HPsurface = self.font.render(("+"+str(self.item.HP)+" HP"), True, BLACK)
         self.MPsurface = self.font.render("+"+str(self.item.MP)+" MP", True, BLACK)
+        self.CCsurface = self.font.render("+"+str(self.item.CritChance)+" Critical Chance", True, BLACK)
+        self.CBsurface = self.font.render("+" + str(self.item.CritBonus) + " Critical Bonus", True, BLACK)
 
 
 
@@ -302,6 +304,9 @@ class InventoryToolTip:
             self.surface.blit(self.MPsurface, (self.x, self.y+35))
             if self.item.Type == 'Weapon':
                 self.surface.blit(self.attacksurface, (self.x, self.y+50))
+            elif self.item.Type == "Necklace":
+                self.surface.blit(self.CCsurface, (self.x, self.y + 50))
+                self.surface.blit(self.CBsurface, (self.x, self.y + 65))
             else:
                 self.surface.blit(self.armorsurface, (self.x, self.y + 50))
 

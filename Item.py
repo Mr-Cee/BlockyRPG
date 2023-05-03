@@ -6,7 +6,7 @@ from config import *
 
 
 class Item:
-    def __init__(self, game, id, AttackDamage, Armor, HP, MP):
+    def __init__(self, game, id, AttackDamage, Armor, HP, MP, CritChance, CritBonus):
         self.game = game
         self.id = id
         self.image = GEAR_IMG_DICT[self.id].convert_alpha()
@@ -42,13 +42,23 @@ class Item:
         else:
             self.AttackDamage = 0
 
-        if self.id != 0:
+        if 0 < self.id <= 6:
             self.Armor = Armor + (3 * ItemRarity)
         else:
             self.Armor = 0
+
+        if self.id == 7:
+            self.CritChance = CritChance
+            self.CritBonus = CritBonus
+        else:
+            self.CritChance = 0
+            self.CritBonus = 0
+
         self.HP = HP + (3 * ItemRarity)
         self.MP = MP + (3 * ItemRarity)
         self.Rarity = ItemRarity
+
+
 
     def resize(self, size):
         return pygame.transform.scale(self.surface, (size, size)).convert_alpha()

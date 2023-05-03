@@ -39,8 +39,8 @@ class Character(pygame.sprite.Sprite):
 
         self.CharacterStrength = 5
         self.CharacterArmor = 0
-        self.CritChance = 99
-        self.CritBonus = 1.5
+        self.CritChance = 0
+        self.CritBonus = 0
 
         self.IceBoltDamage = 10
         self.IceBoltCost = 10
@@ -384,11 +384,13 @@ class Character(pygame.sprite.Sprite):
         if self.game.Inventory.checkForAvailableSpace():
             if self.game.availableInventorySpace:
                 randID = random.randint(0, 7)
-                TempDMG = random.randint(1, 10)
-                TempArmor = random.randint(1, 10)
-                TempHP = random.randint(1, 10)
-                tempMP = random.randint(1, 10)
-                Loot = Item(self, randID, TempDMG, TempArmor, TempHP, tempMP)
+                TempDMG = random.randint(self.playerLevel, self.playerLevel+10)
+                TempArmor = random.randint(self.playerLevel, self.playerLevel+10)
+                TempHP = random.randint(self.playerLevel, self.playerLevel+10)
+                tempMP = random.randint(self.playerLevel, self.playerLevel+10)
+                TempCC = random.randint(self.playerLevel, self.playerLevel+1)
+                TempCB = random.randint(self.playerLevel, self.playerLevel+1)
+                Loot = Item(self, randID, TempDMG, TempArmor, TempHP, tempMP, TempCC, TempCB)
                 self.game.Inventory.Add(Loot, self.game.Inventory.Get_First_Empty())
                 # print(Loot)
                 self.game.console_print('You Looted a ' + str(Loot.Description))

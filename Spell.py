@@ -86,8 +86,9 @@ class SpellTemplate(pygame.sprite.Sprite):
 
     def CalculateDamage(self, damage):
         Attack = random.randint(damage, damage+10)
-        CriticalChance = random.randint(1, 101)
+        CriticalChance = random.randint(1, 100)
         if CriticalChance <= self.player.CritChance:
+            CB = self.player.CritBonus/100+1
             Attack = Attack * self.player.CritBonus
             self.SpellDidCrit = True
         if Attack > self.Enemy.hp:

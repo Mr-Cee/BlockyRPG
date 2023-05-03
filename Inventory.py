@@ -35,7 +35,7 @@ class Inventory:
 
     # draw everything
     def draw(self):
-        print(pygame.mouse.get_pos(), self.Equipped_pos())
+        # print(pygame.mouse.get_pos(), self.Equipped_pos())
 
         # draw background
         self.game.screen.blit(
@@ -53,7 +53,7 @@ class Inventory:
             self.font.render("Critical Chance: " + str(round(self.game.player.CritChance)) + "%", True, BLACK),
             ((WIN_WIDTH / 2 + 25), 400))
         self.game.screen.blit(
-            self.font.render("Critical Bonus: " + str(round((self.game.player.CritBonus - 1) * 100)) + "%", True,
+            self.font.render("Critical Bonus: " + str(round(self.game.player.CritBonus)) + "%", True,
                              BLACK), ((WIN_WIDTH / 2 + 25), 425))
 
         self.game.screen.blit(self.TrashIMG, (595,455))
@@ -191,7 +191,11 @@ class Inventory:
 
         self.game.player.CharacterStrength += Item.AttackDamage
         self.game.player.CharacterArmor += Item.Armor
+        self.game.player.CritChance += Item.CritChance
+        self.game.player.CritBonus += Item.CritBonus
         self.font = pygame.font.Font('assets/BKANT.TTF', 15)
+
+
 
     def UnequipItem(self, Item):
         self.game.player.itemHP -= Item.HP
@@ -212,6 +216,8 @@ class Inventory:
 
         self.game.player.CharacterStrength -= Item.AttackDamage
         self.game.player.CharacterArmor -= Item.Armor
+        self.game.player.CritChance -= Item.CritChance
+        self.game.player.CritBonus -= Item.CritBonus
         self.font = pygame.font.Font('assets/BKANT.TTF', 15)
 
 
