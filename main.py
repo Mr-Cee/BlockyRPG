@@ -367,7 +367,7 @@ class Game:
                     if event.button == 3:
                         if self.Inventory.checkForAvailableSpace():
                             if self.availableInventorySpace:
-                                randID = random.randint(0,2)
+                                randID = random.randint(0, 7)
                                 TempDMG = random.randint(1, 10)
                                 TempArmor = random.randint(1, 10)
                                 TempHP = random.randint(1, 10)
@@ -407,6 +407,12 @@ class Game:
                                     EquipedPOS_Dict[equippedPos[0], equippedPos[1]]]
                                 self.Inventory.UnequipItem(self.InventorySelected)
                                 self.Inventory.EquipedItems[EquipedPOS_Dict[equippedPos[0], equippedPos[1]]] = None
+
+                        elif self.Inventory.In_Trash_Grid(equippedPos[0], equippedPos[1]):
+                            if self.InventorySelected:
+                                self.InventorySelected = None
+
+
                         else:
                             if self.InventorySelected:
                                 pass

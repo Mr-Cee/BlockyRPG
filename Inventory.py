@@ -9,8 +9,9 @@ class Inventory:
         self.col = 5
         self.items = [[None for _ in range(self.rows)] for _ in range(self.col)]
 
-        #####                Weapon  Shield  Helmet  Chest   Gloves   Legs   Boots   Necklace
-        self.EquipedItems = [None, None, None, None, None, None, None, None]
+        #####                Weapon  Shield  Helmet  Chest   Gloves   Legs  Boots Necklace
+        #####                0         1       2       3       4       5      6      7
+        self.EquipedItems = [None,    None,   None,   None,   None,   None,  None,  None]
 
         self.box_size = 33
         self.x = 25
@@ -28,9 +29,13 @@ class Inventory:
 
         self.font = pygame.font.Font('assets/BKANT.TTF', 15)
 
+        self.TrashIMG = pygame.image.load('assets/trash-can.png')
+        self.TrashIMG = pygame.transform.scale(self.TrashIMG, (40, 40))
+        self.TrashIMG.set_colorkey(WHITE)
+
     # draw everything
     def draw(self):
-        # print(pygame.mouse.get_pos())
+        print(pygame.mouse.get_pos(), self.Equipped_pos())
 
         # draw background
         self.game.screen.blit(
@@ -50,6 +55,8 @@ class Inventory:
         self.game.screen.blit(
             self.font.render("Critical Bonus: " + str(round((self.game.player.CritBonus - 1) * 100)) + "%", True,
                              BLACK), ((WIN_WIDTH / 2 + 25), 425))
+
+        self.game.screen.blit(self.TrashIMG, (595,455))
 
         # print(self.Get_pos())
 
@@ -109,7 +116,7 @@ class Inventory:
                     ToolTip.focusCheck(MousePOS)
                     ToolTip.showTip()
 
-    # get the square that the mouse is over
+    # get the square that the mouse is overi
     def Get_pos(self):
         mouse = pygame.mouse.get_pos()
 
@@ -122,8 +129,8 @@ class Inventory:
     def Equipped_pos(self):
         mouse = pygame.mouse.get_pos()
 
-        x = mouse[0] - self.x + 10
-        y = mouse[1] - self.y - 10
+        x = mouse[0] - self.x
+        y = mouse[1] - self.y
         x = x // (self.box_size + self.border) - 4
         y = y // (self.box_size + self.border)
         return (x, y)
@@ -165,6 +172,7 @@ class Inventory:
             return temp
         else:
             self.EquipedItems[EquipedPOS_Dict[x, y]] = Item
+
 
     def EquipItem(self, Item):
 
@@ -223,6 +231,14 @@ class Inventory:
 
     def In_Equip_Selection(self, x, y):
         if EquipedPOS_Dict.get((x, y)) is not None:
+            return True
+        else:
+            return False
+
+    def In_Trash_Grid(self, x, y):
+        if x == 11 and y == 12:
+            return True
+        elif x == 12 and y == 12:
             return True
         else:
             return False

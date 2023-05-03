@@ -383,7 +383,7 @@ class Character(pygame.sprite.Sprite):
 
         if self.game.Inventory.checkForAvailableSpace():
             if self.game.availableInventorySpace:
-                randID = random.randint(0, 2)
+                randID = random.randint(0, 7)
                 TempDMG = random.randint(1, 10)
                 TempArmor = random.randint(1, 10)
                 TempHP = random.randint(1, 10)
@@ -409,6 +409,8 @@ class Character(pygame.sprite.Sprite):
 
     def Flee(self):
         self.changeHealth(-20)
+        if self.checkForDeath():
+            return
         self.isAttackable = True
         self.AttackChoice = False
         self.canAttack = True
@@ -483,7 +485,6 @@ class Character(pygame.sprite.Sprite):
         self.CastSpellStart = True
 
     def AttackMonster(self):
-        print(self.CharacterStrength)
         self.Enemy = self.monsterToAttack
         if self.Enemy.rect.left - self.rect.right > 15:
             self.max_travel = random.randint(WIN_WIDTH / 5, WIN_WIDTH / 4)
@@ -559,6 +560,7 @@ class Character(pygame.sprite.Sprite):
         if self.hp <= 0:
             self.game.console_print('You died! You have lost ' + str(math.ceil(self.exp / 10)) + ' exp!')
             self.game.DeathReset()
+            return True
             # pass
 
     def changeHealth(self, hpAmount):

@@ -42,7 +42,7 @@ class Item:
         else:
             self.AttackDamage = 0
 
-        if self.id is not 0:
+        if self.id != 0:
             self.Armor = Armor + (3 * ItemRarity)
         else:
             self.Armor = 0

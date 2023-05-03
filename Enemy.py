@@ -296,9 +296,9 @@ class EnemyTemplate(pygame.sprite.Sprite):
     def AttackCharacter(self, game):
         game = game
         MonsterAttack = random.randint(1 + int(self.attackPower), 5 + int(self.attackPower))
-        print('Attack Before Armor:', MonsterAttack)
         MonsterAttack = MonsterAttack - self.game.player.CharacterArmor
-        print('Attack After Armor:', MonsterAttack)
+        if MonsterAttack < 0:
+            MonsterAttack = 0
         if self.rect.left - self.game.player.rect.right > 15:
             game.console_print((self.EnemyName + ' advances towards you.'))
             if self.isFrozen:
