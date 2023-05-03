@@ -421,6 +421,7 @@ class Game:
                 if event.key == pygame.K_KP_PLUS:
                     self.player.changeHealth(10)
                     self.player.changeMana(25)
+                    self.player.changeEXP(50)
                 if event.key == pygame.K_KP_MINUS:
                     self.player.changeHealth(-10)
                     self.player.changeMana(-50)

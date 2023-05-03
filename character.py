@@ -26,7 +26,9 @@ class Character(pygame.sprite.Sprite):
         self.max_hp = self.baseHP+self.itemHP
         self.hp = self.max_hp
 
-        self.max_mp = 100
+        self.baseMP = 100
+        self.itemMP = 0
+        self.max_mp = self.baseMP + self.itemMP
         self.mp = self.max_mp
 
         self.playerLevel = 1
@@ -64,8 +66,8 @@ class Character(pygame.sprite.Sprite):
 
         self.EXPBarText = str(self.exp) + "/" + str(self.exp_to_level)
         self.EXPText = self.font.render(str(self.EXPBarText), True, BLACK, None)
-        self.EXPBarTextRect = self.HPText.get_rect()
-        self.EXPBarTextRect.center = (290, WIN_HEIGHT + 123)
+        self.EXPBarTextRect = self.EXPText.get_rect()
+        self.EXPBarTextRect.center = (275, WIN_HEIGHT + 123)
 
         self.isAttackable = True  # Allows the character to attack or be attacked
         self.moveTowardsEnemy = False
@@ -518,11 +520,19 @@ class Character(pygame.sprite.Sprite):
             self.EXPBarTextRect = self.EXPText.get_rect()
             self.EXPBarTextRect.center = (290, WIN_HEIGHT + 123)
 
-            self.max_hp += 20
+            self.baseHP += 20
+            self.max_hp = self.baseHP + self.itemHP
             self.hp = self.max_hp
             self.font = pygame.font.Font('assets/BKANT.TTF', 20)
             self.HPBarText = str(self.hp) + "/" + str(self.max_hp)
             self.HPText = self.font.render(str(self.HPBarText), True, BLACK, None)
+
+            self.baseMP += 20
+            self.max_mp = self.baseMP + self.itemMP
+            self.mp = self.max_mp
+            self.font = pygame.font.Font('assets/BKANT.TTF', 20)
+            self.MPBarText = str(self.mp) + "/" + str(self.max_mp)
+            self.MPText = self.font.render(str(self.MPBarText), True, BLACK, None)
 
             self.game.console_print(('You have leveled up to ' + str(self.playerLevel) + '!'))
 
