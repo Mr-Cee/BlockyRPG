@@ -20,8 +20,12 @@ class Character(pygame.sprite.Sprite):
         self.screen = self.game.screen
         self.dt = self.game.clock.tick(FPS * 250)
         self.screen = self.game.screen
-        self.max_hp = 100
+
+        self.baseHP = 100
+        self.itemHP = 0
+        self.max_hp = self.baseHP+self.itemHP
         self.hp = self.max_hp
+
         self.max_mp = 100
         self.mp = self.max_mp
 
