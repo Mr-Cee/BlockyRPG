@@ -127,6 +127,12 @@ class Inventory:
         x = x // (self.box_size + self.border) - 4
         y = y // (self.box_size + self.border)
         return (x, y)
+    def checkForAvailableSpace(self):
+        for x in range(self.col):
+            for y in range(self.rows):
+                if not self.items[x][y]:
+                    return True
+
 
     def Get_First_Empty(self):
         for y in range(self.rows):

@@ -365,14 +365,17 @@ class Game:
                 if self.showInventory:
                     # If right-clicked, get a random item
                     if event.button == 3:
-                        if self.availableInventorySpace:
-                            randID = random.randint(0,2)
-                            TempDMG = random.randint(1, 10)
-                            TempArmor = random.randint(1, 10)
-                            TempHP = random.randint(1, 10)
-                            tempMP = random.randint(1, 10)
-                            self.Inventory.Add(Item(self, randID, TempDMG, TempArmor, TempHP, tempMP),
-                                               self.Inventory.Get_First_Empty())
+                        if self.Inventory.checkForAvailableSpace():
+                            if self.availableInventorySpace:
+                                randID = random.randint(0,2)
+                                TempDMG = random.randint(1, 10)
+                                TempArmor = random.randint(1, 10)
+                                TempHP = random.randint(1, 10)
+                                tempMP = random.randint(1, 10)
+                                self.Inventory.Add(Item(self, randID, TempDMG, TempArmor, TempHP, tempMP),
+                                                   self.Inventory.Get_First_Empty())
+                            else:
+                                self.console_print('Inventory Full')
                         else:
                             self.console_print('Inventory Full')
 
