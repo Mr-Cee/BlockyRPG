@@ -41,9 +41,9 @@ GEAR_IMG_DICT = {"ID": "Pic",
                  }
 
 GEAR_DESC_DICT = {"ID": "DESCRIPTION",
-                  0: "A Short Sword",
-                  1: "A Full Shield",
-                  2: "A Common Helmet"}
+                  0: "Short Sword",
+                  1: "Full Shield",
+                  2: "Helmet"}
 
 ITEM_TYPE_DICT = {"ID": "TYPE",
                   0: "Weapon",
@@ -56,6 +56,13 @@ INVENTORY_EQUIPED_REC_DICT = {"ID": "REC",
                               2: (pygame.Rect(503, 42, 33, 33))
                               }
 
+ITEM_RARITY_DICT = {"ID": "RARITY",
+                    0: "Common",
+                    1: "Uncommon",
+                    2: "Rare",
+                    3: "Legendary",
+                    4: "Mythical"}
+
 # Colors
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -64,6 +71,18 @@ GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 SOFTBROWN = (145, 139, 109)
 TEMPCOLOR = (204, 203, 161)
+
+COMMONCOLOR = BLACK
+UNCOMMONCOLOR = (54, 128, 40)
+RARECOLOR = (5, 21, 122)
+LEGENDARYCOLOR = (232, 127, 7)
+MYTHICALCOLOR = (198, 3, 252)
+RARITY_COLOR_DICT = {"ID": "COLOR",
+                     0: COMMONCOLOR,
+                     1: UNCOMMONCOLOR,
+                     2: RARECOLOR,
+                     3: LEGENDARYCOLOR,
+                     4: MYTHICALCOLOR}
 #
 
 # Clock/Tick Settings

@@ -167,14 +167,16 @@ class Inventory:
             self.EquipedItems[EquipedPOS_Dict[x, y]] = Item
 
     def EquipItem(self, Item):
-        self.game.player.max_hp += Item.HP
-        self.game.player.hp += Item.HP
+
+        self.game.player.itemHP += Item.HP
+        self.game.player.max_hp = self.game.player.baseHP + self.game.player.itemHP
         self.font = pygame.font.Font('assets/BKANT.TTF', 20)
         self.game.player.HPBarText = str(round(self.game.player.hp)) + "/" + str(round(self.game.player.max_hp))
         self.game.player.HPText = self.font.render(str(self.game.player.HPBarText), True, BLACK, None)
 
-        self.game.player.mp += Item.MP
-        self.game.player.max_mp += Item.MP
+
+        self.game.player.itemMP += Item.MP
+        self.game.player.max_mp = self.game.player.baseMP + self.game.player.itemMP
         self.font = pygame.font.Font('assets/BKANT.TTF', 20)
         self.game.player.MPBarText = str(round(self.game.player.mp)) + "/" + str(round(self.game.player.max_mp))
         self.game.player.MPText = self.font.render(str(self.game.player.MPBarText), True, BLACK, None)
@@ -184,14 +186,18 @@ class Inventory:
         self.font = pygame.font.Font('assets/BKANT.TTF', 15)
 
     def UnequipItem(self, Item):
-        self.game.player.hp -= Item.HP
-        self.game.player.max_hp -= Item.HP
+        self.game.player.itemHP -= Item.HP
+        self.game.player.max_hp = self.game.player.baseHP + self.game.player.itemHP
+        if self.game.player.hp > self.game.player.max_hp:
+            self.game.player.hp = self.game.player.max_hp
         self.font = pygame.font.Font('assets/BKANT.TTF', 20)
         self.game.player.HPBarText = str(round(self.game.player.hp)) + "/" + str(round(self.game.player.max_hp))
         self.game.player.HPText = self.font.render(str(self.game.player.HPBarText), True, BLACK, None)
 
-        self.game.player.mp -= Item.MP
-        self.game.player.max_mp -= Item.MP
+        self.game.player.itemMP -= Item.MP
+        self.game.player.max_mp = self.game.player.baseMP + self.game.player.itemMP
+        if self.game.player.mp > self.game.player.max_mp:
+            self.game.player.mp = self.game.player.max_mp
         self.font = pygame.font.Font('assets/BKANT.TTF', 20)
         self.game.player.MPBarText = str(round(self.game.player.mp)) + "/" + str(round(self.game.player.max_mp))
         self.game.player.MPText = self.font.render(str(self.game.player.MPBarText), True, BLACK, None)

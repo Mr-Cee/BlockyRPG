@@ -380,10 +380,9 @@ class Game:
                             self.console_print('Inventory Full')
 
                     # Left-clicking Item
-                    elif event.button == 1:
+                    if event.button == 1:
                         pos = self.Inventory.Get_pos()
                         equippedPos = self.Inventory.Equipped_pos()
-                        print(equippedPos)
                         # inventory Screen
                         if self.Inventory.In_grid(pos[0], pos[1]):
                             if self.InventorySelected:

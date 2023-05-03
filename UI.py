@@ -275,8 +275,11 @@ class InventoryToolTip:
         self.item = Item
         self.current = False
 
+        # Item Name
         self.font = pygame.font.Font('assets/BKANT.TTF', 20)
-        self.tiptextsurface = self.font.render(self.item.Description, True, BLACK)
+        self.tiptextsurface = self.font.render(self.item.Description, True, RARITY_COLOR_DICT[self.item.Rarity])
+
+        # Item Stats
         self.font = pygame.font.Font('assets/BKANT.TTF', 17)
         self.attacksurface = self.font.render(("+"+str(self.item.AttackDamage)+" Damage"), True, BLACK)
         self.armorsurface = self.font.render(("+"+str(self.item.Armor)+" Armor"), True, BLACK)

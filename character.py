@@ -1,5 +1,7 @@
 import logging
 import random
+
+from Item import Item
 from UI import *
 import pyautogui as pyautogui
 import pygame
@@ -378,6 +380,22 @@ class Character(pygame.sprite.Sprite):
 
         self.game.console_print(
             ('You killed the ' + EnemyObject.EnemyName + ' and gained ' + str(math.ceil(EXPGain)) + ' experience'))
+
+        if self.game.Inventory.checkForAvailableSpace():
+            if self.game.availableInventorySpace:
+                randID = random.randint(0, 2)
+                TempDMG = random.randint(1, 10)
+                TempArmor = random.randint(1, 10)
+                TempHP = random.randint(1, 10)
+                tempMP = random.randint(1, 10)
+                Loot = Item(self, randID, TempDMG, TempArmor, TempHP, tempMP)
+                self.game.Inventory.Add(Loot, self.game.Inventory.Get_First_Empty())
+                # print(Loot)
+                self.game.console_print('You Looted a ' + str(Loot.Description))
+            else:
+                self.game.console_print('Inventory Full')
+        else:
+            self.game.console_print('Inventory Full')
 
         if len(self.templist) > 0:
             for item in self.templist:
