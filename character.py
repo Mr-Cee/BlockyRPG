@@ -497,9 +497,10 @@ class Character(pygame.sprite.Sprite):
             self.MeleeAttack_Anim = True
 
     def MeleeAttack(self):
+        self.DidCrit=False
         self.attackDamage = random.randint(1 + self.CharacterStrength, 5 + self.CharacterStrength)
         CriticalChance = random.randint(1, 100)
-        if CriticalChance <= self.player.CritChance:
+        if CriticalChance <= self.CritChance:
             CB = self.CritBonus / 100 + 1
             self.attackDamage = self.attackDamage * CB
             self.DidCrit = True
@@ -511,6 +512,7 @@ class Character(pygame.sprite.Sprite):
         if self.DidCrit:
             self.game.console_print(
                 ('You attacked the ' + self.Enemy.EnemyName + ' for ' + str(self.attackDamage) + ' CRITICAL damage'))
+            self.DidCrit=False
         else:
             self.game.console_print(
             ('You attacked the ' + self.Enemy.EnemyName + ' for ' + str(self.attackDamage) + ' damage'))
