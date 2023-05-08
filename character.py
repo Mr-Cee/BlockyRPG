@@ -3,7 +3,7 @@ import random
 
 from Item import Item
 from UI import *
-import pyautogui as pyautogui
+#import pyautogui as pyautogui
 import pygame
 import math
 from config import *
